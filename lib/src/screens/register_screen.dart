@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' show post;
 import '../mixins/validation_mixin.dart';
+import '../screens/welcome_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   createState() {
@@ -28,7 +29,9 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           passwordField(),
           confirmPasswordField(),
           Container(margin: EdgeInsets.only(top: 120.0)),
-          submitButton()
+          submitButton(),
+          welcomePageButton()
+          
         ]),
       ),
     );
@@ -108,6 +111,21 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
             // print('time to post $email and $email to my api');
             Register();
           }
+        });
+  }
+
+  Widget welcomePageButton() {
+    return RaisedButton(
+        child: Text("Welcome Page"),
+        color: Colors.blueGrey,
+        onPressed: () {
+          print("pressed");
+          
+            Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (ctxt) => new WelcomeScreen()),
+            );
+        
         });
   }
 
