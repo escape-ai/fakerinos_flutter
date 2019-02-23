@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart'; 
+import '../screens/home_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   createState() { 
@@ -12,11 +13,21 @@ class WelcomeStateScreen extends State<WelcomeScreen> {
   Widget build(context){
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.black,
         appBar: AppBar(
           title: Text("Getting Started")
         ),
-        body: InterestGrid().build()
+        body: InterestGrid().build(),
+        floatingActionButton: FloatingActionButton.extended(
+          elevation: 2.0,
+          onPressed: (){
+            Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (context) => new HomeScreen()),
+            );
+          },
+          icon: Icon(Icons.save),
+          label: Text("Save")
+        ),
       )
     );
 } }
@@ -24,6 +35,7 @@ class WelcomeStateScreen extends State<WelcomeScreen> {
 class InterestGrid {
   Card makeGridCell(String name, IconData icon){
     return Card(
+      color: Colors.cyan,
       elevation: 5.0, 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch, 
@@ -31,7 +43,7 @@ class InterestGrid {
         verticalDirection: VerticalDirection.down, 
         children: <Widget>[
           Center(child: Icon(icon)),
-          Text(name), 
+          Center(child: Text(name)), 
         ]
       ),
     );

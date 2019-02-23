@@ -123,7 +123,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           
             Navigator.push(
               context,
-              new MaterialPageRoute(builder: (ctxt) => new WelcomeScreen()),
+              new MaterialPageRoute(builder: (context) => new WelcomeScreen()),
             );
         
         });
