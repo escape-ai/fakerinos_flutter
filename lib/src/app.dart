@@ -6,6 +6,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: "Log Me In!",
       home: Scaffold(
+        appBar: AppBar(title: Text("Registration")),
         body: RegisterScreen(),
       ));
   }
