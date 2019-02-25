@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' show post;
 import '../mixins/validation_mixin.dart';
 import '../screens/welcome_screen.dart';
+import 'dart:convert';
 
 class RegisterScreen extends StatefulWidget {
   createState() {
@@ -16,6 +17,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
   String username = '';
   String password1 = '';
   String password2 = '';
+  var _isLoading = false; 
 
   Widget build(context) {
     return Container(
@@ -101,17 +103,25 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
   }
 
   Widget submitButton() {
-    return RaisedButton(
-        child: Text("Submit"),
-        color: Colors.blueGrey,
-        onPressed: () {
-          if (formKey.currentState.validate()) {
-            // print(formKey.currentState);
+    return _isLoading == false? 
+      RaisedButton (
+        child:  Text('Register'),
+              
+        onPressed: (() {
+                
+                if (formKey.currentState.validate()) {
+                    _isLoading = true; 
+            
             formKey.currentState.save();
-            // print('time to post $email and $email to my api');
+         
             Register();
-          }
-        });
+            
+             }})) : 
+             RaisedButton(
+               child: Center(
+                 child: CircularProgressIndicator()
+               )
+             );
   }
 
   Widget welcomePageButton() {
@@ -130,6 +140,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
   }
 
   void Register() async {
+    
     print("Registering with server side...");
     Map<String, String> payload = {
       "username": username,
@@ -138,7 +149,36 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
       "password2": password2
     };
     final response = await post(url, body: payload);
+    final parsedResponse = json.decode(response.body); 
+    if (parsedResponse["key"] != null){
+      _isLoading = false; 
+      Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (context) => new WelcomeScreen()),
+            );
+    }else{
+      
+      String failureMessage = "Error: ";
+      for (var value in parsedResponse.values){
+        
+        failureMessage += value[0] + " "; 
+      }
+      print(failureMessage);
+      final snackBar = SnackBar(
+            content: Text("$failureMessage"),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                // Some code to undo the change!
+              },
+            ),
+          );
 
-    print(response.body);
+          // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+          _isLoading = false; 
+          Scaffold.of(context).showSnackBar(snackBar);
+      print("No Success");
+    }
+    
   }
 }
