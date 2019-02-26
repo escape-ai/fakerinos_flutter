@@ -34,24 +34,7 @@ class HomeStateScreen extends State<HomeScreen> {
           }
         },
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              padding:EdgeInsets.zero,
-              child: Text('Fakerinos'),
-              decoration: BoxDecoration(
-                
-              )
-            ),
-            ListTile(
-              title: Text('Profile'),
-              onTap:(){
-
-              })
-          ]
-        )
-      ),
+      drawer: buildDrawerWidget(context),
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex,
@@ -108,3 +91,44 @@ Widget _buildCarousel(BuildContext context, int carouselIndex) {
       ),
     );
   }
+
+  Widget buildDrawerWidget(BuildContext context) {
+
+    return Drawer(
+      child: Container(
+        color: Colors.blueGrey,
+        child: ListView(
+        children: <Widget>[
+          Container( 
+            child: UserAccountsDrawerHeader(
+            accountName: new Text("Lionell Loh"),
+            accountEmail: new Text("lionellloh@gmail.com"),
+            currentAccountPicture: new CircleAvatar(
+              backgroundColor: Colors.black, 
+              child: Text("LL",
+              textScaleFactor: 1.5,)
+            ),
+          )),
+          new ListTile(
+            title: new Text("Personal Profile"),
+            trailing: new Icon(Icons.person)
+          ),
+          new ListTile(
+            title: new Text("Settings"),
+            trailing: new Icon(Icons.settings),
+          ), 
+          new ListTile(
+            title: new Text("About"),
+            trailing: new Icon(Icons.question_answer),
+          ),
+          new ListTile(
+            title: new Text("Feedback"),
+            trailing: new Icon(Icons.feedback),
+          )
+          ],
+      ))
+    );
+
+
+
+}
