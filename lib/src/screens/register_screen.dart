@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' show post;
 import '../mixins/validation_mixin.dart';
-import '../screens/welcome_screen.dart';
+import '../screens/interest_screen.dart';
 import 'dart:convert';
 
 class RegisterScreen extends StatefulWidget {

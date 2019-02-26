@@ -1,76 +1,76 @@
 import 'package:flutter/material.dart'; 
-import '../screens/home_screen.dart';
 
-class WelcomeScreen extends StatefulWidget {
-  createState() { 
-    return WelcomeStateScreen(); 
-  } 
-}
-
-class WelcomeStateScreen extends State<WelcomeScreen> {
+class WelcomeScreen extends StatelessWidget { 
 
   @override
   Widget build(context){
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Getting Started")
+    return new Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter, 
+          end: Alignment.bottomCenter,
+          stops: [0.25, 0.75],
+          colors: [Color(0xAA03B2FF), Color(0xAA0518FF) ]
+        )),
+        child: new Column(children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(top: 200.0),
+            child: Center(
+              child: Text("FAKERINOS!", style: TextStyle(
+                color: Colors.white,
+                fontSize: 80,
+                fontFamily: 'Niagaraphobia')
+              )
+            )
         ),
-        body: InterestGrid().build(),
-        floatingActionButton: FloatingActionButton.extended(
-          elevation: 2.0,
-          onPressed: (){
-            Navigator.push(
-              context,
-              new MaterialPageRoute(builder: (context) => new HomeScreen()),
-            );
-          },
-          icon: Icon(Icons.save),
-          label: Text("Save")
+        Container(
+            padding: EdgeInsets.only(top: 260.0),
+            child: Center(
+              child: Text("Think you can tell Fake from Real? \n Come put your skills to a test!", 
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                )
+              )
+            )
         ),
-      )
-    );
-} }
 
-class InterestGrid {
-  Card makeGridCell(String name, IconData icon){
-    return Card(
-      color: Colors.cyan,
-      elevation: 5.0, 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch, 
-        mainAxisSize: MainAxisSize.min,
-        verticalDirection: VerticalDirection.down, 
-        children: <Widget>[
-          Center(child: Icon(icon)),
-          Center(child: Text(name)), 
-        ]
-      ),
-    );
-  }
-  
-  GridView build(){
-    return GridView.count(
-      primary: true, 
-      padding: EdgeInsets.all(2.0), 
-      crossAxisCount: 2, 
-      childAspectRatio: 1.0,
-      mainAxisSpacing: 1.0,
-      crossAxisSpacing: 1.0,
-      children: <Widget>[
-        makeGridCell("Home", Icons.home),
-        makeGridCell("Email", Icons.email),
-        makeGridCell("Chat", Icons.chat_bubble),
-        makeGridCell("New", Icons.new_releases),
-        makeGridCell("Wifi", Icons.network_wifi),
-        makeGridCell("Options", Icons.settings),
-        makeGridCell("Home", Icons.home),
-        makeGridCell("Email", Icons.email),
-        makeGridCell("Chat", Icons.chat_bubble),
-        makeGridCell("New", Icons.new_releases),
-        makeGridCell("Wifi", Icons.network_wifi),
-        makeGridCell("Options", Icons.settings)
-      ]
+        Container(
+          padding: EdgeInsets.only(top: 70.0),
+          child: ButtonTheme(
+            minWidth: 350,
+            height: 50,
+            child: new RaisedButton(
+            color: Colors.white,
+            textColor: Color(0xAA0518FF),
+            child: new Text("Sign Up",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+            ),),
+            onPressed: ()=> print("pressed"),
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0))
+            )
+          
+        )
+        ),
+
+        Container(
+          padding: EdgeInsets.only(top: 30),
+          child: GestureDetector(
+            child: Text("Log in",
+            style: TextStyle(
+              fontSize: 20, 
+              fontWeight: FontWeight.bold,
+              color: Colors.white          
+            ))
+          )
+        )
+         
+                        ])
+        
     );
   }
 }
