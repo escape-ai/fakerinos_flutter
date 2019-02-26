@@ -21,6 +21,9 @@ dependencies:
   cupertino_icons: ^0.1.2
   http: any
 
+  #Splash Screen
+  splashscreen: ^1.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
