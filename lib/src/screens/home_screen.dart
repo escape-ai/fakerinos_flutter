@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart'; 
+import './multiplayer_screen.dart';
 import '../SwipeAnimation/index.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -17,6 +18,7 @@ class HomeStateScreen extends State<HomeScreen> {
       _currentIndex = index; 
     });
   }
+  List<StatefulWidget> screens = [HomeScreen(), MultiplayerScreen()];
   @override
   Widget build(context){
     return MaterialApp(
@@ -27,34 +29,25 @@ class HomeStateScreen extends State<HomeScreen> {
       body: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 16.0),
         itemBuilder: (BuildContext context, int index) {
-          if(index % 2 == 0) {
+          if(index <= 2 ) {
             return _buildCarousel(context, index ~/ 2);
           }
           else {
-            return Divider();
+            return Divider(
+              height: 3
+            );
           }
         },
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              padding:EdgeInsets.zero,
-              child: Text('Fakerinos'),
-              decoration: BoxDecoration(
-                
-              )
-            ),
-            ListTile(
-              title: Text('Profile'),
-              onTap:(){
-
-              })
-          ]
-        )
-      ),
+      drawer: buildDrawerWidget(context),
+      
       bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped,
+        onTap: (currentIndex){
+          setState(() {
+            _currentIndex = currentIndex; });
+          
+          // _tabController.animateTo(_currentIndex);
+        },
         currentIndex: _currentIndex,
         items: [
           new BottomNavigationBarItem(
@@ -63,7 +56,8 @@ class HomeStateScreen extends State<HomeScreen> {
           ),
           new BottomNavigationBarItem(
             icon: Icon(Icons.people),
-            title: Text("Multiplayer")
+            title: Text("Multiplayer"),
+            
           ),
           new BottomNavigationBarItem(
             icon: Icon(Icons.people),
@@ -101,11 +95,8 @@ Widget _buildCarousel(BuildContext context, int carouselIndex) {
   Widget _buildCarouselItem(BuildContext context, int carouselIndex, int itemIndex) {
     return Center(
       child: GestureDetector(
-        onTap: ()=> Navigator.push(
-              context,
-              // TODO: Refactor this whole CardDemo Component
-              new MaterialPageRoute(builder: (context) => new CardDemo()),
-            ),
+        onTap: ()=> Navigator.push(context,
+        new MaterialPageRoute(builder: (context)=> CardDemo())),
         onDoubleTap: ()=> showDialog( 
           context: context,
           builder: (BuildContext context){
@@ -125,3 +116,44 @@ Widget _buildCarousel(BuildContext context, int carouselIndex) {
             ,)
             ,));
   }
+
+  Widget buildDrawerWidget(BuildContext context) {
+
+    return Drawer(
+      child: Container(
+        color: Colors.white,
+        child: ListView(
+        children: <Widget>[
+          Container( 
+            child: UserAccountsDrawerHeader(
+            accountName: new Text("Lionell Loh"),
+            accountEmail: new Text("lionellloh@gmail.com"),
+            currentAccountPicture: new CircleAvatar(
+              backgroundColor: Colors.black, 
+              child: Text("LL",
+              textScaleFactor: 1.5,)
+            ),
+          )),
+          new ListTile(
+            title: new Text("Personal Profile"),
+            trailing: new Icon(Icons.person)
+          ),
+          new ListTile(
+            title: new Text("Settings"),
+            trailing: new Icon(Icons.settings),
+          ), 
+          new ListTile(
+            title: new Text("About"),
+            trailing: new Icon(Icons.question_answer),
+          ),
+          new ListTile(
+            title: new Text("Feedback"),
+            trailing: new Icon(Icons.feedback),
+          )
+          ],
+      ))
+    );
+
+
+
+}
