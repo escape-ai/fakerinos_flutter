@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart'; 
 import '../screens/register_screen.dart';
-import '../screens/interest_screen.dart';
-import '../screens/loginscreen_3.dart';
+import '../screens/login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget { 
 
@@ -66,7 +65,7 @@ class WelcomeScreen extends StatelessWidget {
           child: GestureDetector(
             onTap:(
               () => Navigator.push(context,
-              new MaterialPageRoute(builder: (context) => new LoginScreen3()),
+              new MaterialPageRoute(builder: (context) => new LoginScreen()),
             
               )
             ),
