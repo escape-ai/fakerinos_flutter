@@ -77,10 +77,11 @@ class HomeStateScreen extends State<HomeScreen> {
 } } 
 
 Widget _buildCarousel(BuildContext context, int carouselIndex) {
+    final headers = ["Recommended For You", "Trending", "Newest"]; 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Text('Carousel $carouselIndex'),
+        Text(headers[carouselIndex]),
         SizedBox(
           // you may want to use an aspect ratio here for tablet support
           height: 200.0,
