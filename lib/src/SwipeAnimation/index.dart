@@ -248,6 +248,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
           actions: <Widget> [new FlatButton(
               child: new Text("Close"),
               onPressed: () {
+                
                 Navigator.of(context).pop();})])
 
                   

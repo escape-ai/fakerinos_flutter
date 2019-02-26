@@ -58,18 +58,19 @@ class InterestGrid {
       mainAxisSpacing: 1.0,
       crossAxisSpacing: 1.0,
       children: <Widget>[
-        makeGridCell("Home", Icons.home),
-        makeGridCell("Email", Icons.email),
-        makeGridCell("Chat", Icons.chat_bubble),
-        makeGridCell("New", Icons.new_releases),
-        makeGridCell("Wifi", Icons.network_wifi),
-        makeGridCell("Options", Icons.settings),
-        makeGridCell("Home", Icons.home),
-        makeGridCell("Email", Icons.email),
-        makeGridCell("Chat", Icons.chat_bubble),
-        makeGridCell("New", Icons.new_releases),
-        makeGridCell("Wifi", Icons.network_wifi),
-        makeGridCell("Options", Icons.settings)
+        makeGridCell("Adventures", Icons.terrain),
+        makeGridCell("Local", Icons.local_activity),
+        makeGridCell("Social", Icons.chat_bubble),
+        makeGridCell("Sports", Icons.explore),
+        makeGridCell("Adventures", Icons.terrain),
+        makeGridCell("Local", Icons.local_activity),
+        makeGridCell("Social", Icons.chat_bubble),
+        makeGridCell("Sports", Icons.explore),
+        makeGridCell("Adventures", Icons.terrain),
+        makeGridCell("Local", Icons.local_activity),
+        makeGridCell("Social", Icons.chat_bubble),
+        makeGridCell("Sports", Icons.explore),
+        
       ]
     );
   }
