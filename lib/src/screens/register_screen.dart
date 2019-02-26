@@ -46,7 +46,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
     return TextFormField(
       decoration: InputDecoration(
         labelText: 'Username',
-        hintText: 'Sudiptarocks',
+        hintText: 'e.g. johndoe96',
       ),
       validator: (String value) {
         if (value.length < 5) {
