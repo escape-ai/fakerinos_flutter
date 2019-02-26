@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart'; 
+import '../SwipeAnimation/index.dart';
 
 class HomeScreen extends StatefulWidget{
   createState() {
@@ -98,13 +99,29 @@ Widget _buildCarousel(BuildContext context, int carouselIndex) {
   }
 
   Widget _buildCarouselItem(BuildContext context, int carouselIndex, int itemIndex) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.blueGrey,
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        ),
-      ),
-    );
+    return Center(
+      child: GestureDetector(
+        onTap: ()=> Navigator.push(
+              context,
+              // TODO: Refactor this whole CardDemo Component
+              new MaterialPageRoute(builder: (context) => new CardDemo()),
+            ),
+        onDoubleTap: ()=> showDialog( 
+          context: context,
+          builder: (BuildContext context){
+          return AlertDialog(
+          title: new Text("You liked this"));
+          }), 
+        child: Card(
+        elevation: 10,
+        child: Column(
+          mainAxisSize: MainAxisSize.max, 
+          children: <Widget>[
+            const ListTile(
+            leading: Icon(Icons.album), 
+            title: Text('Lala'), 
+            subtitle: Text("Subtitle"))]
+            ,)
+            ,)
+            ,));
   }

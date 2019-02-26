@@ -242,12 +242,13 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                             backCardWidth, 0.0, 0.0, context);
                       }
                     }).toList())
-                : showDialog( 
-                    context: context,
-                    builder: (BuildContext context){
-                    return AlertDialog(
-                    title: new Text("You liked this"));
-                    }),
+                : AlertDialog(
+          title: new Text("Well done!"),
+          content: new Text("Not enough? Try out more decks on the home page! "),
+          actions: <Widget> [new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();})])
 
                   
           ),
