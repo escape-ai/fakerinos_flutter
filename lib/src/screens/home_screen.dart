@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'; 
 import './multiplayer_screen.dart';
+import '../SwipeAnimation/index.dart';
 
 class HomeScreen extends StatefulWidget{
   createState() {
@@ -94,7 +95,8 @@ Widget _buildCarousel(BuildContext context, int carouselIndex) {
   Widget _buildCarouselItem(BuildContext context, int carouselIndex, int itemIndex) {
     return Center(
       child: GestureDetector(
-        onTap: ()=> print("tapped"),
+        onTap: ()=> Navigator.push(context,
+        new MaterialPageRoute(builder: (context)=> CardDemo())),
         onDoubleTap: ()=> showDialog( 
           context: context,
           builder: (BuildContext context){
