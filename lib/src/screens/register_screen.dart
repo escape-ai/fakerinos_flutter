@@ -20,7 +20,8 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
   var _isLoading = false; 
 
   Widget build(context) {
-    return Container(
+    return Scaffold(
+      body: new Container(
       margin: EdgeInsets.all(20.0),
       child: Form(
         key: formKey,
@@ -36,7 +37,9 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           
         ]),
       ),
+    )
     );
+    
   }
 
   Widget usernameField() {

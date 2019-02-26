@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart'; 
+import '../screens/register_screen.dart';
+import '../screens/interest_screen.dart';
+import '../screens/loginscreen_3.dart';
 
 class WelcomeScreen extends StatelessWidget { 
 
@@ -49,7 +52,8 @@ class WelcomeScreen extends StatelessWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.bold
             ),),
-            onPressed: ()=> print("pressed"),
+            onPressed: () => Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => new RegisterScreen())),
             shape: new RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(30.0))
             )
@@ -60,6 +64,12 @@ class WelcomeScreen extends StatelessWidget {
         Container(
           padding: EdgeInsets.only(top: 30),
           child: GestureDetector(
+            onTap:(
+              () => Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => new LoginScreen3()),
+            
+              )
+            ),
             child: Text("Log in",
             style: TextStyle(
               fontSize: 20, 
