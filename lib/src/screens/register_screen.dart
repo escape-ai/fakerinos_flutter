@@ -22,6 +22,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
 
   Widget build(context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       key: _scaffoldKey,
       body: new Container(
       margin: EdgeInsets.all(20.0),
