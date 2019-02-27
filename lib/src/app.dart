@@ -7,6 +7,7 @@ import 'screens/welcome_screen.dart';
 class App extends StatelessWidget {
   Widget build(context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Log Me In!",
       home: Scaffold(
         // appBar: AppBar(title: Text("Registration")),
