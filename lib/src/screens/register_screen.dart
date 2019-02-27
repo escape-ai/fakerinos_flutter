@@ -12,6 +12,7 @@ class RegisterScreen extends StatefulWidget {
 
 class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
   final formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final String url = "https://fakerinos.herokuapp.com/api/accounts/register/";
   String email = '';
   String username = '';
@@ -21,6 +22,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
 
   Widget build(context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: new Container(
       margin: EdgeInsets.all(20.0),
       child: Form(
@@ -168,6 +170,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
       }
       print(failureMessage);
       final snackBar = SnackBar(
+        
             content: Text("$failureMessage"),
             action: SnackBarAction(
               label: 'Undo',
@@ -179,7 +182,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
 
           // Find the Scaffold in the Widget tree and use it to show a SnackBar!
           _isLoading = false; 
-          Scaffold.of(context).showSnackBar(snackBar);
+          _scaffoldKey.currentState.showSnackBar(snackBar);
       print("No Success");
     }
     
