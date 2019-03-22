@@ -17,32 +17,32 @@ class HomeStateScreen extends State<HomeScreen> {
   int _currentIndex = 0; 
   int _selectedDrawerIndex = -1;
 
-  // _getDrawerItemWidget(int pos){
-  //   switch(pos) {
-  //     case 0:
-  //       print("0");
-  //       break; 
-  //     case 1: 
-  //       print("1"); 
-  //       break; 
-  //     case 2:
-  //       print("2"); 
-  //       break;
-  //     case 3: 
-  //       print("3"); 
-  //       break; 
+  _getDrawerItemWidget(int pos){
+    switch(pos) {
+      case 0:
+        print("0");
+        break; 
+      case 1: 
+        print("1"); 
+        break; 
+      case 2:
+        print("2"); 
+        break;
+      case 3: 
+        print("3"); 
+        break; 
 
-  //     default:
-  //       return new Text("Error"); 
-  //   }
-  // }
+      default:
+        return new Text("Error"); 
+    }
+  }
 
-  // _onSelectItem(int index){
-  //   setState(() {
-  //         _selectedDrawerIndex = index; 
-  //       });
-  //   Navigator.of(context).pop(); 
-  // }
+  _onSelectItem(int index){
+    setState(() {
+          _selectedDrawerIndex = index; 
+        });
+    Navigator.of(context).pop(); 
+  }
 
   final List<Widget> _children = [
     DefaultHomeScreen(),  
@@ -94,7 +94,7 @@ class HomeStateScreen extends State<HomeScreen> {
 } } 
 
 
-
+// https://medium.com/@kashifmin/flutter-setting-up-a-navigation-drawer-with-multiple-fragments-widgets-1914fda3c8a8
   Widget buildDrawerWidget(BuildContext context) {
 
     return Drawer(
@@ -114,7 +114,8 @@ class HomeStateScreen extends State<HomeScreen> {
           )),
           new ListTile(
             title: new Text("Personal Profile"),
-            trailing: new Icon(Icons.person)
+            trailing: new Icon(Icons.person),
+            
           ),
           new ListTile(
             title: new Text("Settings"),
