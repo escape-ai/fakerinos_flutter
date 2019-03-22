@@ -11,7 +11,11 @@ class HomeScreen extends StatefulWidget{
 
 class HomeStateScreen extends State<HomeScreen> {
   int _currentIndex = 0; 
-  final List<Widget> _children = []; 
+  final List<Widget> _children = [
+    MultiplayerScreen(), 
+    HomeScreen(), 
+    MultiplayerScreen()
+  ]; 
 
   void onTabTapped(int index){
     setState((){
@@ -26,36 +30,33 @@ class HomeStateScreen extends State<HomeScreen> {
         appBar: AppBar(
           title: Text("Home Page")
         ),
-      body: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        itemBuilder: (BuildContext context, int index) {
-          if(index <= 2 ) {
-            return _buildCarousel(context, index ~/ 2);
-          }
-          else {
-            return Divider(
-              height: 3
-            );
-          }
-        },
-      ),
+        body: _children[_currentIndex], 
+      // body: ListView.builder(
+      //   padding: EdgeInsets.symmetric(vertical: 16.0),
+      //   itemBuilder: (BuildContext context, int index) {
+      //     if(index <= 2 ) {
+      //       return _buildCarousel(context, index ~/ 2);
+      //     }
+      //     else {
+      //       return Divider(
+      //         height: 3
+      //       );
+      //     }
+      //   },
+      // ),
       drawer: buildDrawerWidget(context),
       
       bottomNavigationBar: BottomNavigationBar(
-        onTap: (currentIndex){
-          setState(() {
-            _currentIndex = currentIndex; });
-          
-          // _tabController.animateTo(_currentIndex);
-        },
+        onTap: onTabTapped, 
         currentIndex: _currentIndex,
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text("Home")
+            title: Text("Home"),
+            
           ),
           new BottomNavigationBarItem(
-            icon: Icon(Icons.people),
+            icon: Icon(Icons.play_arrow),
             title: Text("Multiplayer"),
             
           ),
