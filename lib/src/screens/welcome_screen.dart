@@ -18,15 +18,17 @@ class WelcomeScreen extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(top: 200.0),
             child: Center(
-              child: Text("FAKERINOS!", style: TextStyle(
-                color: Colors.white,
-                fontSize: 80,
-                fontFamily: 'Niagaraphobia')
+              child: Text("FAKERINOS!", 
+                textDirection: TextDirection.ltr,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 80,
+                  fontFamily: 'Niagaraphobia')
               )
             )
         ),
         Container(
-            padding: EdgeInsets.only(top: 260.0),
+            padding: EdgeInsets.only(top: 200.0),
             child: Center(
               child: Text("Think you can tell Fake from Real? \n Come put your skills to a test!", 
               textAlign: TextAlign.center,

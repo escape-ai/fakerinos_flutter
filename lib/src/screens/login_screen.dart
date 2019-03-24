@@ -11,6 +11,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> with ValidationMixin {
+  
   final formKey = GlobalKey<FormState>();
   final String url = "https://fakerinos.herokuapp.com/api/accounts/login/";
   String email = '';
@@ -20,6 +21,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
 
   Widget build(context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: new Container(
       margin: EdgeInsets.all(20.0),
       child: Form(

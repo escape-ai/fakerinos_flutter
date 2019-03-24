@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart'; 
-import './multiplayer_screen.dart';
+
+import './partials/default.dart'; 
+import './partials/multiplayer_screen.dart';
+import './partials/crowdSource.dart';
+
 import '../SwipeAnimation/index.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -11,7 +15,40 @@ class HomeScreen extends StatefulWidget{
 
 class HomeStateScreen extends State<HomeScreen> {
   int _currentIndex = 0; 
-  final List<Widget> _children = []; 
+  int _selectedDrawerIndex = -1;
+
+  _getDrawerItemWidget(int pos){
+    switch(pos) {
+      case 0:
+        print("0");
+        break; 
+      case 1: 
+        print("1"); 
+        break; 
+      case 2:
+        print("2"); 
+        break;
+      case 3: 
+        print("3"); 
+        break; 
+
+      default:
+        return new Text("Error"); 
+    }
+  }
+
+  _onSelectItem(int index){
+    setState(() {
+          _selectedDrawerIndex = index; 
+        });
+    Navigator.of(context).pop(); 
+  }
+
+  final List<Widget> _children = [
+    DefaultHomeScreen(),  
+    MultiplayerScreen(), 
+    CrowdSourceScreen()
+  ]; 
 
   void onTabTapped(int index){
     setState((){
@@ -26,36 +63,21 @@ class HomeStateScreen extends State<HomeScreen> {
         appBar: AppBar(
           title: Text("Home Page")
         ),
-      body: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        itemBuilder: (BuildContext context, int index) {
-          if(index <= 2 ) {
-            return _buildCarousel(context, index ~/ 2);
-          }
-          else {
-            return Divider(
-              height: 3
-            );
-          }
-        },
-      ),
+        body: _children[_currentIndex], 
+    
       drawer: buildDrawerWidget(context),
       
       bottomNavigationBar: BottomNavigationBar(
-        onTap: (currentIndex){
-          setState(() {
-            _currentIndex = currentIndex; });
-          
-          // _tabController.animateTo(_currentIndex);
-        },
+        onTap: onTabTapped, 
         currentIndex: _currentIndex,
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text("Home")
+            title: Text("Home"),
+            
           ),
           new BottomNavigationBarItem(
-            icon: Icon(Icons.people),
+            icon: Icon(Icons.play_arrow),
             title: Text("Multiplayer"),
             
           ),
@@ -71,52 +93,8 @@ class HomeStateScreen extends State<HomeScreen> {
     );
 } } 
 
-Widget _buildCarousel(BuildContext context, int carouselIndex) {
-    final headers = ["Recommended For You", "Trending", "Newest"]; 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Text(headers[carouselIndex]),
-        SizedBox(
-          // you may want to use an aspect ratio here for tablet support
-          height: 200.0,
-          child: PageView.builder(
-            // store this controller in a State to save the carousel scroll position
-            controller: PageController(viewportFraction: 0.8),
-            itemBuilder: (BuildContext context, int itemIndex) {
-              return _buildCarouselItem(context, carouselIndex, itemIndex);
-            },
-          ),
-        )
-      ],
-    );
-  }
 
-  Widget _buildCarouselItem(BuildContext context, int carouselIndex, int itemIndex) {
-    return Center(
-      child: GestureDetector(
-        onTap: ()=> Navigator.push(context,
-        new MaterialPageRoute(builder: (context)=> CardDemo())),
-        onDoubleTap: ()=> showDialog( 
-          context: context,
-          builder: (BuildContext context){
-          return AlertDialog(
-          title: new Text("You liked this"));
-          }), 
-        child: Card(
-        elevation: 10,
-        child: Column(
-          mainAxisSize: MainAxisSize.max, 
-          children: <Widget>[
-            const ListTile(
-            leading: Icon(Icons.album), 
-            title: Text('Lala'), 
-            subtitle: Text("Subtitle"))]
-            ,)
-            ,)
-            ,));
-  }
-
+// https://medium.com/@kashifmin/flutter-setting-up-a-navigation-drawer-with-multiple-fragments-widgets-1914fda3c8a8
   Widget buildDrawerWidget(BuildContext context) {
 
     return Drawer(
@@ -136,7 +114,8 @@ Widget _buildCarousel(BuildContext context, int carouselIndex) {
           )),
           new ListTile(
             title: new Text("Personal Profile"),
-            trailing: new Icon(Icons.person)
+            trailing: new Icon(Icons.person),
+            
           ),
           new ListTile(
             title: new Text("Settings"),
