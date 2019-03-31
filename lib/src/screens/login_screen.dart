@@ -3,6 +3,8 @@ import 'package:http/http.dart' show post;
 import '../mixins/validation_mixin.dart';
 import '../screens/interest_screen.dart';
 import 'dart:convert';
+import '../Session.dart';
+import 'package:requests/requests.dart';
 
 class LoginScreen extends StatefulWidget {
   createState() {
@@ -13,7 +15,7 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> with ValidationMixin {
   
   final formKey = GlobalKey<FormState>();
-  final String url = "https://fakerinos.herokuapp.com/api/accounts/login/";
+  final String url = "https://fakerinos-staging.herokuapp.com/api/accounts/login/";
   String email = '';
   String username = '';
   String password = ''; 
@@ -111,10 +113,10 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
       "username": username,
       "password": password,
     };
-    final response = await post(url, body: payload);
-    final parsedResponse = json.decode(response.body); 
-    print(parsedResponse);
-    if (parsedResponse["key"] != null){
+    final response = await new Session().post(url, payload);
+    // final parsedResponse = json.decode(response["body"]); 
+    print(response);
+    if (response["key"] != null){
       _isLoading = false; 
       Navigator.push(
               context,
@@ -123,7 +125,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
     }else{
       
       String failureMessage = "Error: ";
-      for (var value in parsedResponse["non_field_errors"]){
+      for (var value in response["non_field_errors"]){
         
         failureMessage += value[0] + " "; 
       }

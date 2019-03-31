@@ -1,7 +1,11 @@
 import "package:flutter/material.dart"; 
 import 'package:http/http.dart'; 
+import 'dart:io';
 import 'dart:convert';
 import "../../SwipeAnimation/index.dart";
+import "./cards.dart";
+import "../../Session.dart";
+
 
 class DefaultHomeScreen extends StatefulWidget{
   @override
@@ -16,36 +20,41 @@ class DefaultHomeScreen extends StatefulWidget{
 
 class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
 
+  Cards cards;
+
   @override
   void initState(){
+    super.initState();
     print("initilizing");
     _fetchData(); 
   }
-  List list = List();
-  var isLoading = false;   
+   
+
     _fetchData() async {
       print("Fetching data"); 
-      setState(() {
-        isLoading = true;
-    });
-    final response =
-        await get("https://fakerinos-staging.herokuapp.com/api/articles/");
+      
+    final response = await get("https://fakerinos-staging.herokuapp.com/api/articles/"); 
+    
     if (response.statusCode == 200) {
-      list = json.decode(response.body) as List;
+      var decodedJson = new Map();
+      decodedJson["indivCards"] = jsonDecode(response.body); 
+    
+      cards = Cards.fromJson(decodedJson);
+
+      print("cards output");
+      print(cards); 
+
       setState(() {
-        isLoading = false;
-        print(list);
       });
     } else {
-      throw Exception('Failed to load photos');
+      // print(response.statusCode);
+      throw Exception('Failed to load cards');
     }
   }
-
-  
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      body: isLoading ?
+      body: cards == null ?
         Center(child: CircularProgressIndicator(),
         ) : 
         ListView.builder(
@@ -100,11 +109,14 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         elevation: 10,
         child: Column(
           mainAxisSize: MainAxisSize.max, 
-          children: <Widget>[
-            const ListTile(
+          children: cards.indivCards.map((card) => ListTile(
             leading: Icon(Icons.album), 
-            title: Text('Lala'), 
-            subtitle: Text("Subtitle"))]
+            title: Text(card.title), 
+            subtitle: Text(card.description)
+          )).toList()
+          
+          
+          
             ,)
             ,)
             ,));
