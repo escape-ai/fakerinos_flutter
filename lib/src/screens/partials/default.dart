@@ -1,21 +1,57 @@
 import "package:flutter/material.dart"; 
+import 'package:http/http.dart'; 
+import 'dart:convert';
 import "../../SwipeAnimation/index.dart";
 
 class DefaultHomeScreen extends StatefulWidget{
   @override
+   
+
   createState(){
     return DefaultHomeStateScreen(); 
   }
+
+  
 }
 
 class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
+
+  @override
+  void initState(){
+    print("initilizing");
+    _fetchData(); 
+  }
+  List list = List();
+  var isLoading = false;   
+    _fetchData() async {
+      print("Fetching data"); 
+      setState(() {
+        isLoading = true;
+    });
+    final response =
+        await get("https://fakerinos-staging.herokuapp.com/api/articles/");
+    if (response.statusCode == 200) {
+      list = json.decode(response.body) as List;
+      setState(() {
+        isLoading = false;
+        print(list);
+      });
+    } else {
+      throw Exception('Failed to load photos');
+    }
+  }
+
+  
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      body: ListView.builder(
+      body: isLoading ?
+        Center(child: CircularProgressIndicator(),
+        ) : 
+        ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 16.0),
         itemBuilder: (BuildContext context, int index) {
-          if(index <= 2 ) {
+          if(index <= 0 ) {
             return _buildCarousel(context, index ~/ 2);
           }
           else {
@@ -26,6 +62,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         },
       ), );
   }
+  
 
   Widget _buildCarousel(BuildContext context, int carouselIndex) {
     final headers = ["Recommended For You", "Trending", "Newest"]; 
