@@ -14,8 +14,9 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen> with ValidationMixin {
   
+  final session = new Session(); 
   final formKey = GlobalKey<FormState>();
-  final String url = "https://fakerinos-staging.herokuapp.com/api/accounts/login/";
+  final String url = "https://fakerinos.herokuapp.com/api/accounts/login/";
   String email = '';
   String username = '';
   String password = ''; 
@@ -72,23 +73,23 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
 
 
   Widget submitButton() {
-    return _isLoading == false? 
+    return _isLoading == true? 
+      CircularProgressIndicator():
       RaisedButton (
         child:  Text('Log in'),
               
         onPressed: (() {
                 
+                
                 if (formKey.currentState.validate()) {
-                    _isLoading = true; 
+                    setState(() {
+                  _isLoading = true;               
+                                });
                     formKey.currentState.save();
+                    
                     login();
             
-             }})) : 
-             RaisedButton(
-               child: Center(
-                 child: CircularProgressIndicator()
-               )
-             );
+             }})); 
   }
 
   Widget welcomePageButton() {
@@ -113,21 +114,27 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
       "username": username,
       "password": password,
     };
-    final response = await new Session().post(url, payload);
+
+    final response = await session.post(url, payload);
     // final parsedResponse = json.decode(response["body"]); 
     print(response);
     if (response["key"] != null){
-      _isLoading = false; 
+      setState(() {
+          _isLoading = false;               
+            });
       Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new InterestScreen()),
+              new MaterialPageRoute(builder: (context) => new InterestScreen(session: session)),
             );
     }else{
-      
+      setState(() {
+                  _isLoading = false;               
+                                });
       String failureMessage = "Error: ";
       for (var value in response["non_field_errors"]){
         
         failureMessage += value[0] + " "; 
+        
       }
       print(failureMessage);
       final snackBar = SnackBar(
@@ -141,7 +148,9 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
           );
 
           // Find the Scaffold in the Widget tree and use it to show a SnackBar!
-          _isLoading = false; 
+          setState(() {
+                  _isLoading = false;               
+                                });
           Scaffold.of(context).showSnackBar(snackBar);
       print("No Success");
     }

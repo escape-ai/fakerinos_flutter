@@ -4,9 +4,9 @@ class Cards {
   Cards(this.indivCards); 
 
   Cards.fromJson(Map<String, dynamic> json){
-    if (json["Cards"] != null) {
+    if (json["indivCards"] != null) {
       indivCards = new List<IndivCard>();
-      json["Cards"].forEach((v) {
+      json["indivCards"].forEach((v) {
         indivCards.add(new IndivCard.fromJson(v)); 
       });
     }
@@ -16,7 +16,7 @@ class Cards {
 
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.indivCards != null){
-      data["Cards"] = this.indivCards.map((v) => v.toJson);
+      data["indivCards"] = this.indivCards.map((v) => v.toJson);
     }
 
     return data; 

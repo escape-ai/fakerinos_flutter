@@ -9,8 +9,8 @@ class ValidationMixin {
 
   String validatePassword(String value) {
     if (value.length < 4) {
-      // return 'Please enter a longer password!';
-      return null;
+      return 'Please enter a longer password!';
+      // return null;
     }
 
     return null;

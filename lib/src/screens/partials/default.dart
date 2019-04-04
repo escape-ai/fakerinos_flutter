@@ -5,6 +5,7 @@ import 'dart:convert';
 import "../../SwipeAnimation/index.dart";
 import "./cards.dart";
 import "../../Session.dart";
+import "./decks.dart"; 
 
 
 class DefaultHomeScreen extends StatefulWidget{
@@ -20,7 +21,7 @@ class DefaultHomeScreen extends StatefulWidget{
 
 class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
 
-  Cards cards;
+  Decks decksData;
 
   @override
   void initState(){
@@ -28,21 +29,22 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
     print("initilizing");
     _fetchData(); 
   }
-   
+  
 
     _fetchData() async {
       print("Fetching data"); 
       
-    final response = await get("https://fakerinos-staging.herokuapp.com/api/articles/"); 
-    
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck"); 
+    // print(response.body); 
     if (response.statusCode == 200) {
-      var decodedJson = new Map();
-      decodedJson["indivCards"] = jsonDecode(response.body); 
-    
-      cards = Cards.fromJson(decodedJson);
+      var decodedJson = new List();
+      
+      decodedJson = jsonDecode(response.body); 
+      // print(decodedJson);
+      decksData = Decks.fromJson(decodedJson);
 
-      print("cards output");
-      print(cards); 
+      print("decks output");
+      print(decksData.toJson()); 
 
       setState(() {
       });
@@ -54,7 +56,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      body: cards == null ?
+      body: decksData == null ?
         Center(child: CircularProgressIndicator(),
         ) : 
         ListView.builder(
@@ -106,20 +108,18 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
           title: new Text("You liked this"));
           }), 
         child: Card(
-        elevation: 10,
-        child: Column(
-          mainAxisSize: MainAxisSize.max, 
-          children: cards.indivCards.map((card) => ListTile(
-            leading: Icon(Icons.album), 
-            title: Text(card.title), 
-            subtitle: Text(card.description)
-          )).toList()
+          elevation: 10,
+          child: ListTile(
+              leading: Icon(Icons.album), 
+              title: Text(decksData.decks[itemIndex].subject), 
+              subtitle: Text(decksData.decks[itemIndex].subject)
+            ))
           
           
           
-            ,)
-            ,)
             ,));
+            
+            
   }
 
 
