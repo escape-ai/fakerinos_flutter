@@ -3,24 +3,23 @@ import 'package:http/http.dart' show post;
 import '../mixins/validation_mixin.dart';
 import '../screens/interest_screen.dart';
 import 'dart:convert';
-import './particulars_screen.dart';
+import '../Session.dart';
 
-
-
-class LoginScreen extends StatefulWidget {
+class ParticularsScreen extends StatefulWidget {
   createState() {
-    return LoginScreenState();
+    return ParticularsScreenState();
   }
 }
 
-class LoginScreenState extends State<LoginScreen> with ValidationMixin {
+class ParticularsScreenState extends State<ParticularsScreen> with ValidationMixin {
   
   final session = new Session(); 
   final formKey = GlobalKey<FormState>();
   final String url = "https://fakerinos.herokuapp.com/api/accounts/login/";
-  String email = '';
-  String username = '';
-  String password = ''; 
+  String firstName = '';
+  String lastName = '';
+  String education = ''; 
+  String dob = ''; 
   var _isLoading = false; 
 
   Widget build(context) {
@@ -32,8 +31,8 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
         key: formKey,
         child: Column(children: [
           Container(margin: EdgeInsets.only(top: 240.0)),
-          usernameField(),
-          passwordField(),
+          firstNameField(),
+          lastNameField(),
           Container(margin: EdgeInsets.only(top: 100.0)),
           submitButton(),
           
@@ -44,33 +43,37 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
     
   }
 
-  Widget passwordField() {
+  Widget firstNameField() {
     return TextFormField(
-      obscureText: true,
       decoration: InputDecoration(
-        labelText: 'Password',
-        hintText: 'Enter your password',
+        labelText: 'First Name',
+        hintText: 'e.g. Lionell',
       ),
-      validator: validatePassword,
+      //TODO: add validator
+      validator: null,
       onSaved: (String value) {
-        password = value;
+        firstName = value;
         print(value);
       },
     );
   }
 
-  Widget usernameField() {
+  Widget lastNameField() {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: 'Username',
-        hintText: 'Type your username',
+        labelText: 'Last Name',
+        hintText: 'e.g. Loh',
       ),
+      //TODO: add validator
+      validator: null,
       onSaved: (String value) {
-        username = value;
+        lastName = value;
         print(value);
       },
     );
   }
+
+ 
 
 
   Widget submitButton() {
