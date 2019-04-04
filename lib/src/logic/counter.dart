@@ -35,7 +35,7 @@ class GameCounter {
 
   void decrease(int decreaseAmt){
     if (timeout == true){
-      print("Counter has timed out, increase() fails.");
+      print("Counter has timed out, decrease() fails.");
       return; 
     }
     

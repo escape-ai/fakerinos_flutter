@@ -1,51 +1,72 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/src/screens/welcome_screen.dart';
-import '../lib/src/screens/login_screen.dart';
-
-// import 'package:login_page/main.dart';
+// import '../lib/src/MyWidget.dart';
 
 void main() {
-  testWidgets('Welcome Screen Initial Test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(WelcomeScreen());
+  // Define a test. The TestWidgets function will also provide a WidgetTester
+  // for us to work with. The WidgetTester will allow us to build and interact
+  // with Widgets in the test environment.
+  testWidgets('HomeScreen has a title ', (WidgetTester tester) async {
+    // Create the Widget tell the tester to build it
+    await tester.pumpWidget(MyWidget(title: 'FAKERINOS!', message: 'M'));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('FAKERINOS!'), findsOneWidget);
-    // expect(find.text('1'), findsNothing);
+    // Create our Finders
+    final titleFinder = find.text('M');
 
-    // Tap the '+' icon and trigger a frame.
-    // await tester.tap(find.byIcon(Icons.add));
-    // await tester.pump();
-
-    // Verify that our counter has incremented.
-    // expect(find.text('0'), findsNothing);
-    // expect(find.text('1'), findsOneWidget);
+    // Use the `findsOneWidget` matcher provided by flutter_test to verify our
+    // Text Widgets appear exactly once in the Widget tree
+    expect(titleFinder, findsOneWidget);
   });
 
-  testWidgets('Login Screen Widget Test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(LoginScreen());
+  testWidgets('HomeScreen has a message ', (WidgetTester tester) async {
+    // Create the Widget tell the tester to build it
+    await tester.pumpWidget(MyWidget(title: 'T', message: 'Think you can tell Fake from Real? Come put your skills to a test!'));
 
-    // Verify that our counter starts at 0.
-    expect(find.byType(RaisedButton), findsOneWidget);
+    // Create our Finders
+    final messageFinder = find.text('Think you can tell Fake from Real? Come put your skills to a test!');
 
-    // await tester.tap(find.byType(RaisedButton)); 
-    // expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    // await tester.tap(find.byIcon(Icons.add));
-    // await tester.pump();
-
-    // Verify that our counter has incremented.
-    // expect(find.text('0'), findsNothing);
-    // expect(find.text('1'), findsOneWidget);
+    // Use the `findsOneWidget` matcher provided by flutter_test to verify our
+    // Text Widgets appear exactly once in the Widget tree
+    expect(messageFinder, findsOneWidget);
   });
+
+testWidgets('HomeScreen has 2 buttons', (WidgetTester tester) async {
+    // Create the Widget tell the tester to build it
+    await tester.pumpWidget(MyWidget(title: 'Sign Up', message: 'Log in'));
+
+    // Create our Finders
+    final buttonFinder1 = find.text('Sign Up');
+    final buttonFinder2 = find.text('Log in');
+
+    // Use the `findsOneWidget` matcher provided by flutter_test to verify our
+    // Text Widgets appear exactly once in the Widget tree
+    expect(buttonFinder1, findsOneWidget);
+    expect(buttonFinder2, findsOneWidget);
+  });
+}
+
+class MyWidget extends StatelessWidget {
+  final String title;
+  final String message;
+
+  const MyWidget({
+    Key key,
+    @required this.title,
+    @required this.message,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'FAKERINOS!',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: Center(
+          child: Text(message),
+        ),
+      ),
+    );
+  }
 }

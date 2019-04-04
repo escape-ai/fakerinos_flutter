@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart'; 
 import '../screens/home_screen.dart';
+import "../Session.dart";
 
 class InterestScreen extends StatefulWidget {
+
+  Session session; 
+
+  InterestScreen({@required this.session}); 
   createState() { 
     return InterestStateScreen(); 
   } 
 }
 
 class InterestStateScreen extends State<InterestScreen> {
+
+  final List<String> _suggestions = <String>[]; 
+  final Set<String> _saved = new Set<String>(); 
 
   @override
   Widget build(context){
@@ -16,7 +24,7 @@ class InterestStateScreen extends State<InterestScreen> {
         appBar: AppBar(
           title: Text("Getting Started")
         ),
-        body: InterestGrid().build(),
+        body: buildGrid(),
         floatingActionButton: FloatingActionButton.extended(
           elevation: 2.0,
           onPressed: (){
@@ -30,26 +38,38 @@ class InterestStateScreen extends State<InterestScreen> {
         ),
       )
     );
-} }
-
-class InterestGrid {
-  Card makeGridCell(String name, IconData icon){
-    return Card(
-      color: Colors.cyan,
+} 
+GestureDetector makeGridCell(String name, IconData icon){
+    bool alreadySaved = _saved.contains(name);
+    return GestureDetector(
+      onTap: () => {
+        setState((){
+        if (alreadySaved) {
+          _saved.remove(name);
+        } else {
+          _saved.add(name);
+        } 
+        print(_saved);
+        })},
+        
+      child: Card(
+      color: alreadySaved ? Colors.lightBlueAccent : Colors.white,
       elevation: 5.0, 
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch, 
-        mainAxisSize: MainAxisSize.min,
-        verticalDirection: VerticalDirection.down, 
-        children: <Widget>[
-          Center(child: Icon(icon)),
-          Center(child: Text(name)), 
-        ]
-      ),
-    );
+      crossAxisAlignment: CrossAxisAlignment.stretch, 
+      mainAxisSize: MainAxisSize.min,
+      verticalDirection: VerticalDirection.down, 
+      children: <Widget>[
+        Center(child: Icon(icon)),
+        Center(child: Text(name)), 
+        Center(child: Icon(Icons.favorite))
+      ]
+    )
+      
+    ));
   }
   
-  GridView build(){
+  GridView buildGrid(){
     return GridView.count(
       primary: true, 
       padding: EdgeInsets.all(2.0), 
@@ -73,5 +93,5 @@ class InterestGrid {
         
       ]
     );
-  }
-}
+
+} }

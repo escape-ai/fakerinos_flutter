@@ -1,21 +1,68 @@
 import "package:flutter/material.dart"; 
+import 'package:http/http.dart'; 
+import 'dart:io';
+import 'dart:convert';
 import "../../SwipeAnimation/index.dart";
+import "./cards.dart";
+import "../../Session.dart";
+import "./decks.dart"; 
+
 
 class DefaultHomeScreen extends StatefulWidget{
   @override
+   
+
   createState(){
     return DefaultHomeStateScreen(); 
   }
+
+  
 }
 
 class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
+
+  Decks decksData;
+
+  @override
+  void initState(){
+    super.initState();
+    print("initilizing");
+    _fetchData(); 
+  }
+  
+
+    _fetchData() async {
+      print("Fetching data"); 
+      
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck"); 
+    // print(response.body); 
+    if (response.statusCode == 200) {
+      var decodedJson = new List();
+      
+      decodedJson = jsonDecode(response.body); 
+      // print(decodedJson);
+      decksData = Decks.fromJson(decodedJson);
+
+      print("decks output");
+      print(decksData.toJson()); 
+
+      setState(() {
+      });
+    } else {
+      // print(response.statusCode);
+      throw Exception('Failed to load cards');
+    }
+  }
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      body: ListView.builder(
+      body: decksData == null ?
+        Center(child: CircularProgressIndicator(),
+        ) : 
+        ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 16.0),
         itemBuilder: (BuildContext context, int index) {
-          if(index <= 2 ) {
+          if(index <= 0 ) {
             return _buildCarousel(context, index ~/ 2);
           }
           else {
@@ -26,6 +73,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         },
       ), );
   }
+  
 
   Widget _buildCarousel(BuildContext context, int carouselIndex) {
     final headers = ["Recommended For You", "Trending", "Newest"]; 
@@ -60,17 +108,18 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
           title: new Text("You liked this"));
           }), 
         child: Card(
-        elevation: 10,
-        child: Column(
-          mainAxisSize: MainAxisSize.max, 
-          children: <Widget>[
-            const ListTile(
-            leading: Icon(Icons.album), 
-            title: Text('Lala'), 
-            subtitle: Text("Subtitle"))]
-            ,)
-            ,)
+          elevation: 10,
+          child: ListTile(
+              leading: Icon(Icons.album), 
+              title: Text(decksData.decks[itemIndex].subject), 
+              subtitle: Text(decksData.decks[itemIndex].subject)
+            ))
+          
+          
+          
             ,));
+            
+            
   }
 
 
