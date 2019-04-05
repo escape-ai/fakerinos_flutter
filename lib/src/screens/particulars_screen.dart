@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' show post;
 import '../mixins/validation_mixin.dart';
 import '../screens/interest_screen.dart';
+import './onboarding_screen.dart';
 import 'dart:convert';
 import '../Session.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -160,10 +161,10 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
             //       submitParticulars();              
             //                     });
             //  }
-
+            
             Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new CameraApp()),
+              new MaterialPageRoute(builder: (context) => new OnboardingScreen()),
             );
             
              })); 

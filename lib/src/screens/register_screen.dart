@@ -36,7 +36,8 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           confirmPasswordField(),
           Container(margin: EdgeInsets.only(top: 120.0)),
           submitButton(),
-          welcomePageButton()
+          welcomePageButton(),
+          socketButton()
           
         ]),
       ),
@@ -144,6 +145,23 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
         
         });
   }
+
+  Widget socketButton() {
+    return RaisedButton(
+        child: Text("SocketConnection"),
+        color: Colors.blueGrey,
+        onPressed: () {
+          print("pressed");
+          
+            Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (context) => new InterestScreen()),
+            );
+        
+        });
+  }
+
+  
 
   void Register() async {
     
