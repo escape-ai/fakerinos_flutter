@@ -15,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen> with ValidationMixin {
   
-  final session = new Session(); 
   final formKey = GlobalKey<FormState>();
   final String url = "https://fakerinos.herokuapp.com/api/accounts/login/";
   String email = '';
@@ -116,23 +115,23 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
       "password": password,
     };
 
-    final response = await session.post(url, payload);
-    // final parsedResponse = json.decode(response["body"]); 
-    print(response);
-    if (response["key"] != null){
+    final response = await post(url, body:payload);
+    final parsedResponse = json.decode(response.body); 
+    print(parsedResponse);
+    if (parsedResponse["key"] != null){
       setState(() {
           _isLoading = false;               
             });
       Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new InterestScreen(session: session)),
+              new MaterialPageRoute(builder: (context) => new ParticularsScreen()),
             );
     }else{
       setState(() {
                   _isLoading = false;               
                                 });
       String failureMessage = "Error: ";
-      for (var value in response["non_field_errors"]){
+      for (var value in parsedResponse["non_field_errors"]){
         
         failureMessage += value[0] + " "; 
         

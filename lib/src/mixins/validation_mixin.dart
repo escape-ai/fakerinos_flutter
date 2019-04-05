@@ -15,4 +15,12 @@ class ValidationMixin {
 
     return null;
   }
+
+  String validateFirstName(String value){
+    if (value.length < 1) {
+      return 'First Name cannot be empty'; 
+    } 
+
+    return null; 
+  }
 }
