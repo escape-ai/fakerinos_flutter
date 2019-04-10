@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_views_flutter/Models/page_view_model.dart';
 import 'package:intro_views_flutter/intro_views_flutter.dart';
+import './interest_screen.dart';
 
 /// This is the main method of app, from here execution starts.
 // void main() => runApp(App());
@@ -81,7 +82,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePage(),
+                    builder: (context) => InterestScreen(),
                   ), //MaterialPageRoute
                 );
               },
