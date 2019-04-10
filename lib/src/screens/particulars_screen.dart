@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' show post;
+import 'package:http/http.dart';
 import '../mixins/validation_mixin.dart';
 import '../screens/interest_screen.dart';
 import './onboarding_screen.dart';
@@ -20,7 +20,9 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   
   final session = new Session(); 
   final formKey = GlobalKey<FormState>();
-  final String url = "https://fakerinos.herokuapp.com/api/accounts/login/";
+  final String url = "https://fakerinos.herokuapp.com/api/accounts/profile/";
+  // Hardcode the username first 
+  String username = "lionell26"; 
   String firstName;
   String lastName;
   String selectedEducationLevel; 
@@ -102,9 +104,9 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
     return items;
   }
 
-  void changedDropDownItem(String selectedEducationLevel) {
+  void changedDropDownItem(String selectedChoice) {
     setState(() {
-      selectedEducationLevel = selectedEducationLevel;
+      selectedEducationLevel = selectedChoice;
     });
   }
 
@@ -128,6 +130,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
                               onConfirm: (date) {      
                               setState((){
                               dobString = date.toString().split(" ")[0];
+                              print(dobString);
                             });
                                 
                           }, currentTime: DateTime(2009, 1, 1), locale: LocaleType.en);
@@ -154,18 +157,13 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
               
         onPressed: (() {
                 
-            //     if (formKey.currentState.validate()) {
-            //         setState(() {
-            //       _isLoading = true;  
-            //       formKey.currentState.save();
-            //       submitParticulars();              
-            //                     });
-            //  }
-            
-            Navigator.push(
-              context,
-              new MaterialPageRoute(builder: (context) => new OnboardingScreen()),
-            );
+                if (formKey.currentState.validate()) {
+                    setState(() {
+                  _isLoading = true;  
+                  formKey.currentState.save();
+                  submitParticulars();              
+                                });
+             }
             
              })); 
   }
@@ -186,10 +184,59 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   }
 
   
-  void submitParticulars() async {
+  void submitParticulars() async { 
+      print("Submitting particulars to server..."); 
+      Map<String, String> payload = {
+        "name" : firstName, 
+        "birth_date": dobString, 
+        "education": selectedEducationLevel,
 
+      };
 
-  }
+      Map<String, String> headers = {
+        "Authorization": "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"
+      };
+      print(url+ username);
+      final response = await patch(url + username + "/", body:payload, headers: headers); 
+      print(response.body);
+      final parsedResponse = json.decode(response.body); 
+      print(parsedResponse);
+
+      if (parsedResponse != null){
+      setState(() {
+          _isLoading = false;               
+            });
+
+       Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (context) => new OnboardingScreen()),
+            );
+      
+  }   else {
+        setState(() {
+                  _isLoading = false;               
+                                });
+      String failureMessage = "Error: Server failed to authenticate";
+      
+      print(failureMessage);
+      final snackBar = SnackBar(
+            content: Text("$failureMessage"),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                // Some code to undo the change!
+              },
+            ),
+          );
+
+          // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+          setState(() {
+                  _isLoading = false;               
+                                });
+          Scaffold.of(context).showSnackBar(snackBar);
+      
+
+  } }
 
 
 
