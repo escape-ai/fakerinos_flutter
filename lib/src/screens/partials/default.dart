@@ -26,21 +26,21 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
   @override
   void initState(){
     super.initState();
-    print("initilizing");
+    print("Default Home Screen w Decks initializing");
     _fetchData(); 
   }
   
 
     _fetchData() async {
       print("Fetching data"); 
-      
-    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck"); 
-    // print(response.body); 
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck", 
+    headers: {HttpHeaders.authorizationHeader: "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"}); 
+    
     if (response.statusCode == 200) {
       var decodedJson = new List();
       
       decodedJson = jsonDecode(response.body); 
-      // print(decodedJson);
+      print(decodedJson);
       decksData = Decks.fromJson(decodedJson);
 
       print("decks output");
