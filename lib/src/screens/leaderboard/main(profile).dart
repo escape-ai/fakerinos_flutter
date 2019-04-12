@@ -64,6 +64,20 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: AppBar(title: new Text("Profile Page"),
+      leading: new GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: new Container(
+                margin: const EdgeInsets.all(15.0),
+                //TODO:exit current game button
+                child: new Icon(
+                  Icons.arrow_back_ios, //exit corrent game
+                  color: Colors.cyan,
+                  size: 30.0,
+                )),
+          ),),
       body: new Stack(
         children: <Widget>[
           _buildTimeline(),
@@ -80,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return new ClipPath(
       clipper: new DialogonalClipper(),
       child: new Image.asset(
-        'images/back.jpg',
+        'assets/images/back.jpg',
         fit: BoxFit.fitHeight,
         height: _imageHeight,
         colorBlendMode: BlendMode.srcOver,
@@ -121,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
           new CircleAvatar(
             minRadius: 28.0,
             maxRadius: 28.0,
-            backgroundImage: new AssetImage('images/avatar.jpg'),
+            backgroundImage: new AssetImage('assets/images/avatar.jpg'),
           ),
           new Padding(
             padding: const EdgeInsets.only(left: 16.0),

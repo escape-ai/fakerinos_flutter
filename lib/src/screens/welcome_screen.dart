@@ -28,9 +28,13 @@ class WelcomeScreen extends StatelessWidget {
             )
         ),
         Container(
+            
             padding: EdgeInsets.only(top: 200.0),
             child: Center(
-              child: Text("Think you can tell Fake from Real? \n Come put your skills to a test!", 
+              child: Text(
+                
+                "Think you can tell Fake from Real? \n Come put your skills to a test!", 
+                key: Key("description"),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -43,6 +47,7 @@ class WelcomeScreen extends StatelessWidget {
         Container(
           padding: EdgeInsets.only(top: 70.0),
           child: ButtonTheme(
+            key: Key('Sign up'),
             minWidth: 350,
             height: 50,
             child: new RaisedButton(

@@ -19,31 +19,31 @@ class OnboardingScreenState extends State<OnboardingScreen> {
   //making list of pages needed to pass in IntroViewsFlutter constructor.
   final pages = [
     PageViewModel(
-        pageColor: const Color(0xFF03A9F4),
+        pageColor: const Color(0xFFB2EBF2),
         // iconImageAssetPath: 'assets/air-hostess.png',
-        bubble: Image.asset('assets/air-hostess.png'),
+        bubble: Image.asset('assets/back1.jpg'),
         body: Text(
-          'Haselfree  booking  of  flight  tickets  with  full  refund  on  cancelation',
+          'Fake news is becoming increasingly prevalent as perpetrators.',
         ),
         title: Text(
-          'Flights',
+          'News',
         ),
         textStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white),
         mainImage: Image.asset(
-          'assets/airplane.png',
+          'assets/back1.jpg',
           height: 285.0,
           width: 285.0,
           alignment: Alignment.center,
         )),
     PageViewModel(
-      pageColor: const Color(0xFF8BC34A),
-      iconImageAssetPath: 'assets/waiter.png',
+      pageColor: const Color(0xFF80DEEA),
+      iconImageAssetPath: 'assets/back2.jpg',
       body: Text(
-        'We  work  for  the  comfort ,  enjoy  your  stay  at  our  beautiful  hotels',
+        'In our card-swiping game,you will learn how to discern fakenews.',
       ),
-      title: Text('Hotels'),
+      title: Text('Games'),
       mainImage: Image.asset(
-        'assets/hotel.png',
+        'assets/back3.jpg',
         height: 285.0,
         width: 285.0,
         alignment: Alignment.center,
@@ -51,14 +51,14 @@ class OnboardingScreenState extends State<OnboardingScreen> {
       textStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white),
     ),
     PageViewModel(
-      pageColor: const Color(0xFF607D8B),
+      pageColor: const Color(0xFF0097A7),
       iconImageAssetPath: 'assets/taxi-driver.png',
       body: Text(
-        'Easy  cab  booking  at  your  doorstep  with  cashless  payment  system',
+        'With training,you will be perceptive and able to combat fakenews.',
       ),
-      title: Text('Cabs'),
+      title: Text('Awareness'),
       mainImage: Image.asset(
-        'assets/taxi.png',
+        'assets/back0.jpg',
         height: 285.0,
         width: 285.0,
         alignment: Alignment.center,
@@ -93,21 +93,5 @@ class OnboardingScreenState extends State<OnboardingScreen> {
             ), //IntroViewsFlutter
       ), //Builder
     ); //Material App
-  }
-}
-
-/// Home Page of our example app.
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ), //Appbar
-      body: Center(
-        child: Text("This is the home page of the app"),
-      ), //Center
-    ); //Scaffold
   }
 }

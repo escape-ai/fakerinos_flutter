@@ -38,6 +38,8 @@ dev_dependencies:
   requests: ^1.0.2
   flutter_test:
     sdk: flutter
+  flutter_driver: 
+    sdk: flutter
 
 
 # For information on the generic Dart part of this file, see the
@@ -53,20 +55,13 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-  - assets/img1.jpg
-  - assets/img2.jpg
-  - assets/img3.jpg
-  - assets/img4.jpg
-  - assets/img5.jpg
-  - assets/avatars/avatar-1.jpg
-  - assets/avatars/avatar-2.jpg
-  - assets/avatars/avatar-3.jpg
-  - assets/avatars/avatar-4.jpg
-  - assets/avatars/avatar-5.jpg
-  - assets/avatars/avatar-6.jpg
-  - assets/images/back2.png
-  - assets/images/back.jpg
+  - assets/back0.jpg
+  - assets/back1.jpg
+  - assets/back2.jpg
+  - assets/back3.jpg
   - assets/images/avatar.jpg
+  - assets/images/back.jpg
+  - assets/images/back2.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,4 +1,4 @@
-import 'package:filter_menu/task.dart';
+import './task.dart';
 import 'package:flutter/material.dart';
 
 class TaskRow extends StatefulWidget {

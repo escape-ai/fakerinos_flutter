@@ -48,6 +48,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
 
   Widget usernameField() {
     return TextFormField(
+      key : Key("username"),
       decoration: InputDecoration(
         labelText: 'Username',
         hintText: 'e.g. johndoe96',
