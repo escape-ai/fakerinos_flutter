@@ -136,7 +136,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
                           }, currentTime: DateTime(2009, 1, 1), locale: LocaleType.en);
     },
     child: Text(
-        'show date time picker (English)',
+        'Select your birthday',
         style: TextStyle(color: Colors.blue),
     ));
   }

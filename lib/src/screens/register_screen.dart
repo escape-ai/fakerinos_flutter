@@ -53,6 +53,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
         labelText: 'Username',
         hintText: 'e.g. johndoe96',
       ),
+      
       validator: (String value) {
         if (value.length < 5) {
           return 'Please enter a username longer than 5 characters';
@@ -67,6 +68,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
 
   Widget emailField() {
     return TextFormField(
+      key : Key("email"),
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: 'Email Address',
@@ -82,6 +84,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
 
   Widget passwordField() {
     return TextFormField(
+      key : Key("password"),
       obscureText: true,
       decoration: InputDecoration(
         labelText: 'Password',
@@ -97,6 +100,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
 
   Widget confirmPasswordField() {
     return TextFormField(
+      key : Key("confirmed password"),
       obscureText: true,
       decoration: InputDecoration(
         labelText: 'Confirm Password',
@@ -113,6 +117,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
   Widget submitButton() {
     return _isLoading == false? 
       RaisedButton (
+        key : Key("submit button"),
         child:  Text('Register'),
               
         onPressed: (() {
@@ -190,8 +195,9 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
       }
       print(failureMessage);
       final snackBar = SnackBar(
-        
-            content: Text("$failureMessage"),
+            content: 
+            Text("$failureMessage",
+            key: Key("snackbar")),
             action: SnackBarAction(
               label: 'Undo',
               onPressed: () {
