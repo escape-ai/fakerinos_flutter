@@ -5,6 +5,7 @@ import './partials/multiplayer_screen.dart';
 import './partials/crowdSource.dart';
 
 import '../SwipeAnimation/index.dart';
+import '../screens/leaderboard/main(profile).dart';
 
 class HomeScreen extends StatefulWidget{
   createState() {
@@ -115,7 +116,10 @@ class HomeStateScreen extends State<HomeScreen> {
           new ListTile(
             title: new Text("Personal Profile"),
             trailing: new Icon(Icons.person),
-            
+            onTap: ()=> 
+            Navigator.push(context,
+            new MaterialPageRoute(builder: (context)=> ProfilePage()))
+        
           ),
           new ListTile(
             title: new Text("Settings"),
