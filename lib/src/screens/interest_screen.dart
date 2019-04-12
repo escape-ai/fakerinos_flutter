@@ -20,7 +20,9 @@ class InterestScreen extends StatefulWidget {
 class InterestStateScreen extends State<InterestScreen> {
 
   final List<String> _suggestions = <String>[]; 
-  final Set<String> _saved = new Set<String>(); 
+  final Set<String> _savedInterests = new Set<String>(); 
+  final String url = "https://fakerinos.herokuapp.com/api/accounts/profile/";
+   String username = "lionell26";
   InterestCards interestCardsData; 
 
   @override
@@ -67,10 +69,8 @@ class InterestStateScreen extends State<InterestScreen> {
         floatingActionButton: FloatingActionButton.extended(
           elevation: 2.0,
           onPressed: (){
-            Navigator.push(
-              context,
-              new MaterialPageRoute(builder: (context) => new HomeScreen()),
-            );
+            uploadInterests();
+            
           },
           icon: Icon(Icons.save),
           label: Text("Save")
@@ -79,16 +79,16 @@ class InterestStateScreen extends State<InterestScreen> {
     );
 } 
 GestureDetector makeGridCell(String name, IconData icon){
-    bool alreadySaved = _saved.contains(name);
+    bool alreadySaved = _savedInterests.contains(name);
     return GestureDetector(
       onTap: () => {
         setState((){
         if (alreadySaved) {
-          _saved.remove(name);
+          _savedInterests.remove(name);
         } else {
-          _saved.add(name);
+          _savedInterests.add(name);
         } 
-        print(_saved);
+        print(_savedInterests);
         })},
         
       child: Card(
@@ -120,4 +120,39 @@ GestureDetector makeGridCell(String name, IconData icon){
         (card) => makeGridCell(card.name, Icons.trending_up)).toList()
     );
 
-} }
+} 
+  void uploadInterests() async {
+    
+    print("Uploading Interests to server..."); 
+
+    Map<String, List<String>> payload = {
+      "interests" : _savedInterests.toList()
+    };
+    var body = json.encode(payload); 
+    print(body);
+    print("lala");
+    print(url + username + "/");
+    final response = await patch(url + username + "/", body:body, 
+    headers: {HttpHeaders.authorizationHeader: 
+    "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7", 
+    HttpHeaders.contentTypeHeader: "application/json"},
+              ); 
+
+    final parsedResponse = json.decode(response.body); 
+    print(parsedResponse);
+
+      if (parsedResponse != null){
+      setState(() {
+          // _isLoading = false;               
+            });
+
+      Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (context) => new HomeScreen()),
+            );
+  } 
+
+  
+
+
+} } 

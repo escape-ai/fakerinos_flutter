@@ -161,7 +161,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
                     setState(() {
                   _isLoading = true;  
                   formKey.currentState.save();
-                  submitParticulars();              
+                  uploadParticulars();              
                                 });
              }
             
@@ -173,7 +173,6 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
         child: Text("Welcome Page"),
         color: Colors.blueGrey,
         onPressed: () {
-          print("pressed");
           
             Navigator.push(
               context,
@@ -184,8 +183,8 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   }
 
   
-  void submitParticulars() async { 
-      print("Submitting particulars to server..."); 
+  void uploadParticulars() async { 
+      print("Uploading particulars to server..."); 
       Map<String, String> payload = {
         "name" : firstName, 
         "birth_date": dobString, 

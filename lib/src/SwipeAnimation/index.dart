@@ -25,6 +25,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   List<dynamic> fetchedCardsJson = []; 
   // News data
   List data2; 
+  List data;
   Cards fetchedCards; 
   CardDemoState(List<dynamic> articles){
     this._articles = articles;
@@ -56,6 +57,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     Cards cards = Cards.fromJson(fetchedCardsJson);
     // print(cards.toJson().toString());
     setState((){
+      data = fetchedCardsJson.map((json) => new DecorationImage(image: new NetworkImage(json["thumbnail_url"]))).toList();
       data2 = fetchedCardsJson.map((json) => json["text"]).toList();
     });
     
@@ -71,7 +73,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   int choice=0;
   int result=0;///////////////////
   
-  List data = imageData;
+  // List data = imageData;
   // List data2 = newsData;
   List data3 = trueData;
 

@@ -6,6 +6,7 @@ import "../../SwipeAnimation/index.dart";
 import "./cards.dart";
 import "../../Session.dart";
 import "./decks.dart"; 
+import "../leaderboard/main(leader).dart";
 
 
 class DefaultHomeScreen extends StatefulWidget{
@@ -22,6 +23,8 @@ class DefaultHomeScreen extends StatefulWidget{
 class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
 
   Decks decksData;
+  Deck doubleTappedDeck;
+  Deck tappedDeck; 
   final Set<int> starredDecks  = new Set<int>(); 
   String particularsUrl = "https://fakerinos.herokuapp.com/api/accounts/profile/";
   String username = "lionell26";
@@ -41,9 +44,8 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
     headers: {HttpHeaders.authorizationHeader: "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"}); 
     
     if (response.statusCode == 200) {
-      var decodedJson = new List();
-      
-      decodedJson = jsonDecode(response.body); 
+            
+      var decodedJson = jsonDecode(response.body); 
       print(decodedJson);
       decksData = Decks.fromJson(decodedJson);
 
@@ -60,7 +62,15 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      body: decksData == null ?
+      resizeToAvoidBottomPadding: false,
+      body: new Center (
+        child: new Container(
+        width: 500,
+        height: 1000,
+        child: Column(children: <Widget>[
+        leaderboardButton(),
+        Expanded(
+        child: decksData == null ?
         Center(child: CircularProgressIndicator(),
         ) : 
         ListView.builder(
@@ -75,7 +85,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
             );
           }
         },
-      ), );
+      )),] ))));
   }
   
 
@@ -103,10 +113,14 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
   Widget _buildCarouselItem(BuildContext context, int carouselIndex, int itemIndex) {
     return Center(
       child: GestureDetector(
-        onTap: ()=> Navigator.push(context,
-        new MaterialPageRoute(builder: (context)=> CardDemo())),
+        onTap: (){ 
+        tappedDeck = decksData.decks[itemIndex];
+        // print("[Default Screen] " +  "articles:" + tappedDeck.articles.toString());
+        Navigator.push(context,
+        new MaterialPageRoute(builder: (context)=> CardDemo(articles: tappedDeck.articles)));
+        },
         onDoubleTap: (){ 
-          Deck doubleTappedDeck = decksData.decks[itemIndex]; 
+          doubleTappedDeck = decksData.decks[itemIndex]; 
           // Adding or removing deck logic 
           starredDecks.contains(doubleTappedDeck.pk) ? 
           contains = true : contains = false; 
@@ -164,6 +178,30 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
     // print(parsedResponse);
 
 
+}
+
+Widget leaderboardButton(){
+  return new Container(
+          padding: EdgeInsets.only(top: 70.0),
+          child: ButtonTheme(
+            minWidth: 350,
+            height: 50,
+            child: new RaisedButton(
+            color: Colors.white,
+            textColor: Color(0xAA0518FF),
+            child: new Text("See the leaderboard",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+            ),),
+            onPressed: () => Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => new LeaderPage())),
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0))
+            )
+          
+        )
+        );
 }
 }
 

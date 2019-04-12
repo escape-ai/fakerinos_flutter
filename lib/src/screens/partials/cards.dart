@@ -3,10 +3,10 @@ class Cards {
 
   Cards(this.indivCards); 
 
-  Cards.fromJson(Map<String, dynamic> json){
-    if (json["indivCards"] != null) {
+  Cards.fromJson(List<dynamic> json){
+    if (json != null) {
       indivCards = new List<IndivCard>();
-      json["indivCards"].forEach((v) {
+      json.forEach((v) {
         indivCards.add(new IndivCard.fromJson(v)); 
       });
     }
