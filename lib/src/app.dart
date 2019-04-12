@@ -4,6 +4,8 @@ import 'screens/splash_screen.dart';
 import 'screens/loginscreen_3.dart';
 import 'screens/welcome_screen.dart';
 
+void main() => runApp(App());
+
 class App extends StatelessWidget {
   Widget build(context) {
     return MaterialApp(
