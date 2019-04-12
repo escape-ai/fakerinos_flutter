@@ -101,6 +101,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
           child: PageView.builder(
             // store this controller in a State to save the carousel scroll position
             controller: PageController(viewportFraction: 0.8),
+            itemCount: decksData.decks.length,
             itemBuilder: (BuildContext context, int itemIndex) {
               return _buildCarouselItem(context, carouselIndex, itemIndex);
             },

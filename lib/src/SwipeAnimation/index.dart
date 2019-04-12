@@ -196,7 +196,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     timeDilation = 0.4;
     
     double initialBottom = 15.0;
-    var dataLength = data.length;
+    var dataLength = data == null? 1 : data.length;
     double backCardPosition = initialBottom + (dataLength - 1) * 10 + 10;
     double backCardWidth = -10.0;
     return (new Scaffold(
@@ -265,7 +265,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
 
             ///background color
             alignment: Alignment.center,
-            child: data2 == null ?
+            child: dataLength > 0 ?
+                data2 == null ? 
                 RefreshProgressIndicator():
                  new Stack(
                     alignment: AlignmentDirectional.center,
@@ -296,15 +297,15 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                         return cardDemoDummy(item, backCardPosition, 0.0, 0.0,
                             backCardWidth, 0.0, 0.0, context);
                       }
-                    }).toList())
-          //       : AlertDialog(
-          // title: new Text("Well done!"),
-          // content: new Text("Not enough? Try out more decks on the home page! "),
-          // actions: <Widget> [new FlatButton(
-          //     child: new Text("Close"),
-          //     onPressed: () {
+                    }).toList()):
+            AlertDialog(
+          title: new Text("Well done!"),
+          content: new Text("Not enough? Try out more decks on the home page! "),
+          actions: <Widget> [new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
                 
-          //       Navigator.of(context).pop();})])
+                Navigator.of(context).pop();})])
 
                   
           ),
