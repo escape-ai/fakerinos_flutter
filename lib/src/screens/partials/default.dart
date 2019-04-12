@@ -22,6 +22,10 @@ class DefaultHomeScreen extends StatefulWidget{
 class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
 
   Decks decksData;
+  final Set<int> starredDecks  = new Set<int>(); 
+  String particularsUrl = "https://fakerinos.herokuapp.com/api/accounts/profile/";
+  String username = "lionell26";
+  bool contains; 
 
   @override
   void initState(){
@@ -101,12 +105,25 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
       child: GestureDetector(
         onTap: ()=> Navigator.push(context,
         new MaterialPageRoute(builder: (context)=> CardDemo())),
-        onDoubleTap: ()=> showDialog( 
+        onDoubleTap: (){ 
+          Deck doubleTappedDeck = decksData.decks[itemIndex]; 
+          // Adding or removing deck logic 
+          starredDecks.contains(doubleTappedDeck.pk) ? 
+          contains = true : contains = false; 
+          contains ? starredDecks.remove(doubleTappedDeck.pk) : 
+          starredDecks.add(doubleTappedDeck.pk);
+
+          print(starredDecks);
+          starDecks();
+          showDialog( 
           context: context,
           builder: (BuildContext context){
           return AlertDialog(
-          title: new Text("You liked this"));
-          }), 
+          title: contains ?  
+          new Text("You unliked the ${doubleTappedDeck.subject} deck") :
+          new Text("You liked the ${doubleTappedDeck.subject} deck"));
+          
+          });}, 
         child: Card(
           elevation: 10,
           child: ListTile(
@@ -115,13 +132,38 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
               subtitle: Text(decksData.decks[itemIndex].subject)
             ))
           
-          
-          
             ,));
-            
-            
+             
   }
 
 
+  void starDecks() async {
+    
+    print("Uploading staredDecks to server..."); 
+
+    Map<String, List<int>> payload = {
+      "starred_decks" : starredDecks.toList()
+    };
+    var body = json.encode(payload); 
+    print(body);
+    print("lala");
+    print(particularsUrl + username );
+    final response = await patch(particularsUrl + username + "/", body:body, 
+    headers: {HttpHeaders.authorizationHeader: 
+    "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7", 
+    HttpHeaders.contentTypeHeader: "application/json"},
+    );
+
+    if (response.statusCode == 200){
+      print("200 success");
+    } else {
+      print(response.statusCode);
+    }
+    
+    // final parsedResponse = json.decode(response); 
+    // print(parsedResponse);
+
+
+}
 }
 
