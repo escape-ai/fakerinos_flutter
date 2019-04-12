@@ -1,17 +1,67 @@
 import 'dart:async';
+import "package:flutter/material.dart"; 
+import 'package:http/http.dart'; 
+import 'dart:io';
+import 'dart:convert';
 import './data.dart';
 import './dummyCard.dart';
 import './activeCard.dart';
+import '../../src/screens/partials/cards.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
 class CardDemo extends StatefulWidget {
   @override
-  CardDemoState createState() => new CardDemoState();
+  List<dynamic> articles;
+  CardDemo({Key key, @required this.articles}) : super(key: key);
+  CardDemoState createState() => new CardDemoState(articles);
+  
 }
 
 class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
+  // Articles is a variable passed from the previous screen
+  List<dynamic> _articles;
+  List<dynamic> fetchedCardsJson = []; 
+  // News data
+  List data2; 
+  Cards fetchedCards; 
+  CardDemoState(List<dynamic> articles){
+    this._articles = articles;
+    print("[CardDemoState]:" + _articles.toString());
+  }
+
+  
+
+  void _fetchCardsData() async {
+    print("fetching cards data"); 
+    // final response = await get("https://fakerinos.herokuapp.com/api/articles/article/1", 
+    // headers: {HttpHeaders.authorizationHeader: "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"});
+    // dynamic fetchedCardsJson = _articles.map((pk) => await get("https://fakerinos.herokuapp.com/api/articles/article/${pk}", 
+    // headers: {HttpHeaders.authorizationHeader: "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"}).then(
+    //   (r) => jsonDecode(r.body)
+    // ));
+    
+    for (int i =0; i< _articles.length; i++){
+      print(_articles[i]);
+      final response = await get("https://fakerinos.herokuapp.com/api/articles/article/${_articles[i]}", 
+      headers: {
+      HttpHeaders.authorizationHeader: 
+    "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"});
+    // print(response.body);
+    var decodedJson = jsonDecode(response.body);
+    fetchedCardsJson.add(decodedJson);
+    } 
+    print(fetchedCardsJson);
+    Cards cards = Cards.fromJson(fetchedCardsJson);
+    // print(cards.toJson().toString());
+    setState((){
+      data2 = fetchedCardsJson.map((json) => json["text"]).toList();
+    });
+    
+    print("data2" + data2.toString());
+   }
+  
   AnimationController _buttonController;
   Animation<double> rotate;
   Animation<double> right;
@@ -20,13 +70,14 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   int flag = 0;
   int choice=0;
   int result=0;///////////////////
-
+  
   List data = imageData;
-  List data2 = newsData;
+  // List data2 = newsData;
   List data3 = trueData;
 
   List selectedData = [];
   void initState() {
+     _fetchCardsData(); 
     super.initState();
 
     _buttonController = new AnimationController(
@@ -141,7 +192,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     timeDilation = 0.4;
-
+    
     double initialBottom = 15.0;
     var dataLength = data.length;
     double backCardPosition = initialBottom + (dataLength - 1) * 10 + 10;
@@ -166,6 +217,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
         actions: <Widget>[
           new GestureDetector(
             onTap: () {
+              Navigator.of(context).pop();
             },
             child: new Container(
                 margin: const EdgeInsets.all(15.0),
@@ -211,8 +263,9 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
 
             ///background color
             alignment: Alignment.center,
-            child: dataLength > 0
-                ? new Stack(
+            child: data2 == null ?
+                RefreshProgressIndicator():
+                 new Stack(
                     alignment: AlignmentDirectional.center,
                     children: data.map((item) {
                       if (data.indexOf(item) == dataLength - 1) {
@@ -242,14 +295,14 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                             backCardWidth, 0.0, 0.0, context);
                       }
                     }).toList())
-                : AlertDialog(
-          title: new Text("Well done!"),
-          content: new Text("Not enough? Try out more decks on the home page! "),
-          actions: <Widget> [new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
+          //       : AlertDialog(
+          // title: new Text("Well done!"),
+          // content: new Text("Not enough? Try out more decks on the home page! "),
+          // actions: <Widget> [new FlatButton(
+          //     child: new Text("Close"),
+          //     onPressed: () {
                 
-                Navigator.of(context).pop();})])
+          //       Navigator.of(context).pop();})])
 
                   
           ),
@@ -263,4 +316,4 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
       ),
     ));
   }
-}
+} 
