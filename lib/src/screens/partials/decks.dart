@@ -44,8 +44,7 @@ class Deck {
     output['subject'] = this.subject;
     output['articles'] = this.articles;
     output['tags'] = this.tags;
-    print("printing output");
-    print(output);
+    
     return output; 
 
   }
