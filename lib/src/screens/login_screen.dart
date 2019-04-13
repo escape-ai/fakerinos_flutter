@@ -4,6 +4,7 @@ import '../mixins/validation_mixin.dart';
 import '../screens/interest_screen.dart';
 import 'dart:convert';
 import './particulars_screen.dart';
+import './sharedPreferencesHelper.dart';
 
 
 
@@ -118,6 +119,8 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
     final response = await post(url, body:payload);
     final parsedResponse = json.decode(response.body); 
     print(parsedResponse);
+    setMobileToken("Token " + parsedResponse["key"]);
+    print(await getMobileToken());
     if (parsedResponse["key"] != null){
       setState(() {
           _isLoading = false;               
@@ -154,6 +157,8 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
           Scaffold.of(context).showSnackBar(snackBar);
       print("No Success");
     }
+
+    
     
   }
 }
