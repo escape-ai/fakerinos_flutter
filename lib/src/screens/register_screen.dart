@@ -3,6 +3,10 @@ import 'package:http/http.dart' show post;
 import '../mixins/validation_mixin.dart';
 import '../screens/interest_screen.dart';
 import 'dart:convert';
+import "./websockets.dart";
+
+// This is the game home screen
+import "./home_screen.dart"; 
 
 class RegisterScreen extends StatefulWidget {
   createState() {
@@ -136,39 +140,6 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
                )
              );
   }
-
-  Widget welcomePageButton() {
-    return RaisedButton(
-        child: Text("Welcome Page"),
-        color: Colors.blueGrey,
-        onPressed: () {
-          print("pressed");
-          
-            Navigator.push(
-              context,
-              new MaterialPageRoute(builder: (context) => new InterestScreen()),
-            );
-        
-        });
-  }
-
-  Widget socketButton() {
-    return RaisedButton(
-        child: Text("SocketConnection"),
-        color: Colors.blueGrey,
-        onPressed: () {
-          print("pressed");
-          
-            Navigator.push(
-              context,
-              new MaterialPageRoute(builder: (context) => new InterestScreen()),
-            );
-        
-        });
-  }
-
-  
-
   void Register() async {
     
     print("Registering with server side...");
@@ -213,4 +184,52 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
     }
     
   }
+
+  Widget welcomePageButton() {
+    return RaisedButton(
+        child: Text("Welcome Page"),
+        color: Colors.blueGrey,
+        onPressed: () {
+          print("pressed");
+          
+            Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (context) => new InterestScreen()),
+            );
+        
+        });
+  }
+
+  Widget socketButton() {
+    return RaisedButton(
+        child: Text("SocketConnection"),
+        color: Colors.blueGrey,
+        onPressed: () {
+          print("pressed");
+          
+            Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (context) => new WebSocketScreen()),
+            );
+        
+        });
+
+  Widget multiplayerGameButton() {
+    return RaisedButton(
+        child: Text("MultiplayerGame"),
+        color: Colors.blueGrey,
+        onPressed: () {
+          print("pressed");
+          
+            Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (context) => new StartPage()),
+            );
+        
+        });
+  } 
+
+
+  
+}
 }
