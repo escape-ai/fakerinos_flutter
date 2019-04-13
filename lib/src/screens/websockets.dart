@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert' show json;
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'dart:io';
 
 // void main() => runApp(MyApp());
 
@@ -33,7 +34,13 @@ class _MyHomePageState extends State<WebSocketScreen> {
   @override
   void initState() {
     super.initState();
-    channel = IOWebSocketChannel.connect('wss://fakerinos.herokuapp.com/ws/chat/1/');
+     Map <String, String> headers = {
+      "Authorization": 
+    "Token 3bb2b0eb58485d8b42e2457ac43eff650ce8e2d5"
+    };
+    channel = IOWebSocketChannel.connect('wss://fakerinos-staging.herokuapp.com/ws/rooms/1/',
+              headers: headers
+      );
     controller = TextEditingController();
     channel.stream.listen((data) => setState(() {
       String message = json.decode(data)["message"];
@@ -43,11 +50,14 @@ class _MyHomePageState extends State<WebSocketScreen> {
   }
 
   void sendData() {
+    print("sending");
     if (controller.text.isNotEmpty) {
-      payload = {
-        "message" : controller.text
-      };
-      channel.sink.add(json.encode(payload));
+      // payload = {
+      //   "message" : controller.text
+      // };
+      var payload = {'message': '{"type":"send_everyone","message":"helloyoyo"}'};
+     channel.sink.add(json.encode(payload));
+    
       
       controller.text = "";
     }
