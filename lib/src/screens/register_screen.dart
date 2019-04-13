@@ -5,8 +5,8 @@ import '../screens/interest_screen.dart';
 import 'dart:convert';
 import "./websockets.dart";
 
-// This is the game home screen
-import "./home_screen.dart"; 
+// This is the join game screen
+import "./joinGame.dart"; 
 
 class RegisterScreen extends StatefulWidget {
   createState() {
@@ -41,7 +41,8 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           Container(margin: EdgeInsets.only(top: 120.0)),
           submitButton(),
           welcomePageButton(),
-          socketButton()
+          socketButton(),
+          multiplayerGameButton()
           
         ]),
       ),
@@ -212,7 +213,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
               new MaterialPageRoute(builder: (context) => new WebSocketScreen()),
             );
         
-        });
+        }); }
 
   Widget multiplayerGameButton() {
     return RaisedButton(
@@ -223,7 +224,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           
             Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new StartPage()),
+              new MaterialPageRoute(builder: (context) => new JoinGame()),
             );
         
         });
@@ -231,5 +232,4 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
 
 
   
-}
 }
