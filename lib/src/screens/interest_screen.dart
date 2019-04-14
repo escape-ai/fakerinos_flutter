@@ -18,7 +18,7 @@ class InterestScreen extends StatefulWidget {
 }
 
 class InterestStateScreen extends State<InterestScreen> {
-
+  bool _isLoading = false; 
   final List<String> _suggestions = <String>[]; 
   final Set<String> _savedInterests = new Set<String>(); 
   final String url = "https://fakerinos.herokuapp.com/api/accounts/profile/";
@@ -63,21 +63,54 @@ class InterestStateScreen extends State<InterestScreen> {
         appBar: AppBar(
           title: Text("Tell us what interest you!")
         ),
-        body: interestCardsData == null ? 
+        body: (interestCardsData == null || _isLoading) ? 
         CircularProgressIndicator() :
         buildGrid(),
-        floatingActionButton: FloatingActionButton.extended(
-          elevation: 2.0,
-          onPressed: (){
-            uploadInterests();
-            
-          },
-          icon: Icon(Icons.save),
-          label: Text("Save")
-        ),
+        floatingActionButton: _savedInterests.length == 0 ? 
+        skipFAB() : selectedFAB()
       )
     );
 } 
+
+ Widget skipFAB(){
+    return new FloatingActionButton.extended(
+          backgroundColor: Colors.redAccent,
+          elevation: 2.0,
+          onPressed: (){
+            setState(() {
+              _isLoading = true;
+                        });
+            uploadInterests();
+            
+          },
+          label: Text("Skip"),
+          icon: Icon(Icons.skip_next),
+          
+        );
+  }
+
+  Widget selectedFAB(){
+    return new FloatingActionButton.extended(
+          backgroundColor: Colors.greenAccent,
+          elevation: 2.0,
+          onPressed: (){
+            setState(() {
+              _isLoading = true;
+                        });
+                        
+            uploadInterests();
+            
+          },
+          
+          label: Text(
+            "Next " + _savedInterests.length.toString(),
+              style: TextStyle(color: Colors.black)
+          ),
+          icon: Icon(Icons.send),
+        );
+  }
+
+
 GestureDetector makeGridCell(String name, IconData icon){
     bool alreadySaved = _savedInterests.contains(name);
     return GestureDetector(
@@ -151,6 +184,8 @@ GestureDetector makeGridCell(String name, IconData icon){
               new MaterialPageRoute(builder: (context) => new HomeScreen()),
             );
   } 
+
+ 
 
   
 
