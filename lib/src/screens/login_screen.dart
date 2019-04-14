@@ -65,6 +65,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
         labelText: 'Username',
         hintText: 'Type your username',
       ),
+      validator: validateUsername,
       onSaved: (String value) {
         username = value;
         print(value);

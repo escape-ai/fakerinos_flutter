@@ -10,17 +10,27 @@ class ValidationMixin {
   String validatePassword(String value) {
     if (value.length < 4) {
       return 'Please enter a longer password!';
-      // return null;
     }
 
     return null;
   }
 
   String validateFirstName(String value){
-    if (value.length < 1) {
-      return 'First Name cannot be empty'; 
+    if (value.length < 3) {
+      return 'First name needs to be at least 3 characters long'; 
     } 
+  }
 
-    return null; 
+  String validateLastName(String value){
+    if (value.length < 3) {
+      return 'First name needs to be at least 3 characters long'; 
+    } 
+   
+  }
+
+  String validateUsername(String username){
+    if (username.length < 6){
+      return "Usernames must be at least 6 characters long";
+    }
   }
 }

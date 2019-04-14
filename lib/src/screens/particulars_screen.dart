@@ -28,7 +28,10 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   String lastName;
   String selectedEducationLevel; 
   String dobString = ""; 
-  List educationLevels = ["Primary", "Secondary", "Junior College", "Polytechnic"];
+  String dobErrorString = ""; 
+  String educationErrorString = "";
+
+  List educationLevels = ["Select", "Primary", "Secondary", "Junior College", "Polytechnic", "ITE", "Others"];
   List<DropdownMenuItem<String>> dropDownEducationLevels;
 
   var _isLoading = false; 
@@ -53,10 +56,10 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
           lastNameField(),
           expandableDatePicker(),
           dobText(),
+          dobErrorText(),
           Container(margin: EdgeInsets.only(top: 50.0)),
           selectEducationField(),
-          
-          
+          educationErrorText(),
           submitButton(),
           
         ]),
@@ -72,8 +75,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
         labelText: 'First Name',
         hintText: 'e.g. Lionell',
       ),
-      //TODO: add validator
-      validator: null,
+      validator: validateFirstName,
       onSaved: (String value) {
         firstName = value;
         print(value);
@@ -87,8 +89,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
         labelText: 'Last Name',
         hintText: 'e.g. Loh',
       ),
-      //TODO: add validator
-      validator: null,
+      validator: validateLastName,
       onSaved: (String value) {
         lastName = value;
         print(value);
@@ -147,6 +148,18 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
     style: TextStyle(color: Colors.black, fontSize: 20)); 
   }
 
+  Widget dobErrorText(){
+
+    return Text(dobErrorString,
+    style: TextStyle(color: Colors.red, fontSize: 12)); 
+  }
+
+  Widget educationErrorText(){
+
+    return Text(educationErrorString,
+    style: TextStyle(color: Colors.red, fontSize: 12)); 
+  }
+
  
 
 
@@ -156,18 +169,39 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
       RaisedButton (
         child:  Text('Next'),
               
-        onPressed: (() {
+        onPressed: () {
                 
-                if (formKey.currentState.validate()) {
+                if (formKey.currentState.validate() && dobString != "" && selectedEducationLevel != "Select") {
                     setState(() {
                   _isLoading = true;  
                   formKey.currentState.save();
                   uploadParticulars();              
                                 });
-             }
+             } else {
+                print("unvalidated!");
+                if (dobString == "") {
+                  setState((){
+                    dobErrorString = "Please enter your date of birth";
+                  });
+                } setState((){
+                    dobErrorString = "";
+                  });
+
+                 if (selectedEducationLevel == "Select") {
+                  setState((){
+                    educationErrorString = "Please select your current education level";
+                  });
+                } else {
+                  setState((){
+                    educationErrorString = "";
+                  });
+                }
+
+             } });}
+             
             
-             })); 
-  }
+            
+
 
   Widget welcomePageButton() {
     return RaisedButton(
@@ -196,7 +230,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
       Map<String, String> headers = {
         "Authorization": await getMobileToken()
       };
-      print(url+ username);
+      
       final response = await patch(url + username + "/", body:payload, headers: headers); 
       print(response.body);
       final parsedResponse = json.decode(response.body); 
@@ -238,51 +272,4 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
 
   } }
 
-
-
-  // void login() async {
-    
-  //   print("Verifying login credentials with server");
-  //   Map<String, String> payload = {
-  //     "firstName": firstName,
-  //     "lastName": lastName,
-  //   };
-
-  //   final response = await post(url, body: payload);
-  //   final parsedResponse = json.decode(response.body); 
-  //   print(parsedResponse);
-  //   if (parsedResponse.key != null){
-  //     setState(() {
-  //         _isLoading = false;               
-  //           });
-  //     Navigator.push(
-  //             context,
-  //             new MaterialPageRoute(builder: (context) => new InterestScreen(session: session)),
-  //           );
-  //   }else{
-  //     setState(() {
-  //                 _isLoading = false;               
-  //                               });
-  
-        
-  //     }
-      
-  //     final snackBar = SnackBar(
-  //           content: Text("lalala"),
-  //           action: SnackBarAction(
-  //             label: 'Undo',
-  //             onPressed: () {
-  //               // Some code to undo the change!
-  //             },
-  //           ),
-  //         );
-
-  //         // Find the Scaffold in the Widget tree and use it to show a SnackBar!
-  //         setState(() {
-  //                 _isLoading = false;               
-  //                               });
-  //         Scaffold.of(context).showSnackBar(snackBar);
-     
-  //   }
-    
   }
