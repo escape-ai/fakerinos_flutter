@@ -5,6 +5,7 @@ import "../Session.dart";
 import 'package:http/http.dart'; 
 import 'partials/InterestCards.dart';
 import 'dart:io';
+import './sharedPreferencesHelper.dart';
 
 
 class InterestScreen extends StatefulWidget {
@@ -19,11 +20,14 @@ class InterestScreen extends StatefulWidget {
 
 class InterestStateScreen extends State<InterestScreen> {
   bool _isLoading = false; 
+  String token; 
   final List<String> _suggestions = <String>[]; 
   final Set<String> _savedInterests = new Set<String>(); 
   final String url = "https://fakerinos.herokuapp.com/api/accounts/profile/";
-   String username = "lionell26";
   InterestCards interestCardsData; 
+  String username; 
+
+ 
 
   @override
   void initState(){
@@ -33,10 +37,12 @@ class InterestStateScreen extends State<InterestScreen> {
   }
 
   _fetchData() async {
-      print("Fetching data"); 
-      
+
+    token = await getMobileToken();
+    print("Fetching data"); 
+    print("token");
     final response = await get("https://fakerinos.herokuapp.com/api/articles/tag",
-    headers: {HttpHeaders.authorizationHeader: "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"}); 
+    headers: {HttpHeaders.authorizationHeader: "Token $token" }); 
     print(response.body); 
     if (response.statusCode == 200) {
       var decodedJson = new List();
@@ -47,7 +53,7 @@ class InterestStateScreen extends State<InterestScreen> {
 
       print("Interest Cards data output");
       print(interestCardsData.toJson()); 
-
+      
       setState(() {
       });
     } else {
@@ -97,7 +103,7 @@ class InterestStateScreen extends State<InterestScreen> {
             setState(() {
               _isLoading = true;
                         });
-                        
+
             uploadInterests();
             
           },
@@ -157,26 +163,29 @@ GestureDetector makeGridCell(String name, IconData icon){
   void uploadInterests() async {
     
     print("Uploading Interests to server..."); 
-
+  
+    username = await getUsername();
+    print("Getting username...");
+    print("username" + username);
     Map<String, List<String>> payload = {
       "interests" : _savedInterests.toList()
     };
     var body = json.encode(payload); 
     print(body);
-    print("lala");
+    
     print(url + username + "/");
     final response = await patch(url + username + "/", body:body, 
     headers: {HttpHeaders.authorizationHeader: 
-    "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7", 
+    "Token $token", 
     HttpHeaders.contentTypeHeader: "application/json"},
               ); 
 
     final parsedResponse = json.decode(response.body); 
     print(parsedResponse);
-
-      if (parsedResponse != null){
+      print(response.statusCode);
+      if (response.statusCode == 200){
       setState(() {
-          // _isLoading = false;               
+          _isLoading = false;               
             });
 
       Navigator.push(
@@ -184,10 +193,5 @@ GestureDetector makeGridCell(String name, IconData icon){
               new MaterialPageRoute(builder: (context) => new HomeScreen()),
             );
   } 
-
- 
-
-  
-
 
 } } 

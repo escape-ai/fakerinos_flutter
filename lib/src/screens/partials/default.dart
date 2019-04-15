@@ -7,6 +7,7 @@ import "./cards.dart";
 import "../../Session.dart";
 import "./decks.dart"; 
 import "../leaderboard/main(leader).dart";
+import '../sharedPreferencesHelper.dart';
 
 
 class DefaultHomeScreen extends StatefulWidget{
@@ -27,21 +28,26 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
   Deck tappedDeck; 
   final Set<int> starredDecks  = new Set<int>(); 
   String particularsUrl = "https://fakerinos.herokuapp.com/api/accounts/profile/";
-  String username = "lionell26";
+  String username;
+  String token; 
   bool contains; 
 
   @override
   void initState(){
     super.initState();
     print("Default Home Screen w Decks initializing");
+    
     _fetchData(); 
   }
   
 
     _fetchData() async {
+      
       print("Fetching data"); 
+      token = await getMobileToken(); 
+      username = await getUsername();
     final response = await get("https://fakerinos.herokuapp.com/api/articles/deck", 
-    headers: {HttpHeaders.authorizationHeader: "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"}); 
+    headers: {HttpHeaders.authorizationHeader: "Token $token"}); 
     
     if (response.statusCode == 200) {
             
