@@ -21,6 +21,9 @@ const String _serverApi = "/api/mobile/";
 // the mobile device unique identity
 String _deviceIdentity = "";
 
+// the mobile device unique identity
+String _username = "";
+
 /// ----------------------------------------------------------
 /// Method which is only run once to fetch the device identity
 /// ----------------------------------------------------------
@@ -56,13 +59,25 @@ Future<String> getMobileToken() async {
   return prefs.getString(_storageKeyMobileToken) ?? '';
 }
 
+
+Future<String> getUsername() async {
+  final SharedPreferences prefs = await _prefs;
+
+  return prefs.getString(_username) ?? '';
+}
 /// ----------------------------------------------------------
 /// Method that saves the token in Shared Preferences
 /// ----------------------------------------------------------
 Future<bool> setMobileToken(String token) async {
   final SharedPreferences prefs = await _prefs;
 
-  return prefs.setString(_storageKeyMobileToken, token);
+  await prefs.setString(_storageKeyMobileToken, token);
+}
+
+Future<bool> setUsername(String token) async {
+  final SharedPreferences prefs = await _prefs;
+
+  return prefs.setString(_username, token);
 }
 
 /// ----------------------------------------------------------

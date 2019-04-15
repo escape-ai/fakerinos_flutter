@@ -4,6 +4,7 @@ import '../mixins/validation_mixin.dart';
 import '../screens/interest_screen.dart';
 import 'dart:convert';
 import "./websockets.dart";
+import './sharedPreferencesHelper.dart';
 
 // This is the join game screen
 import "./joinGame.dart"; 
@@ -59,11 +60,8 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
         hintText: 'e.g. johndoe96',
       ),
       
-      validator: (String value) {
-        if (value.length < 5) {
-          return 'Please enter a username longer than 5 characters';
-        }
-      },
+      validator: validateUsername,
+      
       onSaved: (String value) {
         username = value;
         print(value);
@@ -152,7 +150,13 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
     };
     final response = await post(url, body: payload);
     final parsedResponse = json.decode(response.body); 
+   
+   //Login Successful
     if (parsedResponse["key"] != null){
+
+      setMobileToken(parsedResponse["key"]);
+      setUsername(username);
+      
       _isLoading = false; 
       Navigator.push(
               context,

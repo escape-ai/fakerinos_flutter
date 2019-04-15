@@ -16,12 +16,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^0.4.0
+  flutter_secure_storage: ^3.2.1+1
 
 
   flutter_datetime_picker: ^1.1.5
   camera: ^0.4.3+2
   intro_views_flutter: '^2.6.0'
   web_socket_channel: "^1.0.8"
+  device_info: any
   
 
   # The following adds the Cupertino Icons font to your application.

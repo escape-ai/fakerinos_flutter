@@ -5,6 +5,7 @@ import '../screens/interest_screen.dart';
 import 'dart:convert';
 import './particulars_screen.dart';
 import './sharedPreferencesHelper.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
 
@@ -22,6 +23,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
   String username = '';
   String password = ''; 
   var _isLoading = false; 
+   final storage = new FlutterSecureStorage();
 
   Widget build(context) {
     return Scaffold(
@@ -54,7 +56,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
       validator: validatePassword,
       onSaved: (String value) {
         password = value;
-        print(value);
+        
       },
     );
   }
@@ -68,7 +70,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
       validator: validateUsername,
       onSaved: (String value) {
         username = value;
-        print(value);
+        
       },
     );
   }
@@ -81,7 +83,6 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
         child:  Text('Log in'),
               
         onPressed: (() {
-                
                 
                 if (formKey.currentState.validate()) {
                     setState(() {
@@ -120,9 +121,23 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
     final response = await post(url, body:payload);
     final parsedResponse = json.decode(response.body); 
     print(parsedResponse);
-    setMobileToken("Token " + parsedResponse["key"]);
-    print(await getMobileToken());
-    if (parsedResponse["key"] != null){
+  
+
+   
+
+    setUsername(username);
+    print(await getUsername());
+    //Success
+    if (response.statusCode == 200){
+      // await storage.write(key: "username", value: username);
+      // await storage.write(key: "token", value: parsedResponse["Key"]);
+
+      setMobileToken(parsedResponse["key"]);
+      setUsername(username);
+      print("Getting username...");
+      String lala = await getUsername(); 
+      print(lala);
+      
       setState(() {
           _isLoading = false;               
             });
