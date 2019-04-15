@@ -10,6 +10,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/src/material/dropdown.dart'; 
 import './camera_screen.dart';
 import './sharedPreferencesHelper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ParticularsScreen extends StatefulWidget {
   createState() {
@@ -23,13 +24,14 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   final formKey = GlobalKey<FormState>();
   final String url = "https://fakerinos.herokuapp.com/api/accounts/profile/";
   // Hardcode the username first 
-  String username = "lionell26"; 
+  String username; 
   String firstName;
   String lastName;
   String selectedEducationLevel; 
   String dobString = ""; 
   String dobErrorString = ""; 
   String educationErrorString = "";
+  String token; 
 
   List educationLevels = ["Select", "Primary", "Secondary", "Junior College", "Polytechnic", "ITE", "Others"];
   List<DropdownMenuItem<String>> dropDownEducationLevels;
@@ -40,6 +42,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   void initState() {
     dropDownEducationLevels = buildAndGetDropDownMenuItems(educationLevels);
     selectedEducationLevel = dropDownEducationLevels[0].value;
+    
     super.initState();
   }
 
@@ -161,8 +164,6 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   }
 
  
-
-
   Widget submitButton() {
     return _isLoading == true? 
       CircularProgressIndicator():
@@ -173,8 +174,11 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
                 
                 if (formKey.currentState.validate() && dobString != "" && selectedEducationLevel != "Select") {
                     setState(() {
-                  _isLoading = true;  
                   formKey.currentState.save();
+                  educationErrorString = "";
+                  dobErrorString = "";
+
+                  _isLoading = true;  
                   uploadParticulars();              
                                 });
              } else {
@@ -183,9 +187,11 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
                   setState((){
                     dobErrorString = "Please enter your date of birth";
                   });
-                } setState((){
+                } else {
+                  setState((){
                     dobErrorString = "";
                   });
+                }
 
                  if (selectedEducationLevel == "Select") {
                   setState((){
@@ -226,9 +232,9 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
         "education": selectedEducationLevel,
 
       };
-
+      token = await getMobileToken();
       Map<String, String> headers = {
-        "Authorization": await getMobileToken()
+        "Authorization": "Token $token"
       };
       
       final response = await patch(url + username + "/", body:payload, headers: headers); 
@@ -236,7 +242,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
       final parsedResponse = json.decode(response.body); 
       print(parsedResponse);
 
-      if (parsedResponse != null){
+      if (response.statusCode == 200){
       setState(() {
           _isLoading = false;               
             });
@@ -250,7 +256,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
         setState(() {
                   _isLoading = false;               
                                 });
-      String failureMessage = "Error: Server failed to authenticate";
+      String failureMessage = parsedResponse;
       
       print(failureMessage);
       final snackBar = SnackBar(
