@@ -6,7 +6,7 @@ import "../../SwipeAnimation/index.dart";
 import "./cards.dart";
 import "../../Session.dart";
 import "./decks.dart"; 
-import "../leaderboard/main(leader).dart";
+import "../leaderboard/leaderboardPage.dart";
 import '../sharedPreferencesHelper.dart';
 
 
@@ -162,6 +162,9 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
     
     print("Uploading staredDecks to server..."); 
 
+    token = await getMobileToken(); 
+    username = await getUsername(); 
+    
     Map<String, List<int>> payload = {
       "starred_decks" : starredDecks.toList()
     };
@@ -171,7 +174,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
     print(particularsUrl + username );
     final response = await patch(particularsUrl + username + "/", body:body, 
     headers: {HttpHeaders.authorizationHeader: 
-    "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7", 
+    "Token $token", 
     HttpHeaders.contentTypeHeader: "application/json"},
     );
 

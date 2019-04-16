@@ -1,19 +1,19 @@
-import './task.dart';
+import './player.dart';
 import 'package:flutter/material.dart';
 
-class TaskRow extends StatefulWidget {
-  final Task task;
+class PlayerRow extends StatefulWidget {
+  final Player player;
   final double dotSize = 12.0;
 
-  const TaskRow({Key key, this.task}) : super(key: key);
+  const PlayerRow({Key key, this.player}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return new TaskRowState();
+    return new PlayerRowState();
   }
 }
 
-class TaskRowState extends State<TaskRow> {
+class PlayerRowState extends State<PlayerRow> {
   @override
   Widget build(BuildContext context) {
     return new Padding(
@@ -27,7 +27,7 @@ class TaskRowState extends State<TaskRow> {
               height: widget.dotSize,
               width: widget.dotSize,
               decoration: new BoxDecoration(
-                  shape: BoxShape.circle, color: widget.task.color),
+                  shape: BoxShape.circle, color: Colors.black),
             ),
           ),
           new Expanded(
@@ -35,11 +35,11 @@ class TaskRowState extends State<TaskRow> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 new Text(
-                  widget.task.name,
+                  widget.player.username,
                   style: new TextStyle(fontSize: 18.0),
                 ),
                 new Text(
-                  widget.task.category,
+                  "placeholder",
                   style: new TextStyle(fontSize: 12.0, color: Colors.grey),
                 )
               ],
@@ -48,8 +48,8 @@ class TaskRowState extends State<TaskRow> {
           new Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: new Text(
-              widget.task.time,
-              style: new TextStyle(fontSize: 12.0, color: Colors.grey),
+              widget.player.score.toString(),
+              style: new TextStyle(fontSize: 15.0, color: Colors.black),
             ),
           ),
         ],

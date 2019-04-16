@@ -10,7 +10,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/src/material/dropdown.dart'; 
 import './camera_screen.dart';
 import './sharedPreferencesHelper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class ParticularsScreen extends StatefulWidget {
   createState() {
@@ -225,6 +225,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
 
   
   void uploadParticulars() async { 
+    print( await getMobileToken());
       print("Uploading particulars to server..."); 
       Map<String, String> payload = {
         "name" : firstName, 
@@ -233,6 +234,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
 
       };
       token = await getMobileToken();
+      username = await getUsername(); 
       Map<String, String> headers = {
         "Authorization": "Token $token"
       };
