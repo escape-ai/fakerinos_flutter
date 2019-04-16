@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' show post;
+import 'package:http/http.dart';
 import '../mixins/validation_mixin.dart';
 import '../screens/interest_screen.dart';
 import 'dart:convert';
+import 'dart:io';
 import './particulars_screen.dart';
 import './sharedPreferencesHelper.dart';
+import './onboarding_screen.dart';
 
 
 
@@ -21,6 +23,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
   String email = '';
   String username = '';
   String password = ''; 
+  String token; 
   var _isLoading = false; 
 
   Widget build(context) {
@@ -102,7 +105,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
           
             Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new InterestScreen()),
+              new MaterialPageRoute(builder: (context) => new OnboardingScreen()),
             );
         
         });
@@ -119,18 +122,17 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
     final response = await post(url, body:payload);
     final parsedResponse = json.decode(response.body); 
     print(parsedResponse);
-  
-
-   
 
     setUsername(username);
     print(await getUsername());
     //Success
     if (response.statusCode == 200){
-      // await storage.write(key: "username", value: username);
-      // await storage.write(key: "token", value: parsedResponse["Key"]);
-
-      setMobileToken(parsedResponse["key"]);
+      token = parsedResponse["key"];
+      final userData = await get("$url$username/", headers: {
+        HttpHeaders.authorizationHeader: "Token $token"}); 
+      print(userData);
+      
+      setMobileToken(token);
       setUsername(username);
       print("Getting username...");
       String lala = await getUsername(); 

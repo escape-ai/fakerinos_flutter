@@ -217,7 +217,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
           
             Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new InterestScreen()),
+              new MaterialPageRoute(builder: (context) => new ParticularsScreen()),
             );
         
         });
@@ -251,7 +251,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
 
        Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new OnboardingScreen()),
+              new MaterialPageRoute(builder: (context) => new InterestScreen()),
             );
       
   }   else {
