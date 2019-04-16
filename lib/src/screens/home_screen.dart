@@ -5,7 +5,7 @@ import './partials/multiplayer_screen.dart';
 import './partials/crowdSource.dart';
 
 import '../SwipeAnimation/index.dart';
-import '../screens/leaderboard/main(profile).dart';
+import '../screens/leaderboard/leaderboardPage.dart';
 
 class HomeScreen extends StatefulWidget{
   createState() {
@@ -117,8 +117,9 @@ class HomeStateScreen extends State<HomeScreen> {
             title: new Text("Personal Profile"),
             trailing: new Icon(Icons.person),
             onTap: ()=> 
-            Navigator.push(context,
-            new MaterialPageRoute(builder: (context)=> ProfilePage()))
+            print("push is to be implemented")
+            // Navigator.push(context,
+            // new MaterialPageRoute(builder: (context)=> ProfilePage()))
         
           ),
           new ListTile(

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'websockets.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import './sharedPreferencesHelper.dart';
 
 
 
@@ -18,7 +19,8 @@ class _JoinGameState extends State<JoinGame> {
 
   bool _isLoading = false; 
   WebSocketChannel channel;
-  String username = "lionell26";
+  String username;
+  String token; 
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,8 @@ class _JoinGameState extends State<JoinGame> {
               setState(() {
                 _isLoading = true; 
                             });
-              if (registerInSocket()) {
+              if (true) {
+              registerInSocket();
               Navigator.push(context,
               new MaterialPageRoute(builder: (context) => new WebSocketScreen()));
             } else {
@@ -77,22 +80,28 @@ class _JoinGameState extends State<JoinGame> {
         )
         );
   }
-  bool registerInSocket() {
+  void registerInSocket() async {
+
+    username = await getUsername(); 
+    print("USERNAME:::::");
+    print(username);
+    token = await getMobileToken();
+
     Map <String, String> headers = {
       "Authorization": 
-    "Token 3bb2b0eb58485d8b42e2457ac43eff650ce8e2d5"
+    "Token $token"
     };
     //  channel = IOWebSocketChannel.connect('ws://localhost:8000/wds/chat/lobby/'); 
-    channel = IOWebSocketChannel.connect('wss://fakerinos-staging.herokuapp.com/ws/rooms/1/',
+    channel = IOWebSocketChannel.connect('wss://fakerinos-staging.herokuapp.com/ws/rooms/',
               headers: headers
       );
      var payload = {
-       "type": "send_everyone",
-       "message": "helloyoyo" 
+       "action": "admin",
+       "message": "request_to_join" 
      };
      channel.sink.add(json.encode(payload));
     //  add a server acknowledge
-     return true; 
+    
      
 
   }

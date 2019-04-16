@@ -1,7 +1,12 @@
 import './diagonal_clipper.dart';
 import './task.dart';
-import './task_row.dart';
+import './player_row.dart';
 import 'package:flutter/material.dart';
+import '../sharedPreferencesHelper.dart';
+import 'package:http/http.dart'; 
+import 'dart:convert';
+import 'dart:io';
+import './player.dart';
 
 void main() => runApp(new MyApp());
 
@@ -25,44 +30,55 @@ class LeaderPage extends StatefulWidget {
   _LeaderPageState createState() => new _LeaderPageState();
 }
 
-List<Task> tasks = [
-    new Task(
-      name: "Lionell",
-      category: "Master",
-      time: "1000",
-      color: Colors.cyan[200],
-      completed: true),
-   new Task(
-      name: "Zile",
-      category: "Proficent",
-      time: "200",
-      color: Colors.cyan[300],
-      completed: true),
- 
+// List<Task> tasks = [
+//     new Task(
+//       name: "Lionell",
+//       category: "Master",
+//       time: "1000",
+//       color: Colors.cyan[200],
+//       completed: true),
+//    new Task(
+//       name: "Zile",
+//       category: "Proficent",
+//       time: "200",
+//       color: Colors.cyan[300],
+//       completed: true),
 
-  new Task(
-      name: "Krishna",
-      category: "Medium",
-      time: "20",
-      color: Colors.cyan[100],
-      completed: true),
-   new Task(
-      name: "Yunyi",
-      category: "Beginner",
-      time: "5",//point
-      color: Colors.cyan[50],
-      completed: true),
+//   new Task(
+//       name: "Krishna",
+//       category: "Medium",
+//       time: "20",
+//       color: Colors.cyan[100],
+//       completed: true),
+//    new Task(
+//       name: "Yunyi",
+//       category: "Beginner",
+//       time: "5",//point
+//       color: Colors.cyan[50],
+//       completed: true),
   
-  new Task(
-      name: "B",
-      category: "Idel",
-      time: "0",
-      color: Colors.cyan[50],
-      completed: true),
-];
+//   new Task(
+//       name: "B",
+//       category: "Idel",
+//       time: "0",
+//       color: Colors.cyan[50],
+//       completed: true),
+// ];
+
+ 
 
 class _LeaderPageState extends State<LeaderPage> {
   final double _imageHeight = 256.0;
+  String username; 
+  String token; 
+  List<Player> players;
+
+  @override
+  void initState(){
+    super.initState();
+    print("Leaderboard Screen Initializing");
+    _fetchData(); 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +107,27 @@ class _LeaderPageState extends State<LeaderPage> {
         ],
       ),
     );
+  }
+
+
+  _fetchData() async {
+
+    token = await getMobileToken();
+    username = await getUsername(); 
+    print("fetching players data");
+    final response = await get("https://fakerinos.herokuapp.com/api/leaderboard/top/all/",
+    headers: {HttpHeaders.authorizationHeader: "Token $token"});
+
+    if (response.statusCode == 200){
+      var decodedJson = jsonDecode(response.body);
+
+      Players.fromJson(decodedJson);
+
+      setState(() {
+        players = Players.players;
+            });
+      
+    }
   }
 
   Widget _buildIamge() {
@@ -175,7 +212,8 @@ class _LeaderPageState extends State<LeaderPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _buildMyTasksHeader(),
-          _buildTasksList(),
+          players == null? CircularProgressIndicator():
+          _buildTasksList()
         ],
       ),
     );
@@ -184,7 +222,7 @@ class _LeaderPageState extends State<LeaderPage> {
   Widget _buildTasksList() {
     return new Expanded(
       child: new ListView(
-        children: tasks.map((task) => new TaskRow(task: task)).toList(),
+        children: players.map((player) => new PlayerRow(player: player)).toList(),
       ),
     );
   }

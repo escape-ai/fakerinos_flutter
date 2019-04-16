@@ -77,7 +77,7 @@ Future<bool> setMobileToken(String token) async {
 Future<bool> setUsername(String token) async {
   final SharedPreferences prefs = await _prefs;
 
-  return prefs.setString(_username, token);
+  await prefs.setString(_username, token);
 }
 
 /// ----------------------------------------------------------

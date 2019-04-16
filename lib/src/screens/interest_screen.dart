@@ -41,6 +41,7 @@ class InterestStateScreen extends State<InterestScreen> {
     token = await getMobileToken();
     print("Fetching data"); 
     print("token");
+    print(token);
     final response = await get("https://fakerinos.herokuapp.com/api/articles/tag",
     headers: {HttpHeaders.authorizationHeader: "Token $token" }); 
     print(response.body); 
@@ -179,7 +180,7 @@ GestureDetector makeGridCell(String name, IconData icon){
     "Token $token", 
     HttpHeaders.contentTypeHeader: "application/json"},
               ); 
-
+  
     final parsedResponse = json.decode(response.body); 
     print(parsedResponse);
       print(response.statusCode);

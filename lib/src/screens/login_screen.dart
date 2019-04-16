@@ -5,7 +5,6 @@ import '../screens/interest_screen.dart';
 import 'dart:convert';
 import './particulars_screen.dart';
 import './sharedPreferencesHelper.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
 
@@ -23,7 +22,6 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
   String username = '';
   String password = ''; 
   var _isLoading = false; 
-   final storage = new FlutterSecureStorage();
 
   Widget build(context) {
     return Scaffold(
