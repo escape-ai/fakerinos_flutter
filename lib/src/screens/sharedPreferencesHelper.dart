@@ -22,7 +22,11 @@ const String _serverApi = "/api/mobile/";
 String _deviceIdentity = "";
 
 // the mobile device unique identity
-String _username = "";
+const String _username = "username";
+
+const String _firstname = "first_name";
+
+const String _lastname = "last_name";
 
 /// ----------------------------------------------------------
 /// Method which is only run once to fetch the device identity
@@ -74,11 +78,39 @@ Future<bool> setMobileToken(String token) async {
   await prefs.setString(_storageKeyMobileToken, token);
 }
 
-Future<bool> setUsername(String token) async {
+Future<bool> setUsername(String value) async {
   final SharedPreferences prefs = await _prefs;
 
-  await prefs.setString(_username, token);
+  await prefs.setString(_username, value);
 }
+
+Future<bool> setFirstName(String value) async {
+  final SharedPreferences prefs = await _prefs;
+
+  await prefs.setString(_firstname, value);
+}
+
+Future<String> getFirstName() async {
+  final SharedPreferences prefs = await _prefs;
+
+  return prefs.getString(_firstname) ?? '';
+}
+
+Future<bool> setLastName(String value) async {
+  final SharedPreferences prefs = await _prefs;
+
+  await prefs.setString(_lastname, value);
+}
+
+Future<String> getLastName() async {
+  final SharedPreferences prefs = await _prefs;
+
+  return prefs.getString(_lastname) ?? '';
+}
+
+
+
+
 
 /// ----------------------------------------------------------
 /// Http Handshake

@@ -81,7 +81,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
       validator: validateFirstName,
       onSaved: (String value) {
         firstName = value;
-        print(value);
+        
       },
     );
   }
@@ -95,7 +95,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
       validator: validateLastName,
       onSaved: (String value) {
         lastName = value;
-        print(value);
+        
       },
     );
   }
@@ -135,7 +135,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
                               onConfirm: (date) {      
                               setState((){
                               dobString = date.toString().split(" ")[0];
-                              print(dobString);
+                              
                             });
                                 
                           }, currentTime: DateTime(2009, 1, 1), locale: LocaleType.en);
@@ -225,10 +225,11 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
 
   
   void uploadParticulars() async { 
-    print( await getMobileToken());
+
       print("Uploading particulars to server..."); 
       Map<String, String> payload = {
-        "name" : firstName, 
+        "first_name" : firstName, 
+        "last_name" : lastName,
         "birth_date": dobString, 
         "education": selectedEducationLevel,
 
@@ -248,11 +249,14 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
       setState(() {
           _isLoading = false;               
             });
-
+      
        Navigator.push(
               context,
               new MaterialPageRoute(builder: (context) => new InterestScreen()),
             );
+
+      setFirstName(firstName);
+      setLastName(lastName);
       
   }   else {
         setState(() {

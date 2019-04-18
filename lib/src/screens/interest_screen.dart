@@ -201,7 +201,7 @@ GestureDetector makeGridCell(String name, String thumbnailUrl){
   
     username = await getUsername();
     print("Getting username...");
-    print("username" + username);
+    print("username: " + username);
     Map<String, dynamic> payload = {
       "interests" : _savedInterests.toList(),
       "onboarded": "true",
