@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 import 'partials/InterestCards.dart';
 import 'dart:io';
 import './sharedPreferencesHelper.dart';
+import 'dart:ui' as ui; 
 
 
 class InterestScreen extends StatefulWidget {
@@ -118,7 +119,7 @@ class InterestStateScreen extends State<InterestScreen> {
   }
 
 
-GestureDetector makeGridCell(String name, IconData icon){
+GestureDetector makeGridCell(String name, String thumbnailUrl){
     bool alreadySaved = _savedInterests.contains(name);
     return GestureDetector(
       onTap: () => {
@@ -133,19 +134,52 @@ GestureDetector makeGridCell(String name, IconData icon){
         
       child: Card(
       color: alreadySaved ? Colors.lightBlueAccent : Colors.white,
-      elevation: 5.0, 
-      child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch, 
-      mainAxisSize: MainAxisSize.min,
-      verticalDirection: VerticalDirection.down, 
-      children: <Widget>[
-        Center(child: Icon(icon)),
-        Center(child: Text(name)), 
-        Center(child: Icon(Icons.favorite))
-      ]
+      
+      elevation: alreadySaved? 30.0: 5.0, 
+      child: new Container(
+        child: Container(
+                  width: 200,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: new BorderRadius.all(
+                const  Radius.circular(5.0),
+                   ),
+        color: alreadySaved? Color(0xAA03B2FF).withOpacity(0.7) : Colors.black.withOpacity(0.2),
+     ),
+                  child: new Center(
+                    child: Text(name, 
+                textDirection: TextDirection.ltr,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                  fontFamily: 'Niagaraphobia')))
+
+                )
+              ,
+        decoration: new BoxDecoration(
+              color: const Color(0xff7c94b6),
+              image: new DecorationImage(
+                colorFilter: alreadySaved? ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop):
+                ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                fit: BoxFit.cover,
+                
+                // colorFilter: new ColorFilter.mode(Color(0xAA0518FF).withOpacity(0.6), BlendMode.softLight),
+                image: new NetworkImage(
+                  thumbnailUrl
+                )
+      ),
+      // child: Column(
+      // crossAxisAlignment: CrossAxisAlignment.stretch, 
+      // mainAxisSize: MainAxisSize.min,
+      // verticalDirection: VerticalDirection.down, 
+      // children: <Widget>[
+      //   Center(child: Icon(icon)),
+      //   Center(child: Text(name)), 
+      //   Center(child: Icon(Icons.favorite))
+      // ]
     )
       
-    ));
+    )));
   }
   
   GridView buildGrid(){
@@ -157,7 +191,7 @@ GestureDetector makeGridCell(String name, IconData icon){
       mainAxisSpacing: 1.0,
       crossAxisSpacing: 1.0,
       children: interestCardsData.interestCards.map(
-        (card) => makeGridCell(card.name, Icons.trending_up)).toList()
+        (card) => makeGridCell(card.name, card.thumbnail_url)).toList()
     );
 
 } 
@@ -168,8 +202,10 @@ GestureDetector makeGridCell(String name, IconData icon){
     username = await getUsername();
     print("Getting username...");
     print("username" + username);
-    Map<String, List<String>> payload = {
-      "interests" : _savedInterests.toList()
+    Map<String, dynamic> payload = {
+      "interests" : _savedInterests.toList(),
+      "onboarded": "true",
+      "is_complete" : _savedInterests.length > 0 ? "true" : "false"
     };
     var body = json.encode(payload); 
     print(body);
@@ -184,7 +220,8 @@ GestureDetector makeGridCell(String name, IconData icon){
     final parsedResponse = json.decode(response.body); 
     print(parsedResponse);
       print(response.statusCode);
-      if (response.statusCode == 200){
+      // Temp workaround to get to decks page
+      if (response.statusCode != 123){
       setState(() {
           _isLoading = false;               
             });
