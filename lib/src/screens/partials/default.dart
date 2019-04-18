@@ -53,12 +53,10 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
             
       var decodedJson = jsonDecode(response.body); 
       print(decodedJson);
-      decksData = Decks.fromJson(decodedJson);
-
-      print("decks output");
-      print(decksData.toJson()); 
+      
 
       setState(() {
+        decksData = Decks.fromJson(decodedJson);
       });
     } else {
       // print(response.statusCode);
@@ -103,10 +101,10 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         Text(headers[carouselIndex]),
         SizedBox(
           // you may want to use an aspect ratio here for tablet support
-          height: 200.0,
+          height: 300.0,
           child: PageView.builder(
             // store this controller in a State to save the carousel scroll position
-            controller: PageController(viewportFraction: 0.8),
+            controller: PageController(viewportFraction: 0.9),
             itemCount: decksData.decks.length,
             itemBuilder: (BuildContext context, int itemIndex) {
               return _buildCarouselItem(context, carouselIndex, itemIndex);
@@ -141,19 +139,66 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
           builder: (BuildContext context){
           return AlertDialog(
           title: contains ?  
-          new Text("You unliked the ${doubleTappedDeck.subject} deck") :
-          new Text("You liked the ${doubleTappedDeck.subject} deck"));
+          new Text("You unstarred the ${doubleTappedDeck.title} deck") :
+          new Text("You starred the ${doubleTappedDeck.title} deck"));
           
           });}, 
-        child: Card(
+
+        child: SizedBox(
+  
+          width: 200.0,
+          height: 250.0,
+          child: Card(
+          shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),),
           elevation: 10,
-          child: ListTile(
-              leading: Icon(Icons.album), 
-              title: Text(decksData.decks[itemIndex].subject), 
-              subtitle: Text(decksData.decks[itemIndex].subject)
-            ))
           
-            ,));
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: new Column(
+            children: <Widget>[
+              new Text(
+              decksData.decks[itemIndex].title,
+              style: new TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueAccent
+              )),
+
+              new Image.network(
+                "https://3.bp.blogspot.com/-fiwFfX1nC54/XFLMbgvKcKI/AAAAAAAABfE/GcJEubU5M-YV5R9uXLpLPGltSGVigl-hwCLcBGAs/s1600/ca.png"
+                // decksData.decks[itemIndex].thumbnail_url
+              ),
+            
+              new Text(
+              decksData.decks[itemIndex].description,
+              style: new TextStyle(
+                fontSize: 12.0,
+                
+                color: Colors.grey
+              )),
+              
+              new Row(
+                children: <Widget>[
+                  new IconTheme(
+                  data: new IconThemeData(
+                      
+                      color: Colors.yellow), 
+                  child: new Icon(
+                    Icons.star,
+                    size: 30,)),
+
+                  new Text(
+                     decksData.decks[itemIndex].stars.toString() + " stars",
+                  )
+                  
+                ],
+              )
+
+
+            ],)
+          //decksData.decks[itemIndex].title
+            )))));
              
   }
 

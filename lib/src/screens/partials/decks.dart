@@ -25,25 +25,37 @@ class Decks {
 
 class Deck {
   int pk; 
-  String subject; 
+  String title;
+  String description;  
   List <dynamic> articles; 
   List <dynamic> tags;
+  String thumbnail_url; 
+  int times_played; 
+  int stars;
 
-  Deck(this.pk, this.subject, this.articles, this.tags); 
+  Deck(this.pk, this.title, this.description, this.articles, this.tags,
+      this.thumbnail_url, this.times_played, this.stars); 
 
   Deck.fromJson(dynamic deckJson){
     pk = deckJson['pk']; 
-    subject = deckJson['subject'];
+    title = deckJson["title"];
+    description = deckJson['description'];
     articles = deckJson['articles'];
-    tags = deckJson['tags'];
+    thumbnail_url = deckJson['thumbnail_url'];
+    times_played = deckJson['times_played'];
+    stars = deckJson['stars'];
+    
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> output = new Map<String, dynamic>();
     output['pk'] = this.pk;
-    output['subject'] = this.subject;
+    output['title'] = this.title;
+    output['description'] = this.description;
     output['articles'] = this.articles;
-    output['tags'] = this.tags;
+    output['thumbnail_url'] = this.thumbnail_url;
+    output['times_played'] = this.times_played;
+    output['stars'] = this.stars;
     
     return output; 
 
