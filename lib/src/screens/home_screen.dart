@@ -6,6 +6,7 @@ import './partials/crowdSource.dart';
 
 import '../SwipeAnimation/index.dart';
 import '../screens/leaderboard/leaderboardPage.dart';
+import '../../src/screens/sharedPreferencesHelper.dart';
 
 class HomeScreen extends StatefulWidget{
   createState() {
@@ -14,9 +15,33 @@ class HomeScreen extends StatefulWidget{
     }
 }
 
+
+
+
 class HomeStateScreen extends State<HomeScreen> {
   int _currentIndex = 0; 
   int _selectedDrawerIndex = -1;
+  String initials = "";
+
+
+  void initState() {
+   print("INITIALS ____");
+   print(initials);
+   getInitials();
+
+   super.initState();
+}
+  void getInitials() async {
+  
+  String firstName = await getFirstName();
+  String lastName = await getLastName();
+
+  setState((){
+    initials = firstName[0] + lastName[0];
+  });
+  
+}
+  
 
   _getDrawerItemWidget(int pos){
     switch(pos) {
@@ -37,6 +62,8 @@ class HomeStateScreen extends State<HomeScreen> {
         return new Text("Error"); 
     }
   }
+
+  
 
   _onSelectItem(int index){
     setState(() {
@@ -66,7 +93,7 @@ class HomeStateScreen extends State<HomeScreen> {
         ),
         body: _children[_currentIndex], 
     
-      drawer: buildDrawerWidget(context),
+      drawer: buildDrawerWidget(context, initials),
       
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped, 
@@ -96,7 +123,8 @@ class HomeStateScreen extends State<HomeScreen> {
 
 
 // https://medium.com/@kashifmin/flutter-setting-up-a-navigation-drawer-with-multiple-fragments-widgets-1914fda3c8a8
-  Widget buildDrawerWidget(BuildContext context) {
+  Widget buildDrawerWidget(BuildContext context, String initials) {
+  
 
     return Drawer(
       child: Container(
@@ -109,7 +137,7 @@ class HomeStateScreen extends State<HomeScreen> {
             accountEmail: new Text("lionellloh@gmail.com"),
             currentAccountPicture: new CircleAvatar(
               backgroundColor: Colors.black, 
-              child: Text("LL",
+              child: Text(initials,
               textScaleFactor: 1.5,)
             ),
           )),
@@ -137,7 +165,6 @@ class HomeStateScreen extends State<HomeScreen> {
           ],
       ))
     );
-
 
 
 }
