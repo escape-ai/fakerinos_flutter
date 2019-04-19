@@ -14,7 +14,7 @@ class WelcomeScreen extends StatelessWidget {
           stops: [0.25, 0.75],
           colors: [Color(0xAA03B2FF), Color(0xAA0518FF) ]
         )),
-        child: new Column(children: <Widget>[
+        child: new ListView(children: <Widget>[
           Container(
             padding: EdgeInsets.only(top: 200.0),
             child: Center(
