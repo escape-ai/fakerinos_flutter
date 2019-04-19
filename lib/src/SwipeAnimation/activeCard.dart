@@ -2,6 +2,7 @@ import 'dart:math';
 
 import './detail.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 Positioned cardDemo(
     DecorationImage img,
@@ -17,11 +18,23 @@ Positioned cardDemo(
     Function addImg,
     Function swipeRight,
     Function swipeLeft,
-    String newsContent) {
+    String description,
+    String headlines) {
+
+  String truncate(String stringArg, int length){
+    if (stringArg.length > length){
+      return stringArg.substring(0, length) + "...";
+    }
+    else {
+      return stringArg;
+    }
+  }
+
   Size screenSize = MediaQuery.of(context).size;
+  String loremText = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec qu...";
   // print("Card");
   return new Positioned(
-    bottom: 100.0 + bottom,
+    bottom: screenSize.height/7,
     right: flag == 0 ? right != 0.0 ? right : null : null,
     left: flag == 1 ? right != 0.0 ? right : null : null,
     child: new Dismissible(
@@ -48,27 +61,42 @@ Positioned cardDemo(
             tag: "img",
             child: new GestureDetector(
               onTap: () {
+
+                print("Card was tapped!");
+                print(description);
                 //TODO(Yunyi): specify detailpage based on the news content
                 Navigator.of(context).push(new PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => new DetailPage(type: img),
+                      pageBuilder: (_, __, ___) => new DetailPage(
+                      headlines: headlines, 
+                      description: description,
+                      img: img ),
                     ));
               },
               child: new Card(
                 color: Colors.transparent,
-                elevation: 4.0,
+                elevation: 10.0,
                 child: new Container(
                   alignment: Alignment.center,
                   width: screenSize.width / 1.2 + cardWidth,
-                  height: screenSize.height / 1.7,
+                  height: screenSize.height / 1.6,
                   decoration: new BoxDecoration(
-                    color: new Color.fromRGBO(121, 114, 173, 1.0),//card color!!!!!!!!!!
+                    color: new Color.fromRGBO(121, 114, 173, 1.0),//card color
                     borderRadius: new BorderRadius.circular(8.0),
                   ),
                   child: new Column(
                     children: <Widget>[
+                      new Padding(
+                        padding: EdgeInsets.all(10),
+                        child: new Text(headlines, 
+                        textAlign: TextAlign.center,
+                      style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 1600/headlines.length + 10,
+                  fontFamily: 'Niagaraphobia'))
+                      ),
                       new Container(
                         width: screenSize.width / 1.2 + cardWidth,
-                        height: screenSize.height / 2.2,
+                        height: screenSize.height / 4.5,
                         decoration: new BoxDecoration(
                           borderRadius: new BorderRadius.only(
                               topLeft: new Radius.circular(8.0),
@@ -77,54 +105,77 @@ Positioned cardDemo(
                         ),
                       ),
                       new Container(
+                        height: screenSize.height / 10,
+                        padding: EdgeInsets.all(10),
+                        child: new Text(description.length < 2 ? 
+                        loremText :
+                        truncate(description, 200),
+                        
+                        textAlign: TextAlign.justify,
+                        style: TextStyle(fontSize: 15,
+                        fontFamily: "Roboto")),
+                        
+                      ),
+                      new Container(
                           width: screenSize.width / 1.2 + cardWidth,
                           height:
                               screenSize.height / 1.7 - screenSize.height / 2.2,
                           alignment: Alignment.center,
-                          child: Text(newsContent),
-                          //child: new Row(
-                            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            // children: <Widget>[
-                            //   new FlatButton(
-                            //       padding: new EdgeInsets.all(0.0),
-                            //       onPressed: () {
-                            //         swipeLeft();
-                            //       },
-                            //       child: new Container(
-                            //         height: 60.0,
-                            //         width: 130.0,
-                            //         alignment: Alignment.center,
-                            //         decoration: new BoxDecoration(
-                            //           color: Colors.red,
-                            //           borderRadius:
-                            //               new BorderRadius.circular(60.0),
-                            //         ),
-                            //         child: new Text(
-                            //           "False",
-                            //           style: new TextStyle(color: Colors.white),
-                            //         ),
-                            //       )),
-                            //   new FlatButton(
-                            //       padding: new EdgeInsets.all(0.0),
-                            //       onPressed: () {
-                            //         swipeRight();
-                            //       },
-                            //       child: new Container(
-                            //         height: 60.0,
-                            //         width: 130.0,
-                            //         alignment: Alignment.center,
-                            //         decoration: new BoxDecoration(
-                            //           color: Colors.cyan,
-                            //           borderRadius:
-                            //               new BorderRadius.circular(60.0),
-                            //         ),
-                            //         child: new Text(
-                            //           "True",
-                            //           style: new TextStyle(color: Colors.white),
-                            //         ),
-                            //       ))
-                            // ],
-                          )]
+                          // Buttons
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              new FlatButton(
+                                  padding: new EdgeInsets.all(0.0),
+                                  onPressed: () {
+                                    swipeLeft();
+                                    new Timer(Duration(milliseconds: 100), () => addImg(img));
+                                  },
+                                  child: new Container(
+                                    height: screenSize.height/17,
+                                    width: screenSize.width / 2.8,
+                                    alignment: Alignment.center,
+                                    decoration: new BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius:
+                                          new BorderRadius.circular(60.0),
+                                    ),
+                                    child: new Text(
+                                      "False",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        letterSpacing: 3,
+                                        fontSize: 30,
+                                        fontFamily: 'Niagaraphobia'),
+                                    ),
+                                  )),
+                              new FlatButton(
+                                  padding: new EdgeInsets.all(0.0),
+                                  onPressed: () {
+                                    swipeRight();
+                                    new Timer(Duration(milliseconds: 100), () => dismissImg(img));
+                                    // dismissImg(img);
+                                  },
+                                  child: new Container(
+                                    height: screenSize.height/17,
+                                    width: screenSize.width / 2.8,
+                                    alignment: Alignment.center,
+                                    decoration: new BoxDecoration(
+                                      color: Colors.cyan,
+                                      borderRadius:
+                                          new BorderRadius.circular(60.0),
+                                    ),
+                                    child: new Text(
+                                      "True",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        letterSpacing: 3,
+                                        fontFamily: 'Niagaraphobia'),
+                                    ),
+                                  ))
+                            ],
+                          ))]
                   ),
                   ),
                 ),
