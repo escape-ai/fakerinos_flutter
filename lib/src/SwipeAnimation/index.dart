@@ -34,18 +34,13 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   // News data
   List articlesDescription; 
   List articlesImage;
+  List articlesHeadline;
   Cards fetchedCards; 
   
 
   void _fetchCardsData(int deckPk) async {
     print("fetching cards data"); 
-    // final response = await get("https://fakerinos.herokuapp.com/api/articles/article/1", 
-    // headers: {HttpHeaders.authorizationHeader: "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"});
-    // dynamic fetchedCardsJson = _articles.map((pk) => await get("https://fakerinos.herokuapp.com/api/articles/article/${pk}", 
-    // headers: {HttpHeaders.authorizationHeader: "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"}).then(
-    //   (r) => jsonDecode(r.body)
-    // ));
-    
+
     token = await getMobileToken(); 
 
     final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/$deckPk/articles/", 
@@ -59,22 +54,10 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     setState((){
       articlesImage = fetchedCards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
       articlesDescription = fetchedCards.cards.map((card) => card.description).toList();
-    });
+      articlesHeadline = fetchedCards.cards.map((card) => card.title).toList();
 
-    // for (int i =0; i< _articles.length; i++){
-    //   print(_articles[i]);
-    //   final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/1/articles/", 
-    //   headers: {
-    //   HttpHeaders.authorizationHeader: 
-    // "Token $token"});
-    // // print(response.body);
-    // var decodedJson = jsonDecode(response.body);
-    // fetchedCardsJson.add(decodedJson);
-    // } 
-    // print(fetchedCardsJson);
-    // Cards cards = Cards.fromJson(fetchedCardsJson);
-    // // print(cards.toJson().toString());
-    
+      print("headlines" + articlesHeadline.toString());
+    });
     
     print("data2" + articlesDescription.toString());
    }
@@ -165,7 +148,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
       await _buttonController.forward();
     } on TickerCanceled {}
   }
-//choice:swipe right=0,left=1
+//choice:swipe right=1,left=0
 //answer:correct:1;wrong=0
   dismissImg(DecorationImage img) {
     setState(() {
@@ -184,7 +167,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
       int answer=data3[articlesImage.indexOf(img)];
       if (answer==choice){result++;}
       articlesImage.remove(img);
-      selectedData.add(img);
+      // selectedData.add(img);
       
 
     });
@@ -224,8 +207,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
           margin: const EdgeInsets.all(15.0),
           //TODO:icon to access other functions in the game, see avatar or settings...
           child: new Icon(
-            Icons.view_agenda, ////result bar
-            color: Colors.cyan,
+            Icons.question_answer, ////result bar
+            color: Colors.white,
             size: 30.0,
           ),
         ),
@@ -240,8 +223,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                 margin: const EdgeInsets.all(15.0),
                 //TODO:exit current game button
                 child: new Icon(
-                  Icons.clear, //exit corrent game
-                  color: Colors.cyan,
+                  Icons.clear, //exit current game
+                  color: Colors.white,
                   size: 30.0,
                 )),
           ),
@@ -250,12 +233,14 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
         title: new Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new Text(
-              "Questions",
-              style: new TextStyle(
-                  fontSize: 12.0,
-                  letterSpacing: 3.5,
-                  fontWeight: FontWeight.bold),
+            new Padding(
+              padding: EdgeInsets.all(10),
+              child: new Text(
+                "SINGLE PLAYER",
+                style: new TextStyle(
+                    fontSize: 14.0,
+                    letterSpacing: 3,
+                    fontWeight: FontWeight.bold)),
             ),
             new Container(
               width: 15.0,
@@ -273,13 +258,12 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
           ],
         ),
       ),
-      body: 
-    
-          new Container(
-            color: new Color.fromRGBO(30, 94, 175, 1.0),
 
+
+      body: new Container(
+            color: new Color.fromRGBO(30, 94, 175, 0.50),
             ///background color
-            alignment: Alignment.center,
+            // alignment: Alignment.topCenter,
             child: dataLength > 0 ?
                 articlesDescription == null ? 
                 RefreshProgressIndicator():
@@ -287,6 +271,9 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                     alignment: AlignmentDirectional.center,
                     children: articlesImage.map((item) {
                       if (articlesImage.indexOf(item) == dataLength - 1) {
+                        int idx = articlesImage.indexOf(item);
+                        String currentDescription = articlesDescription[articlesImage.indexOf(item)];
+
                         return cardDemo(
                             item,
                             bottom.value,
@@ -301,7 +288,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                             addImg,
                             swipeRight,
                             swipeLeft,
-                            articlesDescription[articlesImage.indexOf(item)],
+                            currentDescription * 2,
+                            articlesHeadline[idx]
                             
 
                             );
