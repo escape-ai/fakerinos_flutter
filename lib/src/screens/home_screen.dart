@@ -15,29 +15,32 @@ class HomeScreen extends StatefulWidget{
     }
 }
 
-
-
-
 class HomeStateScreen extends State<HomeScreen> {
   int _currentIndex = 0; 
   int _selectedDrawerIndex = -1;
   String initials = "";
+  String username; 
+  String email; 
+  String name;
 
 
   void initState() {
-   print("INITIALS ____");
-   print(initials);
-   getInitials();
+  
+   loadDataFromSharedPreferences();
 
    super.initState();
 }
-  void getInitials() async {
+  void loadDataFromSharedPreferences() async {
   
   String firstName = await getFirstName();
   String lastName = await getLastName();
+  username = await getUsername(); 
+  
+  name = firstName + " " + lastName; 
+  email = name + "@gmail.com";
 
   setState((){
-    initials = firstName[0] + lastName[0];
+    initials = firstName[0].toUpperCase() + lastName[0].toUpperCase();
   });
   
 }
@@ -93,7 +96,7 @@ class HomeStateScreen extends State<HomeScreen> {
         ),
         body: _children[_currentIndex], 
     
-      drawer: buildDrawerWidget(context, initials),
+      drawer: buildDrawerWidget(context, name, initials, username, email),
       
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped, 
@@ -123,7 +126,7 @@ class HomeStateScreen extends State<HomeScreen> {
 
 
 // https://medium.com/@kashifmin/flutter-setting-up-a-navigation-drawer-with-multiple-fragments-widgets-1914fda3c8a8
-  Widget buildDrawerWidget(BuildContext context, String initials) {
+  Widget buildDrawerWidget(BuildContext context, String name, String initials, String username, String email) {
   
 
     return Drawer(
@@ -133,12 +136,12 @@ class HomeStateScreen extends State<HomeScreen> {
         children: <Widget>[
           Container( 
             child: UserAccountsDrawerHeader(
-            accountName: new Text("Lionell Loh"),
-            accountEmail: new Text("lionellloh@gmail.com"),
+            accountName: new Text(name),
+            accountEmail: new Text(email),
             currentAccountPicture: new CircleAvatar(
               backgroundColor: Colors.black, 
               child: Text(initials,
-              textScaleFactor: 1.5,)
+              textScaleFactor: 2,)
             ),
           )),
           new ListTile(
