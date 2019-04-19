@@ -24,7 +24,7 @@ Positioned cardDemoDummy(
         width: screenSize.width / 1.2 + cardWidth,
         height: screenSize.height / 1.7,
         decoration: new BoxDecoration(
-          color: new Color.fromRGBO(121, 114, 173, 1.0),
+          color: new Color.fromRGBO(140, 120, 180, 1.0),
           borderRadius: new BorderRadius.circular(8.0),
         ),
         child: new Column(
@@ -43,7 +43,7 @@ Positioned cardDemoDummy(
                 width: screenSize.width / 1.2 + cardWidth,
                 height: screenSize.height / 1.7 - screenSize.height / 2.2,
                 alignment: Alignment.center,
-                child: Text('second fake news'),
+                child: Text('Loading...'),
                 //child: new Row(
                   //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   // children: <Widget>[

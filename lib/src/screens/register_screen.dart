@@ -5,6 +5,7 @@ import '../screens/interest_screen.dart';
 import 'dart:convert';
 import "./websockets.dart";
 import './sharedPreferencesHelper.dart';
+import './camera_screen.dart';
 
 // This is the join game screen
 import "./joinGame.dart"; 
@@ -34,16 +35,17 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
       child: Form(
         key: formKey,
         child: Column(children: [
-          Container(margin: EdgeInsets.only(top: 120.0)),
+          Container(margin: EdgeInsets.only(top: MediaQuery.of(context).size.width/10 * 3)),
           usernameField(),
           emailField(),
           passwordField(),
           confirmPasswordField(),
-          Container(margin: EdgeInsets.only(top: 120.0)),
+          Container(margin: EdgeInsets.only(top: MediaQuery.of(context).size.width/10 )),
           submitButton(),
           welcomePageButton(),
-          socketButton(),
-          multiplayerGameButton()
+          // socketButton(),
+          multiplayerGameButton(),
+          cameraButton()
           
         ]),
       ),
@@ -205,19 +207,19 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
         });
   }
 
-  Widget socketButton() {
-    return RaisedButton(
-        child: Text("SocketConnection"),
-        color: Colors.blueGrey,
-        onPressed: () {
-          print("pressed");
+  // Widget socketButton() {
+  //   return RaisedButton(
+  //       child: Text("SocketConnection"),
+  //       color: Colors.blueGrey,
+  //       onPressed: () {
+  //         print("pressed");
           
-            Navigator.push(
-              context,
-              new MaterialPageRoute(builder: (context) => new WebSocketScreen()),
-            );
+  //           Navigator.push(
+  //             context,
+  //             new MaterialPageRoute(builder: (context) => new WebSocketScreen()),
+  //           );
         
-        }); }
+  //       }); }
 
   Widget multiplayerGameButton() {
     return RaisedButton(
@@ -229,6 +231,21 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
             Navigator.push(
               context,
               new MaterialPageRoute(builder: (context) => new JoinGame()),
+            );
+        
+        });
+  } 
+
+  Widget cameraButton() {
+    return RaisedButton(
+        child: Text("camera"),
+        color: Colors.blueGrey,
+        onPressed: () {
+          print("pressed");
+          
+            Navigator.push(
+              context,
+              new MaterialPageRoute(builder: (context) => new TakePictureScreen()),
             );
         
         });

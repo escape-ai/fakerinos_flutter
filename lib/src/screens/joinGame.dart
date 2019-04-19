@@ -83,23 +83,21 @@ class _JoinGameState extends State<JoinGame> {
   void registerInSocket() async {
 
     username = await getUsername(); 
-    print("USERNAME:::::");
     print(username);
     token = await getMobileToken();
 
-    Map <String, String> headers = {
-      "Authorization": 
-    "Token $token"
-    };
-    //  channel = IOWebSocketChannel.connect('ws://localhost:8000/wds/chat/lobby/'); 
-    channel = IOWebSocketChannel.connect('wss://fakerinos-staging.herokuapp.com/ws/rooms/',
-              headers: headers
-      );
-     var payload = {
-       "action": "admin",
-       "message": "request_to_join" 
-     };
-     channel.sink.add(json.encode(payload));
+    // Map <String, String> headers = {
+    //   "Authorization": 
+    // "Token $token"
+    // };
+    // channel = IOWebSocketChannel.connect('ws://10.12.198.226:5000/ws/rooms/',
+    //           headers: headers
+    //   );
+    //  var payload = {
+    //    "action": "admin",
+    //    "message": "request_to_join" 
+    //  };
+    //  channel.sink.add(json.encode(payload));
     //  add a server acknowledge
     
      

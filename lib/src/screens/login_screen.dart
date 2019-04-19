@@ -134,9 +134,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
       
       setMobileToken(token);
       setUsername(username);
-      print("Getting username...");
-      String lala = await getUsername(); 
-      print(lala);
+      
       
       setState(() {
           _isLoading = false;               
