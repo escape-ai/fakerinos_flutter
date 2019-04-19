@@ -122,7 +122,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         tappedDeck = decksData.decks[itemIndex];
         // print("[Default Screen] " +  "articles:" + tappedDeck.articles.toString());
         Navigator.push(context,
-        new MaterialPageRoute(builder: (context)=> CardDemo(articles: tappedDeck.articles)));
+        new MaterialPageRoute(builder: (context)=> CardDemo(deckPk: tappedDeck.pk)));
         },
         onDoubleTap: (){ 
           doubleTappedDeck = decksData.decks[itemIndex]; 
@@ -185,7 +185,9 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
                       
                       color: Colors.yellow), 
                   child: new Icon(
+                    
                     Icons.star,
+                  
                     size: 30,)),
 
                   new Text(

@@ -14,30 +14,30 @@ import 'package:flutter/scheduler.dart' show timeDilation;
 
 class CardDemo extends StatefulWidget {
   @override
-  List<dynamic> articles;
-  CardDemo({Key key, @required this.articles}) : super(key: key);
-  CardDemoState createState() => new CardDemoState(articles);
+  int deckPk;
+  CardDemo({Key key, @required this.deckPk}) : super(key: key);
+  CardDemoState createState() => new CardDemoState(deckPk);
   
 }
 
 class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   // Articles is a variable passed from the previous screen
-  List<dynamic> _articles;
+  int deckPk;
   List<dynamic> fetchedCardsJson = []; 
   String token;
 
-  // News data
-  List data2; 
-  List data;
-  Cards fetchedCards; 
-  CardDemoState(List<dynamic> articles){
-    this._articles = articles;
-    print("[CardDemoState]:" + _articles.toString());
+  CardDemoState(int deckPk){
+    this.deckPk = deckPk;
+    print("[Deck pk to be queried]:" + deckPk.toString());
   }
 
+  // News data
+  List articlesDescription; 
+  List articlesImage;
+  Cards fetchedCards; 
   
 
-  void _fetchCardsData() async {
+  void _fetchCardsData(int deckPk) async {
     print("fetching cards data"); 
     // final response = await get("https://fakerinos.herokuapp.com/api/articles/article/1", 
     // headers: {HttpHeaders.authorizationHeader: "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"});
@@ -48,7 +48,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     
     token = await getMobileToken(); 
 
-    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/1/articles/", 
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/$deckPk/articles/", 
       headers: {
       HttpHeaders.authorizationHeader: 
     "Token $token"});
@@ -57,8 +57,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     fetchedCards = Cards.fromJson(decodedJson);
 
     setState((){
-      data = fetchedCards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
-      data2 = fetchedCards.cards.map((card) => card.description).toList();
+      articlesImage = fetchedCards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
+      articlesDescription = fetchedCards.cards.map((card) => card.description).toList();
     });
 
     // for (int i =0; i< _articles.length; i++){
@@ -76,7 +76,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     // // print(cards.toJson().toString());
     
     
-    print("data2" + data2.toString());
+    print("data2" + articlesDescription.toString());
    }
   
   AnimationController _buttonController;
@@ -94,7 +94,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
 
   List selectedData = [];
   void initState() {
-     _fetchCardsData(); 
+     _fetchCardsData(deckPk); 
     super.initState();
 
     _buttonController = new AnimationController(
@@ -112,8 +112,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     rotate.addListener(() {
       setState(() {
         if (rotate.isCompleted) {
-          var i = data.removeLast(); //************** */
-          data.insert(0, i); //********************** */
+          var i = articlesImage.removeLast(); //************** */
+          articlesImage.insert(0, i); //********************** */
 
           // var j = data2.removeLast();//************** */
           // data2.insert(0, j);
@@ -170,9 +170,9 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   dismissImg(DecorationImage img) {
     setState(() {
       choice=0;
-      int answer=data3[data.indexOf(img)];
+      int answer=data3[articlesImage.indexOf(img)];
       if (answer==choice){result++;}
-      data.remove(img);
+      articlesImage.remove(img);
       
 
     });
@@ -181,9 +181,9 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   addImg(DecorationImage img) {
     setState(() {
       choice=1;
-      int answer=data3[data.indexOf(img)];
+      int answer=data3[articlesImage.indexOf(img)];
       if (answer==choice){result++;}
-      data.remove(img);
+      articlesImage.remove(img);
       selectedData.add(img);
       
 
@@ -211,7 +211,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     timeDilation = 0.4;
     
     double initialBottom = 15.0;
-    var dataLength = data == null? 1 : data.length;
+    var dataLength = articlesImage == null? 1 : articlesImage.length;
     double backCardPosition = initialBottom + (dataLength - 1) * 10 + 10;
     double backCardWidth = -10.0;
     return (new Scaffold(
@@ -281,12 +281,12 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
             ///background color
             alignment: Alignment.center,
             child: dataLength > 0 ?
-                data2 == null ? 
+                articlesDescription == null ? 
                 RefreshProgressIndicator():
                  new Stack(
                     alignment: AlignmentDirectional.center,
-                    children: data.map((item) {
-                      if (data.indexOf(item) == dataLength - 1) {
+                    children: articlesImage.map((item) {
+                      if (articlesImage.indexOf(item) == dataLength - 1) {
                         return cardDemo(
                             item,
                             bottom.value,
@@ -301,7 +301,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                             addImg,
                             swipeRight,
                             swipeLeft,
-                            data2[data.indexOf(item)],
+                            articlesDescription[articlesImage.indexOf(item)],
                             
 
                             );
