@@ -1,13 +1,13 @@
 class Cards {
-  List <IndivCard> indivCards;
+  List <IndivCard> cards;
 
-  Cards(this.indivCards); 
+  Cards(this.cards); 
 
   Cards.fromJson(List<dynamic> json){
     if (json != null) {
-      indivCards = new List<IndivCard>();
+      cards = new List<IndivCard>();
       json.forEach((v) {
-        indivCards.add(new IndivCard.fromJson(v)); 
+        cards.add(new IndivCard.fromJson(v)); 
       });
     }
   }
@@ -15,8 +15,8 @@ class Cards {
   Map<String, dynamic> toJson(){
 
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.indivCards != null){
-      data["indivCards"] = this.indivCards.map((v) => v.toJson);
+    if (this.cards != null){
+      data["cards"] = this.cards.map((v) => v.toJson);
     }
 
     return data; 
@@ -28,17 +28,17 @@ class IndivCard{
   String title;
   String description; 
   String source;
-  String imageUrl;
+  String thumbnail_url;
   String rating;
   String author; 
 
-  IndivCard(this.id, this.title, this.description, this.source, this.imageUrl, this.rating, this.author); 
+  IndivCard(this.id, this.title, this.description, this.source, this.thumbnail_url, this.rating, this.author); 
 
   IndivCard.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['headline'];
     rating = json['rating'];
-    imageUrl = json['thumbnail_url'];
+    thumbnail_url = json['thumbnail_url'];
     author = json['author'];
     description = json["text"]; 
   }
@@ -48,7 +48,7 @@ class IndivCard{
     data['id'] = this.id; 
     data['headline'] = this.title; 
     data['rating'] = this.rating; 
-    data['thumbnail_url'] = this.imageUrl; 
+    data['thumbnail_url'] = this.thumbnail_url; 
     data['author'] = this.author; 
     data['text'] = this.description; 
 

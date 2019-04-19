@@ -7,6 +7,7 @@ import './data.dart';
 import './dummyCard.dart';
 import './activeCard.dart';
 import '../../src/screens/partials/cards.dart';
+import '../../src/screens/sharedPreferencesHelper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
@@ -23,6 +24,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   // Articles is a variable passed from the previous screen
   List<dynamic> _articles;
   List<dynamic> fetchedCardsJson = []; 
+  String token;
+
   // News data
   List data2; 
   List data;
@@ -43,23 +46,35 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     //   (r) => jsonDecode(r.body)
     // ));
     
-    for (int i =0; i< _articles.length; i++){
-      print(_articles[i]);
-      final response = await get("https://fakerinos.herokuapp.com/api/articles/article/${_articles[i]}", 
+    token = await getMobileToken(); 
+
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/1/articles/", 
       headers: {
       HttpHeaders.authorizationHeader: 
-    "Token 3ade3638c37c5370ab3c0679a7a8107eee133ed7"});
-    // print(response.body);
+    "Token $token"});
+
     var decodedJson = jsonDecode(response.body);
-    fetchedCardsJson.add(decodedJson);
-    } 
-    print(fetchedCardsJson);
-    Cards cards = Cards.fromJson(fetchedCardsJson);
-    // print(cards.toJson().toString());
+    fetchedCards = Cards.fromJson(decodedJson);
+
     setState((){
-      data = fetchedCardsJson.map((json) => new DecorationImage(image: new NetworkImage(json["thumbnail_url"]))).toList();
-      data2 = fetchedCardsJson.map((json) => json["text"]).toList();
+      data = fetchedCards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
+      data2 = fetchedCards.cards.map((card) => card.description).toList();
     });
+
+    // for (int i =0; i< _articles.length; i++){
+    //   print(_articles[i]);
+    //   final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/1/articles/", 
+    //   headers: {
+    //   HttpHeaders.authorizationHeader: 
+    // "Token $token"});
+    // // print(response.body);
+    // var decodedJson = jsonDecode(response.body);
+    // fetchedCardsJson.add(decodedJson);
+    // } 
+    // print(fetchedCardsJson);
+    // Cards cards = Cards.fromJson(fetchedCardsJson);
+    // // print(cards.toJson().toString());
+    
     
     print("data2" + data2.toString());
    }
