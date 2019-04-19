@@ -37,7 +37,7 @@ class HomeStateScreen extends State<HomeScreen> {
   username = await getUsername(); 
   
   name = firstName + " " + lastName; 
-  email = name + "@gmail.com";
+  email = firstName + lastName + "@gmail.com";
 
   setState((){
     initials = firstName[0].toUpperCase() + lastName[0].toUpperCase();
