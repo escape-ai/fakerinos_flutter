@@ -6,6 +6,7 @@ import 'dart:io';
 import '../sharedPreferencesHelper.dart';
 import 'dart:convert';
 import 'dart:async';
+import '../../SwipeAnimation/multiplayer_game.dart';
 
 class SearchOpponent extends StatefulWidget{
   createState() {
@@ -36,15 +37,26 @@ class SearchOpponentState extends State<SearchOpponent> {
     channel = IOWebSocketChannel.connect('ws://fakerinos.herokuapp.com/ws/rooms/',
               headers: {HttpHeaders.authorizationHeader: "Token $token" }
       );
-
+  
     channel.stream.listen((data) => setState(() {
       var decodedData = json.decode(data);
+      print(decodedData);
       interpretMessage(decodedData);
       // String message = json.decode(data)["message"];
       // print(json.decode(data));
       
     }));
     
+  }
+
+  void join() async {
+    print("Requesting to join the game");
+    token = await getMobileToken();
+    var payload = {
+       "action": "admin",
+       "message": "request_to_join" 
+     };
+    channel.sink.add(json.encode(payload));
   }
 
   void interpretMessage(json){
@@ -57,8 +69,10 @@ class SearchOpponentState extends State<SearchOpponent> {
           case("connection success"): {
             setState(() {
               _isConnected = true;
-              status = "Connected, searching for other players"; 
+              status = "Connected, requesting to join game"; 
                         });
+
+            join();
           }
           break;
 
@@ -67,10 +81,21 @@ class SearchOpponentState extends State<SearchOpponent> {
               print("GAME IS READY");
             });
           }
+          break; 
+
+          case("There is something wrong with your connection. Please try again"):{
+              setState((){
+                status = "Something wrong with connection";
+              });
+          }
+
+          
         }
       }
     }
   }
+
+  
 
 
   @override
@@ -114,6 +139,19 @@ class SearchOpponentState extends State<SearchOpponent> {
               ],
             ),
             const SizedBox(height: 48.0),
+
+            new RaisedButton(
+              child: Text('Start Game'), 
+
+              onPressed: ((){
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(builder: (context) => new MultiplayerGame()),
+            );
+
+              }),   
+
+            )
 
 
           ],
