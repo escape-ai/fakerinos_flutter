@@ -9,6 +9,7 @@ import 'dart:async';
 import '../../SwipeAnimation/multiplayer_game.dart';
 import '../webSocketHelper.dart';
 import '../GameCommunication.dart';
+import "../partials/cards.dart";
 
 class SearchOpponent extends StatefulWidget{
   createState() {
@@ -18,6 +19,7 @@ class SearchOpponent extends StatefulWidget{
 
 class SearchOpponentState extends State<SearchOpponent> {
 
+  Cards cards;
   
   bool _isConnected = false;
   bool _opponentFound = false;
@@ -31,12 +33,11 @@ class SearchOpponentState extends State<SearchOpponent> {
     super.initState();
     print("Initializing search opponent");
     game.addListener(preGameListener);
-    // game.addListener(checkOpponent);
-    // connect();
+    
   }
   
   void preGameListener(data){
-    print("Callback: checkConnection called");
+    // print("Callback: checkConnection called");
     print(data);
       if (data["message"]== "Connection success"){
         setState(() {
@@ -55,17 +56,19 @@ class SearchOpponentState extends State<SearchOpponent> {
         game.send("admin", "request_to_join");
       }
 
-      else if (data["action"] == "card"){
-        String card = data["message"];
-        cardJson = json.decode(card);
+      else if (data["pk"] != null){
+        print("[SearchOpponent] found a card"); 
+        cards = Cards.fromJson([data]);
+      
       }
+
   }
 
   
   @override 
   void dispose() {
       // TODO: implement dispose
-      print("DISPOSE");
+      print("Disposing [searchOpponent]");
       game.quit();
       super.dispose();
     }
@@ -105,8 +108,6 @@ class SearchOpponentState extends State<SearchOpponent> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,7 +115,7 @@ class SearchOpponentState extends State<SearchOpponent> {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.blue[400],
-        title: Text("Dual Mode", style: TextStyle(fontSize: 24.0)),
+        title: Text("Multiplayer Game Set Up", style: TextStyle(fontSize: 24.0)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -154,11 +155,12 @@ class SearchOpponentState extends State<SearchOpponent> {
               child: Text('Start Game'), 
 
               onPressed: ((){
-                print("pressed");
+                print("starting game");
+                game.send("admin", "game_ready");
                 
                 Navigator.push(
                     context,
-                    new MaterialPageRoute(builder: (context) => new MultiplayerGame()),
+                    new MaterialPageRoute(builder: (context) => new MultiplayerGame(cards: cards)),
             );
 
               }),   

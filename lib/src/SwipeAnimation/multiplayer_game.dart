@@ -17,15 +17,13 @@ import '../../src/screens/webSocketHelper.dart';
 import '../../src/screens/GameCommunication.dart';
 
 
-
-
 class MultiplayerGame extends StatefulWidget {
   
-  // MultiplayerGame({Key key, @required this.channel}): super(key:key);
-  // WebSocketChannel channel;
+  MultiplayerGame({Key key, @required this.cards}): super(key:key);
+  Cards cards;
   @override
   // MultiplayerGameState createState() => new MultiplayerGameState(channel);
-  MultiplayerGameState createState() => new MultiplayerGameState();
+  MultiplayerGameState createState() => new MultiplayerGameState(cards);
   
 }
 
@@ -44,9 +42,10 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   List articlesImage;
   List articlesHeadline;
   Cards fetchedCards; 
+  Cards cards; 
   Size screenSize;
 
-  // MultiplayerGameState(this.channel);
+  MultiplayerGameState(this.cards);
 
    Widget timerWidget(){
      return new Container(
@@ -76,19 +75,29 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   int choice=0;
   int result=0;///////////////////
 
-  
-  // List data = imageData;
-  // List data2 = newsData;
   List data3 = trueData;
 
   List selectedData = [];
+
+
+  void loadCards() async{
+    print("[Multiplayer Game] Loading cards");
+    setState((){
+      articlesImage = cards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
+      articlesDescription = cards.cards.map((card) => card.description).toList();
+      articlesHeadline = cards.cards.map((card) => card.title).toList();
+
+      print("headlines" + articlesHeadline.toString());
+    });
+  }
+
+
   void initState() {
     print("Initializing Multiplayer Game");
+    print(cards);
 
-    game.addListener((data)=> print(data));
-    // channel.stream.asBroadcastStream().listen((data) => setState(()=>
-    //   print(json.decode(data))));
-
+    game.addListener((data)=> receiveCard(data));
+    loadCards(); 
     super.initState();
     
     _buttonController = new AnimationController(
@@ -147,6 +156,15 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
       ),
     );}
   
+  void receiveCard(data){
+    if (data["pk"] != null){
+      print(data["pk"]);
+      print("receiving card");
+      
+      // var cardJson = json.decode(data);
+      // print(cardJson);
+    }    
+  }
 
   void countdown(int numSeconds){
     print("countdown() called");
