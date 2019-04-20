@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intro_views_flutter/Models/page_view_model.dart';
 import 'package:intro_views_flutter/intro_views_flutter.dart';
 import './interest_screen.dart';
+import './particulars_screen.dart';
 
 /// This is the main method of app, from here execution starts.
 // void main() => runApp(App());
@@ -52,7 +53,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
     ),
     PageViewModel(
       pageColor: const Color(0xFF0097A7),
-      iconImageAssetPath: 'assets/taxi-driver.png',
+      iconImageAssetPath: 'assets/back0.jpg',
       body: Text(
         'With training,you will be perceptive and able to combat fakenews.',
       ),
@@ -82,7 +83,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => InterestScreen(),
+                    builder: (context) => ParticularsScreen(),
                   ), //MaterialPageRoute
                 );
               },

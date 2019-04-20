@@ -39,7 +39,6 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
     
     _fetchData(); 
   }
-  
 
     _fetchData() async {
       

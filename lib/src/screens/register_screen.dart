@@ -7,6 +7,7 @@ import "./websockets.dart";
 import './sharedPreferencesHelper.dart';
 import './camera_screen.dart';
 import './partials/searchOpponent.dart';
+import './onboarding_screen.dart';
 
 // This is the join game screen
 import "./joinGame.dart"; 
@@ -158,7 +159,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
       _isLoading = false; 
       Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new InterestScreen()),
+              new MaterialPageRoute(builder: (context) => new OnboardingScreen()),
             );
     }else{
       

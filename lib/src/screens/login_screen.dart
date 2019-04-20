@@ -7,6 +7,8 @@ import 'dart:io';
 import './particulars_screen.dart';
 import './sharedPreferencesHelper.dart';
 import './onboarding_screen.dart';
+import "./partials/default.dart";
+import '../screens/home_screen.dart';
 
 
 
@@ -25,6 +27,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
   String password = ''; 
   String token; 
   var _isLoading = false; 
+  bool _isOnboarded;
 
   Widget build(context) {
     return Scaffold(
@@ -128,10 +131,10 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
     //Success
     if (response.statusCode == 200){
       token = parsedResponse["key"];
-      final userData = await get("$url$username/", headers: {
+      final userData = await get("https://fakerinos.herokuapp.com/api/accounts/profile/$username/", headers: {
         HttpHeaders.authorizationHeader: "Token $token"}); 
-      print(userData);
-      
+      _isOnboarded = json.decode(userData.body)["onboarded"];
+      print("Onboarded: $_isOnboarded");
       setMobileToken(token);
       setUsername(username);
       
@@ -141,7 +144,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
             });
       Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new ParticularsScreen()),
+              new MaterialPageRoute(builder: (context) => _isOnboarded? new HomeScreen(): new OnboardingScreen()),
             );
     }else{
       setState(() {
