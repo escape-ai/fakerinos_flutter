@@ -4,8 +4,13 @@ import '../screens/login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget { 
 
+  
+
   @override
   Widget build(context){
+    Size screenSize = MediaQuery.of(context).size;
+    double screenUnitHeight = screenSize.height/100; 
+    double screenUnitWidth = screenSize.width/100; 
     return new Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -14,9 +19,9 @@ class WelcomeScreen extends StatelessWidget {
           stops: [0.25, 0.75],
           colors: [Color(0xAA03B2FF), Color(0xAA0518FF) ]
         )),
-        child: new ListView(children: <Widget>[
+        child: new Column(children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 200.0),
+            padding: EdgeInsets.only(top: screenUnitHeight * 15, bottom: screenUnitHeight * 5),
             child: Center(
               child: Text("FAKERINOS!", 
                 textDirection: TextDirection.ltr,
@@ -27,9 +32,23 @@ class WelcomeScreen extends StatelessWidget {
               )
             )
         ),
+      new Center(
+        child: Container(
+          // padding: EdgeInsets.only(top: screenUnitHeight * 5),
+            width: screenUnitWidth * 50,
+            height: screenUnitWidth * 50,
+            decoration: new BoxDecoration(
+                // shape: BoxShape.circle,
+                image: new DecorationImage(
+                    fit: BoxFit.fill,
+                    image: new ExactAssetImage(
+                        "assets/logo.png")
+                )),
+      ),
+      ),
+
         Container(
-            
-            padding: EdgeInsets.only(top: 200.0),
+            padding: EdgeInsets.only(top: screenUnitHeight * 10),
             child: Center(
               child: Text(
                 
@@ -45,7 +64,7 @@ class WelcomeScreen extends StatelessWidget {
         ),
 
         Container(
-          padding: EdgeInsets.only(top: 70.0),
+          padding: EdgeInsets.only(top: screenUnitHeight * 3),
           child: ButtonTheme(
             key: Key('Sign up'),
             minWidth: 350,
