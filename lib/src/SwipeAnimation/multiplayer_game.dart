@@ -8,22 +8,11 @@ import './dummyCard.dart';
 import './activeCard.dart';
 import '../../src/screens/partials/cards.dart';
 import '../../src/screens/sharedPreferencesHelper.dart';
+import 'package:countdown/countdown.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
-class Countdown extends AnimatedWidget {
-  Countdown({ Key key, this.animation }) : super(key: key, listenable: animation);
-  Animation<int> animation;
-
-  @override
-  build(BuildContext context){
-    return new Text(
-      animation.value.toString(),
-      style: new TextStyle(fontSize: 50.0),
-    );
-  }
-}
 
 
 class MultiplayerGame extends StatefulWidget {
@@ -37,14 +26,17 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   int deckPk = 2; 
   List<dynamic> fetchedCardsJson = []; 
   String token;
-  AnimationController _controller;
-  int kStartValue = 10;
-
+  int val = 10;
+  CountDown cd;
+  bool canStart = false; 
+  
   // News data
   List articlesDescription; 
   List articlesImage;
   List articlesHeadline;
   Cards fetchedCards; 
+  Size screenSize;
+  
   
 
   void _fetchCardsData(int deckPk) async {
@@ -70,6 +62,28 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
     });
     
     print("Articles data:" + articlesDescription.toString());
+    countdown(10);
+    
+   }
+
+
+   Widget timerWidget(){
+     return new Container(
+       height: screenSize.height/100 * 8,
+        child: new Center(
+          child: new Text(val == 0 ? "TIMEOUT" : val.toString(), style: new TextStyle(fontSize: 40))));
+   }
+   
+
+   Widget completeAlert(){
+     return new AlertDialog(
+          title: new Text("Well done!"),
+          content: new Text("Not enough? Try out more decks on the home page! "),
+          actions: <Widget> [new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                
+                Navigator.of(context).pop();})]);
    }
   
   AnimationController _buttonController;
@@ -80,6 +94,7 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   int flag = 0;
   int choice=0;
   int result=0;///////////////////
+
   
   // List data = imageData;
   // List data2 = newsData;
@@ -87,14 +102,9 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
 
   List selectedData = [];
   void initState() {
+    
      _fetchCardsData(deckPk); 
     super.initState();
-
-    
-    _controller = new AnimationController(
-      vsync: this,
-      duration: new Duration(seconds: 25),
-    );
     
     _buttonController = new AnimationController(
         duration: new Duration(milliseconds: 1000), vsync: this);
@@ -153,6 +163,23 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
     );
   }
 
+  void countdown(int numSeconds){
+    print("countdown() called");
+    cd = new CountDown(new Duration(seconds: numSeconds));
+    StreamSubscription sub = cd.stream.listen(null);
+    sub.onDone(() {
+      print("removing");
+      swipeLeft();
+    });
+    sub.onData((d) {
+      if (val == d.inSeconds) return;
+      print("onData: d.inSeconds=${d.inSeconds}");
+      setState((){
+        val = d.inSeconds;
+      });
+    });
+  }
+
   @override
   void dispose() {
     _buttonController.dispose();
@@ -189,6 +216,12 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
     });
   }
 
+  changeTime(int d){
+    setState((){
+      val = d;
+    });
+  }
+
   swipeRight() {
     if (flag == 0)
       setState(() {
@@ -205,31 +238,20 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
     _swipeAnimation();
   }
 
-  Widget timerWidget(){
-    return new Container(
-      height: 200, 
-      width: 200,
-          child: new Countdown(
-            animation: new StepTween(
-              begin: kStartValue,
-              end: 0,
-            ).animate(_controller),
-          ),
-        );
-  }
 
   @override
   Widget build(BuildContext context) {
+    screenSize = MediaQuery.of(context).size;
     timeDilation = 0.4;
     
     double initialBottom = 15.0;
     var dataLength = articlesImage == null? 1 : articlesImage.length;
     double backCardPosition = initialBottom + (dataLength - 1) * 10 + 10;
     double backCardWidth = -10.0;
-    return (new Scaffold(
-      floatingActionButton: new FloatingActionButton(
-        onPressed: () => _controller.forward(from: 0.0)
-      ),
+    return new Scaffold(
+      // floatingActionButton: new FloatingActionButton(
+      //   onPressed: () => _controller.forward(from: 0.0)
+      // ),
       appBar: new AppBar(
         elevation: 0.0,
         backgroundColor:
@@ -291,17 +313,20 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
         ),
       ),
 
-
-      body: Column(
-        children: [timerWidget(),
+          body: 
           new Container(
+            height: screenSize.height/10 * 8,
+            width: screenSize.width,
             color: new Color.fromRGBO(30, 94, 175, 0.50),
-            ///background color
-            // alignment: Alignment.topCenter,
-            child: dataLength > 0 ?
+            child: new Column(children: <Widget>[
+              timerWidget(),
+              dataLength > 0 ?
                 articlesDescription == null ? 
-                RefreshProgressIndicator():
-                 new Stack(
+                Center(child: RefreshProgressIndicator()):
+                 new Container(
+                   height: screenSize.height/10 * 7,
+                   width: screenSize.width,
+                   child: Stack(
                     alignment: AlignmentDirectional.center,
                     children: articlesImage.map((item) {
                       if (articlesImage.indexOf(item) == dataLength - 1) {
@@ -309,6 +334,8 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
                         String currentDescription = articlesDescription[articlesImage.indexOf(item)];
 
                         return cardDemo(
+                            cd,
+                            countdown,
                             item,
                             bottom.value,
                             right.value,
@@ -324,8 +351,6 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
                             swipeLeft,
                             currentDescription * 2,
                             articlesHeadline[idx]
-                            
-
                             );
                       } else {
                         backCardPosition = backCardPosition - 10;
@@ -334,28 +359,18 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
                         return cardDemoDummy(item, backCardPosition, 0.0, 0.0,
                             backCardWidth, 0.0, 0.0, context);
                       }
-                    }).toList()):
-            AlertDialog(
-          title: new Text("Well done!"),
-          content: new Text("Not enough? Try out more decks on the home page! "),
-          actions: <Widget> [new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                
-                Navigator.of(context).pop();})])
-
-                  
-          ),])
-    
-
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: (){},
-      //   //tooltip: 'Increment',
-      //   icon: Icon(Icons.check),
-      //   label:Text(result.toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
-      // ),
-    ));
-  }
-
+                    }).toList())): completeAlert()
+            
+                 ],
+          )
+        ),
+        
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: (){},
+        //tooltip: 'Increment',
+        icon: Icon(Icons.check),
+        label:Text(result.toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
+      ),
+    );}
   
 } 
