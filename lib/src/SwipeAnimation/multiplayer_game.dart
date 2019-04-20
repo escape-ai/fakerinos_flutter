@@ -5,24 +5,33 @@ import 'dart:io';
 import 'dart:convert';
 import './data.dart';
 import './dummyCard.dart';
-import './activeCard.dart';
+import './multiActiveCard.dart';
 import '../../src/screens/partials/cards.dart';
 import '../../src/screens/sharedPreferencesHelper.dart';
 import 'package:countdown/countdown.dart';
-
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
+// import '../../src/screens/partials/searchOpponent.dart';
+import '../../src/screens/webSocketHelper.dart';
+import '../../src/screens/GameCommunication.dart';
+
 
 
 
 class MultiplayerGame extends StatefulWidget {
+  
+  // MultiplayerGame({Key key, @required this.channel}): super(key:key);
+  // WebSocketChannel channel;
   @override
-  createState() => new MultiplayerGameState();
+  // MultiplayerGameState createState() => new MultiplayerGameState(channel);
+  MultiplayerGameState createState() => new MultiplayerGameState();
   
 }
 
 class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderStateMixin {
   // Articles is a variable passed from the previous screen
+  // final WebSocketChannel channel; 
   int deckPk = 2; 
   List<dynamic> fetchedCardsJson = []; 
   String token;
@@ -36,36 +45,8 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   List articlesHeadline;
   Cards fetchedCards; 
   Size screenSize;
-  
-  
 
-  void _fetchCardsData(int deckPk) async {
-    print("fetching cards data"); 
-
-    token = await getMobileToken(); 
-
-    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/$deckPk/articles/", 
-      headers: {
-      HttpHeaders.authorizationHeader: 
-    "Token $token"});
-
-    var decodedJson = jsonDecode(response.body);
-    print(decodedJson);
-    fetchedCards = Cards.fromJson(decodedJson);
-
-    setState((){
-      articlesImage = fetchedCards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
-      articlesDescription = fetchedCards.cards.map((card) => card.description).toList();
-      articlesHeadline = fetchedCards.cards.map((card) => card.title).toList();
-
-      print("Headlines:" + articlesHeadline.toString());
-    });
-    
-    print("Articles data:" + articlesDescription.toString());
-    countdown(10);
-    
-   }
-
+  // MultiplayerGameState(this.channel);
 
    Widget timerWidget(){
      return new Container(
@@ -73,7 +54,7 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
         child: new Center(
           child: new Text(val == 0 ? "TIMEOUT" : val.toString(), style: new TextStyle(fontSize: 40))));
    }
-   
+  
 
    Widget completeAlert(){
      return new AlertDialog(
@@ -102,8 +83,12 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
 
   List selectedData = [];
   void initState() {
-    
-     _fetchCardsData(deckPk); 
+    print("Initializing Multiplayer Game");
+
+    game.addListener((data)=> print(data));
+    // channel.stream.asBroadcastStream().listen((data) => setState(()=>
+    //   print(json.decode(data))));
+
     super.initState();
     
     _buttonController = new AnimationController(
@@ -160,8 +145,8 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
         parent: _buttonController,
         curve: Curves.bounceOut,
       ),
-    );
-  }
+    );}
+  
 
   void countdown(int numSeconds){
     print("countdown() called");
@@ -373,4 +358,4 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
       ),
     );}
   
-} 
+}
