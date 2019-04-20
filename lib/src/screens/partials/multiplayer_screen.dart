@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "./searchOpponent.dart"; 
 
-
 // import "../loading page/main.dart"
 
 class MultiplayerScreen extends StatefulWidget{
@@ -12,7 +11,6 @@ class MultiplayerScreen extends StatefulWidget{
 }
 
 class MultiplayerScreenState extends State<MultiplayerScreen>{
- 
 
    @override
   Widget build(context){
@@ -69,6 +67,7 @@ class MultiplayerScreenState extends State<MultiplayerScreen>{
             minWidth: 300,
             height: 50,
             child: new RaisedButton(
+            key: Key("enterMultiGame"),
             onPressed: (){
               Navigator.push(context,
               new MaterialPageRoute(builder: (context) => new SearchOpponent()));

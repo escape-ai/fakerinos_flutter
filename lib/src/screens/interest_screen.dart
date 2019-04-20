@@ -6,7 +6,8 @@ import 'package:http/http.dart';
 import 'partials/InterestCards.dart';
 import 'dart:io';
 import './sharedPreferencesHelper.dart';
-import 'dart:ui' as ui; 
+
+
 
 
 class InterestScreen extends StatefulWidget {
@@ -93,6 +94,7 @@ class InterestStateScreen extends State<InterestScreen> {
           },
           label: Text("Skip"),
           icon: Icon(Icons.skip_next),
+          key : Key("skipInterest"),
           
         );
   }
@@ -109,6 +111,7 @@ class InterestStateScreen extends State<InterestScreen> {
             uploadInterests();
             
           },
+          key : Key("nextInterest"),
           
           label: Text(
             "Next " + _savedInterests.length.toString(),
@@ -131,7 +134,9 @@ GestureDetector makeGridCell(String name, String thumbnailUrl){
         } 
         print(_savedInterests);
         })},
-        
+       
+      key : Key("TAP${name}"), //Yunyi
+
       child: Card(
       color: alreadySaved ? Colors.lightBlueAccent : Colors.white,
       

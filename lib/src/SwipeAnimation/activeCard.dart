@@ -3,11 +3,8 @@ import 'dart:math';
 import './detail.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:countdown/countdown.dart';
 
 Positioned cardDemo(
-    CountDown cd,
-    Function changeTime,
     DecorationImage img,
     double bottom,
     double right,
@@ -23,8 +20,6 @@ Positioned cardDemo(
     Function swipeLeft,
     String description,
     String headlines) {
-  
-  int val = 10; 
 
   String truncate(String stringArg, int length){
     if (stringArg.length > length){
@@ -35,33 +30,11 @@ Positioned cardDemo(
     }
   }
 
-  void countdown(int numSeconds){
-    print("countdown() called");
-    cd = new CountDown(new Duration(seconds: numSeconds));
-    StreamSubscription sub = cd.stream.listen(null);
-    sub.onDone(() {
-      dismissImg(img);
-    });
-    sub.onData((d) {
-      if (val == d.inSeconds) return;
-      print("Time left ${d.inSeconds}");
-      changeTime(d);
-    });
-  }
-
-  void initState(){
-
-    print("initing card");
-    countdown(10); 
-
-    
-  }
-
   Size screenSize = MediaQuery.of(context).size;
   String loremText = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec qu...";
   // print("Card");
   return new Positioned(
-    top: screenSize.height/100 * 1,
+    bottom: screenSize.height/7,
     right: flag == 0 ? right != 0.0 ? right : null : null,
     left: flag == 1 ? right != 0.0 ? right : null : null,
     child: new Dismissible(
@@ -178,6 +151,7 @@ Positioned cardDemo(
                                   )),
                               new FlatButton(
                                   padding: new EdgeInsets.all(0.0),
+                                  key: Key("SingleTapTrue"),
                                   onPressed: () {
                                     swipeRight();
                                     new Timer(Duration(milliseconds: 100), () => dismissImg(img));
@@ -194,6 +168,7 @@ Positioned cardDemo(
                                     ),
                                     child: new Text(
                                       "True",
+                                      key: Key("SingleTapFalse"),
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 30,
