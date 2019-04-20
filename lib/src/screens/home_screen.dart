@@ -150,7 +150,7 @@ class HomeStateScreen extends State<HomeScreen> {
             onTap: ()=> {
             print("push is to be implemented"),
             Navigator.push(context,
-            new MaterialPageRoute(builder: (context)=> ProfilePage()))
+            new MaterialPageRoute(builder: (context)=> ProfilePageState()))
             }
           ),
           new ListTile(

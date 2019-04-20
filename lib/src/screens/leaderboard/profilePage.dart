@@ -1,224 +1,297 @@
-import './diagonal_clipper.dart';
-import './task.dart';
-import './player_row.dart';
-import './task_row.dart';
 import 'package:flutter/material.dart';
+import '../sharedPreferencesHelper.dart';
 
-void main() => runApp(new MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: new ProfilePage(),
-    );
+class ProfilePageState extends StatefulWidget {
+  createState(){
+    return ProfilePage(); 
   }
 }
 
-class ProfilePage extends StatefulWidget {
-  ProfilePage({Key key}) : super(key: key);
-
-  @override
-  _ProfilePageState createState() => new _ProfilePageState();
-}
-
-List<Task> tasks = [
-  new Task(
-      name: "PoliticsDeckA",
-      category: "Politics",
-      time: "5pm",
-      color: Colors.cyan,
-      completed: false),
-  new Task(
-      name: "FoodDeckA",
-      category: "Food",
-      time: "3pm",
-      color: Colors.orange,
-      completed: true),
-  new Task(
-      name: "EducationDeckC",
-      category: "Education",
-      time: "2pm",
-      color: Colors.pink,
-      completed: false),
-  new Task(
-      name: "PoliticsDeckC",
-      category: "Politics",
-      time: "12pm",
-      color: Colors.cyan,
-      completed: true),
-  new Task(
-      name: "PoliticsDeckB",
-      category: "Politics",
-      time: "10am",
-      color: Colors.cyan,
-      completed: true),
-];
-
-class _ProfilePageState extends State<ProfilePage> {
-  final double _imageHeight = 256.0;
-
+class ProfilePage extends State<ProfilePageState> {
+  final String _name = "Lionell Loh";
+  final String _level = "Master Player";
+  final String _bio = "\"Combat Fakenews!!!\"";
+  final String _points = "1000";
+  final String _singlemode = "24";
+  final String _dualmode = "450";
+  final List<String> _tags=["Politics","Education","Economics"];
+  final String _rank="1";
+  String firstName; 
+  String lastName; 
+  
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(title: new Text("Profile Page"),
-      leading: new GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: new Container(
-                margin: const EdgeInsets.all(15.0),
-                //TODO:exit current game button
-                child: new Icon(
-                  Icons.arrow_back_ios, //exit corrent game
-                  color: Colors.cyan,
-                  size: 30.0,
-                )),
-          ),),
-      body: new Stack(
+    Size screenSize = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Stack(
         children: <Widget>[
-          _buildTimeline(),
-          _buildIamge(),
-          _buildTopHeader(),
-          _buildProfileRow(),
-          _buildBottomPart(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildIamge() {
-    return new ClipPath(
-      clipper: new DialogonalClipper(),
-      child: new Image.asset(
-        'assets/images/back.jpg',
-        fit: BoxFit.fitHeight,
-        height: _imageHeight,
-        colorBlendMode: BlendMode.srcOver,
-        color: new Color.fromARGB(120, 20, 10, 40),
-      ),
-    );
-  }
-
-  Widget _buildTopHeader() {
-    return new Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 32.0),
-      child: new Row(
-        children: <Widget>[
-          new Icon(Icons.menu, size: 28.0, color: Colors.white),
-          new Expanded(
-            child: new Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: new Text(
-                "Personal profile",
-                style: new TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w300),
+          _buildCoverImage(screenSize),
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: screenSize.height / 6.4),
+                  _buildProfileImage(),
+                  _buildFullName("Lionell"),
+                  _buildStatus(context),
+                  _buildRankTag(3),
+                  _buildStatContainer(),
+                  // _buildBio(context),
+                  // _buildSeparator(screenSize),
+                  _buildInterestRow(_tags),
+                  // _buildSeparator(screenSize),
+                  SizedBox(height: 10.0),
+                  _buildNewsInterest(context),
+                  SizedBox(height: 10.0),
+                  _buildRank(context),
+              
+                ],
               ),
             ),
           ),
-          
         ],
       ),
     );
   }
 
-  Widget _buildProfileRow() {
+  Widget _buildCoverImage(Size screenSize) {
+    return Container(
+      height: screenSize.height / 3.5,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter, 
+          end: Alignment.bottomCenter,
+          stops: [0.25, 0.75],
+          colors: [Color(0xAA03B2FF), Color(0xAA0518FF) ]
+        )),);
+
+    // return Container(
+    //   height: screenSize.height / 2.6,
+    //   decoration: BoxDecoration(
+    //     image: DecorationImage(
+    //       image: AssetImage('assets/background.jpg'),//
+    //       fit: BoxFit.cover,
+    //     ),
+    //   ),
+    // );
+  }
+
+  Widget _buildProfileImage() {
+    return Center(
+      child: Container(
+        width: 140.0,
+        height: 140.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/avatar.jpg'),
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.circular(80.0),
+          border: Border.all(
+            color: Colors.black,
+            width: 3.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInterestRow(List<String> tags){
     return new Padding(
-      padding: new EdgeInsets.only(left: 16.0, top: _imageHeight / 2.5),
+      padding: EdgeInsets.only(top: 7,  bottom: 3),
       child: new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+      children: tags.map((tag) => new Center(child: _buildInterestTag(tag))).toList()
+    ));
+  }
+  Widget _buildInterestTag(String interestTag){
+      
+        return new Padding(
+          padding: EdgeInsets.only(left: 3, right: 3),
+          child: Container(
+        
+        width: interestTag.length.toDouble() * 10 + 4,
+        height: 30,
+        child: Center(
+          child: Text(interestTag)),
+        decoration: BoxDecoration(
+          color: Colors.grey[400],
+          borderRadius: BorderRadius.circular(50.0),
+          // border: Border.all(
+          //   color: Colors.black,
+          //   width: 1.0,
+          // ),
+        ),
+      ));
+    
+  }
+
+  Widget _buildRankTag(int rank){
+      
+        return new Padding(
+          padding: EdgeInsets.only(left: 3, right: 3),
+          child: Container(
+        
+        width: 100,
+        height: 30,
+        child: Center(
+          child: Text("Rank: $rank",
+          style: TextStyle(
+
+            fontWeight: FontWeight.bold
+            
+          ),)),
+        decoration: BoxDecoration(
+          color: Colors.yellow[600],
+          borderRadius: BorderRadius.circular(50.0),
+          // border: Border.all(
+          //   color: Colors.black,
+          //   width: 1.0,
+          // ),
+        ),
+      ));
+    
+  }
+
+  void getFullName() async{
+    firstName = await getFirstName(); 
+    lastName = await getLastName();
+    setState(() {
+          
+
+        });
+  }
+
+  Widget _buildFullName(String fullname) {
+    getFullName(); 
+    TextStyle _nameTextStyle = TextStyle(
+      color: Colors.black,
+      fontSize: 20.0,
+      fontWeight: FontWeight.w700,
+    );
+
+    return Text(
+      firstName + " " + lastName,
+      style: _nameTextStyle,
+    );
+  }
+
+  Widget _buildStatus(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: Text(
+        _level,
+        style: TextStyle(
+          
+          color: Colors.black,
+          fontSize: 20.0,
+          fontWeight: FontWeight.w300,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String count) {
+    TextStyle _statLabelTextStyle = TextStyle(
+   
+      color: Colors.black,
+      fontSize: 16.0,
+      fontWeight: FontWeight.w200,
+    );
+
+    TextStyle _statCountTextStyle = TextStyle(
+      color: Colors.black54,
+      fontSize: 24.0,
+      fontWeight: FontWeight.bold,
+    );
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          count,
+          style: _statCountTextStyle,
+        ),
+        Text(
+          label,
+          style: _statLabelTextStyle,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatContainer() {
+    return Container(
+      height: 60.0,
+      margin: EdgeInsets.only(top: 8.0),
+      decoration: BoxDecoration(
+        color: Color(0xFFEFF4F7),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          new CircleAvatar(
-            minRadius: 28.0,
-            maxRadius: 28.0,
-            backgroundImage: new AssetImage('assets/images/avatar.jpg'),
-          ),
-          new Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                new Text(
-                  'Lionell Loh',
-                  style: new TextStyle(
-                      fontSize: 26.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400),
-                ),
-                new Text(
-                  'Level : Master Player',
-                  style: new TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w300),
-                ),
-              ],
-            ),
-          ),
+          _buildStatItem("Points", _points),
+          _buildStatItem("Single Mode", _singlemode),
+          _buildStatItem("Dual Mode", _dualmode),
         ],
       ),
     );
   }
 
-  Widget _buildBottomPart() {
-    return new Padding(
-      padding: new EdgeInsets.only(top: _imageHeight),
-      child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _buildMyTasksHeader(),
-          _buildTasksList(),
-        ],
+  Widget _buildBio(BuildContext context) {
+    TextStyle bioTextStyle = TextStyle(
+
+      fontWeight: FontWeight.w400,//try changing weight to w500 if not thin
+      fontStyle: FontStyle.italic,
+      color: Color(0xFF799497),
+      fontSize: 16.0,
+    );
+
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.all(8.0),
+      child: Text(
+        _bio,
+        textAlign: TextAlign.center,
+        style: bioTextStyle,
       ),
     );
   }
 
-  Widget _buildTasksList() {
-    return new Expanded(
-      child: new ListView(
-        children: tasks.map((task) => new TaskRow(task: task)).toList(),
-      ),
+  Widget _buildSeparator(Size screenSize) {
+    return Container(
+      width: screenSize.width / 1.6,
+      height: 2.0,
+      color: Colors.black54,
+      margin: EdgeInsets.only(top: 4.0),
     );
   }
 
-  Widget _buildMyTasksHeader() {
-    return new Padding(
-      padding: new EdgeInsets.only(left: 64.0),
-      child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          new Text(
-            'Game History',
-            style: new TextStyle(fontSize: 34.0),
-          ),
-          new Text(
-            'Single:10 Games',
-            style: new TextStyle(color: Colors.grey, fontSize: 12.0),
-          ),
-          new Text(
-            'Dual:15 Games',
-            style: new TextStyle(color: Colors.grey, fontSize: 12.0),
-          ),
-        ],
+  Widget _buildNewsInterest(BuildContext context) {
+    String _interest=_tags.join(",");
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.only(top: 8.0),
+      child: Text(
+        "I am insterested in News under these categories: ${_interest}",
+        style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
       ),
     );
   }
-
-  Widget _buildTimeline() {
-    return new Positioned(
-      top: 0.0,
-      bottom: 0.0,
-      left: 32.0,
-      child: new Container(
-        width: 1.0,
-        color: Colors.grey[300],
+  Widget _buildRank(BuildContext context) {
+    String _interest=_tags.join(",");
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.only(top: 8.0),
+      child: Text(
+        "I am ranked: ${_rank} in the world",
+        style: TextStyle( fontSize: 16.0),
       ),
     );
   }
+  
 }
