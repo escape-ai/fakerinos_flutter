@@ -19,9 +19,9 @@ class HomeStateScreen extends State<HomeScreen> {
   int _currentIndex = 0; 
   int _selectedDrawerIndex = -1;
   String initials = "";
-  String username; 
-  String email; 
-  String name;
+  String username = "Default"; 
+  String email = "Default"; 
+  String name = "Default";
 
 
   void initState() {
