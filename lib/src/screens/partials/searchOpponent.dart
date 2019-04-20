@@ -25,8 +25,11 @@ class SearchOpponentState extends State<SearchOpponent> {
   bool _opponentFound = false;
   String username; 
   String token; 
-  String status; 
+  String status = "Connecting to server... please wait."; 
+  String opponentName;
   Map cardJson;
+  double screenUnitHeight;
+  double screenUnitWidth;
   // var requestToJoin = {"action": "admin", "message": "request_to_join"};
 
   void initState() {
@@ -51,7 +54,8 @@ class SearchOpponentState extends State<SearchOpponent> {
       else if (data["action"]== "opponent"){
         setState(() {
                   _opponentFound = true;
-                  status = data["message"];
+                  opponentName = data["message"];
+                  status = "Found opponent!";
                 });
         game.send("admin", "request_to_join");
       }
@@ -108,8 +112,77 @@ class SearchOpponentState extends State<SearchOpponent> {
     }
   }
 
+  Widget startGameButton(){
+    return new Container(
+          padding: EdgeInsets.only(top: screenUnitHeight * 3),
+          child: ButtonTheme(
+            key: Key('Start Game'),
+            minWidth: screenUnitWidth * 50,
+            height: 50,
+            child: new RaisedButton(
+            color: Colors.white,
+            textColor: Color(0xAA0518FF),
+            child: new Text("Start Game",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+            ),),
+            onPressed: () {
+            print("Starting game");
+            Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => new MultiplayerGame(cards: cards)));
+              },
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0))
+            )
+          
+        )
+    );
+  }
+
+  Widget opponentInfo(String opponentUsername){
+    return new Padding(
+          padding: EdgeInsets.only(left: 3, right: 3),
+          child: Container(
+        
+        width: 200,
+        height: 60,
+        child: Center(
+          child: Padding( 
+          padding: EdgeInsets.only(top: 6),
+          child: Column(children: <Widget>[
+            Text(opponentUsername,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold
+            
+          ),),
+          Text("Novice Player",
+          style: TextStyle(
+            fontSize: 18,
+            
+          ),)
+            
+          ],))
+          ),
+        decoration: BoxDecoration(
+          color: Colors.yellow[600],
+          borderRadius: BorderRadius.circular(30.0),
+          // border: Border.all(
+          //   color: Colors.black,
+          //   width: 1.0,
+          // ),
+        ),
+      ));
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    Size screenSize = MediaQuery.of(context).size;
+    screenUnitHeight = screenSize.height/100; 
+    screenUnitWidth = screenSize.width/100; 
+
     return Scaffold(
    backgroundColor: Colors.blue[400],
       appBar: AppBar(
@@ -125,10 +198,15 @@ class SearchOpponentState extends State<SearchOpponent> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _isConnected ? 
+                _isConnected ? (_opponentFound? 
+                new Container(
+                  height: 200,
+                  padding: EdgeInsets.only(top: 70, bottom: 70),
+                  child: opponentInfo(opponentName)):
                 SpinKitRipple(color: Colors.white,size:200.0,
-                duration: Duration(milliseconds: 3000)) :
-                SpinKitCubeGrid(color: Colors.white, size: 200.0, 
+                duration: Duration(milliseconds: 3000))) 
+                :
+                SpinKitDoubleBounce(color: Colors.white, size: 200.0, 
                 duration: Duration(milliseconds: 3000)),
               ],
             ),
@@ -140,32 +218,10 @@ class SearchOpponentState extends State<SearchOpponent> {
               
               ],
             ),
-            const SizedBox(height: 60.0),
-             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                 Text("Click the upper-left cross to stop searching.", style: TextStyle(fontSize: 16.0),textAlign: TextAlign.center,),
-                
-              ],
-            ),
-            const SizedBox(height: 48.0),
-
+            const SizedBox(height: 30.0),
+               const SizedBox(height: 10.0),
             !_opponentFound? new Container(): 
-            new RaisedButton(
-              child: Text('Start Game'), 
-
-              onPressed: ((){
-                print("starting game");
-                game.send("admin", "game_ready");
-                
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(builder: (context) => new MultiplayerGame(cards: cards)),
-            );
-
-              }),   
-
-            )
+            startGameButton()
 
 
           ],

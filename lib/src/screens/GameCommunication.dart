@@ -98,6 +98,27 @@ class GameCommunication {
       "message": data
     }));
   }
+  sendResponse(int pk, int ans){
+    ///
+    /// When a player joins, we need to record the name
+    /// he provides
+    ///
+    // if (action == 'join'){
+    //   _playerName = data;
+    // }
+
+    ///
+    /// Send the action to the server
+    /// To send the message, we need to serialize the JSON 
+    ///
+    sockets.send(json.encode({
+      "action": "respond",
+      "message": {
+        "article_pk" : pk,
+        "answer": ans
+      }
+    }));
+  }
 
   /// ==========================================================
   ///

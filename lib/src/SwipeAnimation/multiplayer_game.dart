@@ -12,7 +12,6 @@ import 'package:countdown/countdown.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
-// import '../../src/screens/partials/searchOpponent.dart';
 import '../../src/screens/webSocketHelper.dart';
 import '../../src/screens/GameCommunication.dart';
 
@@ -82,12 +81,13 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
 
   void loadCards() async{
     print("[Multiplayer Game] Loading cards");
+    
     setState((){
       articlesImage = cards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
       articlesDescription = cards.cards.map((card) => card.description).toList();
       articlesHeadline = cards.cards.map((card) => card.title).toList();
 
-      print("headlines" + articlesHeadline.toString());
+      countdown(11);
     });
   }
 
@@ -95,9 +95,9 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   void initState() {
     print("Initializing Multiplayer Game");
     print(cards);
-
     game.addListener((data)=> receiveCard(data));
-    loadCards(); 
+    game.send("admin", "game_ready");
+    // loadCards(); 
     super.initState();
     
     _buttonController = new AnimationController(
@@ -158,8 +158,13 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   
   void receiveCard(data){
     if (data["pk"] != null){
-      print(data["pk"]);
-      print("receiving card");
+      print("[Multiplayer Game] found a card!");
+      
+      setState((){
+        cards = Cards.fromJson([data]);
+      });
+
+      loadCards();
       
       // var cardJson = json.decode(data);
       // print(cardJson);
@@ -173,10 +178,11 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
     sub.onDone(() {
       print("removing");
       swipeLeft();
+      game.sendResponse(1, -1);
     });
     sub.onData((d) {
       if (val == d.inSeconds) return;
-      print("onData: d.inSeconds=${d.inSeconds}");
+      print("Seconds left: ${d.inSeconds}");
       setState((){
         val = d.inSeconds;
       });

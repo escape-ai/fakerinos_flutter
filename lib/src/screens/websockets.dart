@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:convert' show json;
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:io';
+import 'dart:convert';
 import './sharedPreferencesHelper.dart';
 
 // void main() => runApp(MyApp());
@@ -72,7 +72,7 @@ class _MyHomePageState extends State<WebSocketScreen> {
 
     channel.stream.listen((data) => setState(() {
       String message = json.decode(data)["message"];
-      print(message);
+      print(json.decode(data));
       list.add(message);
     }));
   }
@@ -80,13 +80,33 @@ class _MyHomePageState extends State<WebSocketScreen> {
 
   void leave() async{
       var payload = {
-       "action": "admin",
-       "message": "leave" 
+       "action": "leave_room",
+    
      };
 
     channel.sink.add(json.encode(payload));
      
     }
+
+  void respond0() async{
+      var payload = {
+       "action": "respond_specifically_to",
+       "message": {"article_pk": 1, "response": 0}
+     }; 
+     channel.sink.add(json.encode(payload));
+     }
+
+  void respond1() async{
+      var payload = {
+       "action": "respond_specifically_to",
+       "message": {"article_pk": 1, "response": 1}
+     };
+
+    channel.sink.add(json.encode(payload));
+     
+    }
+
+
 
 
   void sendData() {
@@ -125,25 +145,28 @@ class _MyHomePageState extends State<WebSocketScreen> {
         padding: EdgeInsets.all(20.0),
         child: Column(
           children: <Widget>[
-            Form(
-              child: TextFormField(
-                controller: controller,
-                decoration: InputDecoration(
-                  labelText: "Send to WebSocket",
-                ),
-              ),
+             Row(
+              children: <Widget>[
+                button("connect", connect),
+                button("leave", leave),
+                button("respond0", respond0),
+                button("respond1", respond1)
+              ],
             ),
+            // Form(
+            //   child: TextFormField(
+            //     controller: controller,
+            //     decoration: InputDecoration(
+            //       labelText: "Send to WebSocket",
+            //     ),
+            //   ),
+            // ),
             Column(
               children: list.map((data) => Text(data)).toList(),
             ), 
 
           
-            Row(
-              children: <Widget>[
-                button("connect", connect),
-                button("leave", leave)
-              ],
-            )
+           
            
           ],
         ),
