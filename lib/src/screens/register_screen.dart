@@ -6,6 +6,7 @@ import 'dart:convert';
 import "./websockets.dart";
 import './sharedPreferencesHelper.dart';
 import './camera_screen.dart';
+import './partials/searchOpponent.dart';
 
 // This is the join game screen
 import "./joinGame.dart"; 
@@ -41,7 +42,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           passwordField(),
           confirmPasswordField(),
           Container(margin: EdgeInsets.only(top: MediaQuery.of(context).size.width/10 )),
-          submitButton(),
+          _isLoading ? CircularProgressIndicator() : submitButton(),
           welcomePageButton(),
           // socketButton(),
           multiplayerGameButton(),
@@ -120,26 +121,21 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
   }
 
   Widget submitButton() {
-    return _isLoading == false? 
-      RaisedButton (
+    return new RaisedButton (
         key : Key("submit button"),
         child:  Text('Register'),
               
         onPressed: (() {
                 
                 if (formKey.currentState.validate()) {
-                    _isLoading = true; 
+                    setState(()=> _isLoading = true);
             
             formKey.currentState.save();
          
             Register();
             
-             }})) : 
-             RaisedButton(
-               child: Center(
-                 child: CircularProgressIndicator()
-               )
-             );
+             }}));
+             
   }
   void Register() async {
     
@@ -172,7 +168,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
         failureMessage += value[0] + " "; 
       }
       print(failureMessage);
-      final snackBar = SnackBar(
+      var snackBar = SnackBar(
             content: 
             Text("$failureMessage",
             key: Key("snackbar")),
@@ -185,8 +181,12 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           );
 
           // Find the Scaffold in the Widget tree and use it to show a SnackBar!
-          _isLoading = false; 
-          _scaffoldKey.currentState.showSnackBar(snackBar);
+
+          setState(() {
+            _isLoading = false; 
+            _scaffoldKey.currentState.showSnackBar(snackBar);    
+                    });
+          
       print("No Success");
     }
     
@@ -230,7 +230,7 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           
             Navigator.push(
               context,
-              new MaterialPageRoute(builder: (context) => new JoinGame()),
+              new MaterialPageRoute(builder: (context) => new SearchOpponent()),
             );
         
         });
