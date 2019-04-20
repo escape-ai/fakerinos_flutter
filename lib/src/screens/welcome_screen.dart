@@ -22,7 +22,7 @@ class WelcomeScreen extends StatelessWidget {
         child: new Column(children: <Widget>[
           Container(
             padding: EdgeInsets.only(top: screenUnitHeight * 15, bottom: screenUnitHeight * 5),
-            child: Center(
+            child: Center(  
               child: Text("FAKERINOS!", 
                 textDirection: TextDirection.ltr,
                 style: TextStyle(
@@ -33,11 +33,13 @@ class WelcomeScreen extends StatelessWidget {
             )
         ),
       new Center(
+        
         child: Container(
           // padding: EdgeInsets.only(top: screenUnitHeight * 5),
-            width: screenUnitWidth * 50,
-            height: screenUnitWidth * 50,
+            width: screenUnitWidth * 55,
+            height: screenUnitWidth * 54,
             decoration: new BoxDecoration(
+              
                 // shape: BoxShape.circle,
                 image: new DecorationImage(
                     fit: BoxFit.fill,
