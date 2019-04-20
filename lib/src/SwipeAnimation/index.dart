@@ -5,7 +5,7 @@ import 'dart:io';
 import 'dart:convert';
 import './data.dart';
 import './dummyCard.dart';
-import './activeCard.dart';
+import './singleActiveCard.dart';
 import '../../src/screens/partials/cards.dart';
 import '../../src/screens/sharedPreferencesHelper.dart';
 
@@ -274,7 +274,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                         int idx = articlesImage.indexOf(item);
                         String currentDescription = articlesDescription[articlesImage.indexOf(item)];
 
-                        return cardDemo(
+                        return singleActiveCard(
                             item,
                             bottom.value,
                             right.value,

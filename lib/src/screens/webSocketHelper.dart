@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/io.dart';
+import 'dart:io';
+import '../../src/screens/sharedPreferencesHelper.dart';
 
 ///
 /// Application-level global variable to access the WebSockets
@@ -9,7 +11,7 @@ WebSocketsNotifications sockets = new WebSocketsNotifications();
 ///
 /// Put your WebSockets server IP address and port number
 ///
-const String _SERVER_ADDRESS = "ws://127.0.0.1:8000/ws/chat/lobby/";
+const String _SERVER_ADDRESS = "ws://fakerinos.herokuapp.com/ws/rooms/";
 
 class WebSocketsNotifications {
   static final WebSocketsNotifications _sockets = new WebSocketsNotifications._internal();
@@ -41,7 +43,7 @@ class WebSocketsNotifications {
   /// Initialization the WebSockets connection with the server
   /// ----------------------------------------------------------
   initCommunication() async {
-    ///
+    String token = await getMobileToken(); 
     /// Just in case, close any previous communication
     ///
     reset();
@@ -50,14 +52,16 @@ class WebSocketsNotifications {
     /// Open a new WebSocket communication
     ///
     try {
-      _channel = new IOWebSocketChannel.connect(_SERVER_ADDRESS);
+      print("socket helper is connecting");
+      _channel = new IOWebSocketChannel.connect(_SERVER_ADDRESS, 
+      headers: {HttpHeaders.authorizationHeader: "Token $token" });
+      
 
       ///
       /// Start listening to new notifications / messages
       ///
       _channel.stream.listen(_onReceptionOfMessageFromServer);
     } catch(e){
-      print(e.toString());
       ///
       /// General error handling
       /// TODO
@@ -104,6 +108,7 @@ class WebSocketsNotifications {
   /// a message from the server
   /// ----------------------------------------------------------
   _onReceptionOfMessageFromServer(message){
+    
     _isOn = true;
     _listeners.forEach((Function callback){
       callback(message);

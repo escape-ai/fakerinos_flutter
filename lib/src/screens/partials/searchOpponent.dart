@@ -7,6 +7,8 @@ import '../sharedPreferencesHelper.dart';
 import 'dart:convert';
 import 'dart:async';
 import '../../SwipeAnimation/multiplayer_game.dart';
+import '../webSocketHelper.dart';
+import '../GameCommunication.dart';
 
 class SearchOpponent extends StatefulWidget{
   createState() {
@@ -16,63 +18,71 @@ class SearchOpponent extends StatefulWidget{
 
 class SearchOpponentState extends State<SearchOpponent> {
 
-  WebSocketChannel channel;
+  
   bool _isConnected = false;
+  bool _opponentFound = false;
   String username; 
   String token; 
   String status; 
+  Map cardJson;
+  // var requestToJoin = {"action": "admin", "message": "request_to_join"};
 
   void initState() {
     super.initState();
-    print("Initilizing state");
-    
-    connect();
-    
+    print("Initializing search opponent");
+    game.addListener(preGameListener);
+    // game.addListener(checkOpponent);
+    // connect();
   }
-
-  void connect() async {
-    print("connecting to websocket");
-    token = await getMobileToken();
-
-    channel = IOWebSocketChannel.connect('ws://fakerinos.herokuapp.com/ws/rooms/',
-              headers: {HttpHeaders.authorizationHeader: "Token $token" }
-      );
   
-    channel.stream.listen((data) => setState(() {
-      var decodedData = json.decode(data);
-      print(decodedData);
-      interpretMessage(decodedData);
-      // String message = json.decode(data)["message"];
-      // print(json.decode(data));
-      
-    }));
-    
+  void preGameListener(data){
+    print("Callback: checkConnection called");
+    print(data);
+      if (data["message"]== "Connection success"){
+        setState(() {
+                  _isConnected = true;
+                  status = data["message"];
+                });
+
+        game.send("admin", "request_to_join");
+      }
+
+      else if (data["action"]== "opponent"){
+        setState(() {
+                  _opponentFound = true;
+                  status = data["message"];
+                });
+        game.send("admin", "request_to_join");
+      }
+
+      else if (data["action"] == "card"){
+        String card = data["message"];
+        cardJson = json.decode(card);
+      }
   }
 
-  void join() async {
-    print("Requesting to join the game");
-    token = await getMobileToken();
-    var payload = {
-       "action": "admin",
-       "message": "request_to_join" 
-     };
-    channel.sink.add(json.encode(payload));
-  }
+  
+  @override 
+  void dispose() {
+      // TODO: implement dispose
+      print("DISPOSE");
+      game.quit();
+      super.dispose();
+    }
 
   void interpretMessage(json){
 
     switch(json["action"]){
       case("admin"): {
-        print("Admin");
         switch(json["message"]){
 
-          case("connection success"): {
+          case("Connection success"): {
             setState(() {
               _isConnected = true;
               status = "Connected, requesting to join game"; 
                         });
 
-            join();
+            // join();
           }
           break;
 
@@ -95,7 +105,6 @@ class SearchOpponentState extends State<SearchOpponent> {
     }
   }
 
-  
 
 
   @override
@@ -140,10 +149,13 @@ class SearchOpponentState extends State<SearchOpponent> {
             ),
             const SizedBox(height: 48.0),
 
+            !_opponentFound? new Container(): 
             new RaisedButton(
               child: Text('Start Game'), 
 
               onPressed: ((){
+                print("pressed");
+                
                 Navigator.push(
                     context,
                     new MaterialPageRoute(builder: (context) => new MultiplayerGame()),

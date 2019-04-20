@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'webSocketHelper.dart';
+import './webSocketHelper.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 ///
 /// Again, application-level global variable
@@ -46,6 +47,7 @@ class GameCommunication {
   /// Common handler for all received messages, from the server
   /// ----------------------------------------------------------
   _onMessageReceived(serverMessage){
+    // print("Game comm: On message received");
     ///
     /// As messages are sent as a String
     /// let's deserialize it to get the corresponding
@@ -59,9 +61,9 @@ class GameCommunication {
       /// returns the unique identifier of the player.
       /// Let's record it
       ///
-      case 'connect':
-        _playerID = message["data"];
-        break;
+      // case 'connect':
+      //   _playerID = message["data"];
+      //   break;
 
       ///
       /// For any other incoming message, we need to
@@ -83,9 +85,9 @@ class GameCommunication {
     /// When a player joins, we need to record the name
     /// he provides
     ///
-    if (action == 'join'){
-      _playerName = data;
-    }
+    // if (action == 'join'){
+    //   _playerName = data;
+    // }
 
     ///
     /// Send the action to the server
@@ -93,7 +95,7 @@ class GameCommunication {
     ///
     sockets.send(json.encode({
       "action": action,
-      "data": data
+      "message": data
     }));
   }
 
@@ -113,5 +115,9 @@ class GameCommunication {
   }
   removeListener(Function callback){
     _listeners.remove(callback);
+  }
+
+  quit(){
+    sockets.reset();
   }
 }
