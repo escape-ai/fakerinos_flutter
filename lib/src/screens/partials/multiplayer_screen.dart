@@ -11,52 +11,65 @@ class MultiplayerScreenState extends State<MultiplayerScreen>{
 
    @override
   Widget build(context){
+    Size screenSize = MediaQuery.of(context).size;
+    double screenUnitHeight = screenSize.height/100; 
+    double screenUnitWidth = screenSize.width/100; 
+
     return new Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter, 
-          end: Alignment.bottomCenter,
-          stops: [0.25, 0.75],
-          colors: [Colors.lightBlueAccent, Colors.blue ]
-        )),
+    
         child: new Column(children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 200.0),
+            padding: EdgeInsets.only(top: screenUnitHeight * 10, bottom: screenUnitHeight * 5),
             child: Center(
-              child: Text("Multiplayer Mode!!", 
+              child: Text("Multiplayer Mode!", 
                 textDirection: TextDirection.ltr,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.blue,
                   fontSize: 60,
                   fontFamily: 'Niagaraphobia')
               )
             )
         ),
         Container(
-            padding: EdgeInsets.only(top: 100.0),
+          // padding: EdgeInsets.only(top: screenUnitHeight * 5),
+            width: screenUnitWidth * 55,
+            height: screenUnitWidth * 54,
+            decoration: new BoxDecoration(
+              shape:BoxShape.circle,
+              
+                // shape: BoxShape.circle,
+                image: new DecorationImage(
+                    fit: BoxFit.fill,
+                    image: new ExactAssetImage(
+                        "assets/multiplayer.gif")
+                )),
+      ),
+        Container(
+            padding: EdgeInsets.only(top: screenUnitHeight * 5),
             child: Center(
               child: Text("Challenge Others in a real time \n fake news prediction battle!!",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.blue,
                 fontSize: 20,
+                fontFamily: "Roboto"
                 )
               ))
             ),
         
 
         Container(
-          padding: EdgeInsets.only(top: 70.0),
+          padding: EdgeInsets.only(top: screenUnitHeight * 5),
           child: ButtonTheme(
-            minWidth: 200,
+            minWidth: 300,
             height: 50,
             child: new RaisedButton(
-            color: Colors.white,
-            textColor: Colors.white,
+            color: Colors.blue,
             child: new Text("Play Now!",
               style: TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.bold
+                fontWeight: FontWeight.bold,
+                color: Colors.white
             ),),
             shape: new RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(30.0))
