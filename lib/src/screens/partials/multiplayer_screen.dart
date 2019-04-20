@@ -1,4 +1,7 @@
-import "package:flutter/material.dart"; 
+import "package:flutter/material.dart";
+import "./searchOpponent.dart"; 
+
+// import "../loading page/main.dart"
 
 class MultiplayerScreen extends StatefulWidget{
   @override
@@ -64,6 +67,10 @@ class MultiplayerScreenState extends State<MultiplayerScreen>{
             minWidth: 300,
             height: 50,
             child: new RaisedButton(
+            onPressed: (){
+              Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => new SearchOpponent()));
+            },
             color: Colors.blue,
             child: new Text("Play Now!",
               style: TextStyle(
