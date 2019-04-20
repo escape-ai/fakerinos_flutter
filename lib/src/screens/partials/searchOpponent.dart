@@ -140,7 +140,39 @@ class SearchOpponentState extends State<SearchOpponent> {
     );
   }
 
+  Widget endConnectionButton(){
+    return new Container(
+          padding: EdgeInsets.only(top: screenUnitHeight * 3),
+          child: ButtonTheme(
+            key: Key('Quit'),
+            minWidth: screenUnitWidth * 50,
+            height: 50,
+            child: new RaisedButton(
+            color: Colors.red,
+            textColor: Colors.white,
+            child: new Text("Quit Waiting",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+            ),),
+            onPressed: () {
+            print("Quitting game");
+            game.quit();
+            
+          
+              },
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0))
+            )
+          
+        )
+    );
+  }
+
+
+
   Widget opponentInfo(String opponentUsername){
+
     return new Padding(
           padding: EdgeInsets.only(left: 3, right: 3),
           child: Container(
@@ -199,15 +231,16 @@ class SearchOpponentState extends State<SearchOpponent> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _isConnected ? (_opponentFound? 
-                new Container(
-                  height: 200,
-                  padding: EdgeInsets.only(top: 70, bottom: 70),
-                  child: opponentInfo(opponentName)):
+                // new Container(
+                //   height: 200,
+                //   padding: EdgeInsets.only(top: 70, bottom: 70),
+                //   child: opponentInfo(opponentName)):
+                opponentInfo(opponentName):
                 SpinKitRipple(color: Colors.white,size:200.0,
                 duration: Duration(milliseconds: 3000))) 
                 :
                 SpinKitDoubleBounce(color: Colors.white, size: 200.0, 
-                duration: Duration(milliseconds: 3000)),
+                duration: Duration(milliseconds: 3500)),
               ],
             ),
             const SizedBox(height: 48.0),
@@ -221,9 +254,8 @@ class SearchOpponentState extends State<SearchOpponent> {
             const SizedBox(height: 30.0),
                const SizedBox(height: 10.0),
             !_opponentFound? new Container(): 
-            startGameButton()
-
-
+            startGameButton(),
+            endConnectionButton()
           ],
         ),
       ),

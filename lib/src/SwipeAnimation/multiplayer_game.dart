@@ -1,5 +1,6 @@
 import 'dart:async';
 import "package:flutter/material.dart"; 
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart'; 
 import 'dart:io';
 import 'dart:convert';
@@ -43,7 +44,7 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   Cards fetchedCards; 
   Cards cards; 
   Size screenSize;
-
+  int _currentPk; 
   MultiplayerGameState(this.cards);
 
    Widget timerWidget(){
@@ -53,6 +54,18 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
           child: new Text(val == 0 ? "TIMEOUT" : val.toString(), style: new TextStyle(fontSize: 40))));
    }
   
+   Widget waitCardWidget(){
+     return Column(
+       children: <Widget>[
+        new Text(
+          "Waiting for next card",
+          style: new TextStyle(
+            fontSize: 30
+          )
+        ),
+        SpinKitPouringHourglass(size: 150, color: Colors.white, duration: Duration(milliseconds: 4000))
+     ]);
+   }
 
    Widget completeAlert(){
      return new AlertDialog(
@@ -63,6 +76,33 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
               onPressed: () {
                 
                 Navigator.of(context).pop();})]);
+   }
+
+   Widget scoreCards(){
+     return Container(
+      // You can explicitly set heights and widths on Containers.
+      // Otherwise they take up as much space as their children.
+    width: 100.0,
+    height: 100.0,
+      // Decoration is a property that lets you style the container.
+      // It expects a BoxDecoration.
+    decoration: BoxDecoration(
+      // BoxDecorations have many possible properties.
+      // Using BoxShape with a background image is the
+      // easiest way to make a circle cropped avatar style image.
+      shape: BoxShape.circle,
+      image: DecorationImage(
+        // Just like CSS's `imagesize` property.
+        fit: BoxFit.cover,
+        // A NetworkImage widget is a widget that
+        // takes a URL to an image.
+        // ImageProviders (such as NetworkImage) are ideal
+        // when your image needs to be loaded or can change.
+        // Use the null check to avoid an error.
+        // image: NetworkImage(renderUrl ?? ''),
+      ),
+    ),
+  );
    }
   
   AnimationController _buttonController;
@@ -97,7 +137,9 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
     print(cards);
     game.addListener((data)=> receiveCard(data));
     game.send("admin", "game_ready");
-    // loadCards(); 
+    if (cards != null){
+      loadCards();
+    }
     super.initState();
     
     _buttonController = new AnimationController(
@@ -158,9 +200,11 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   
   void receiveCard(data){
     if (data["pk"] != null){
+
       print("[Multiplayer Game] found a card!");
       
       setState((){
+        _currentPk = data["pk"];
         cards = Cards.fromJson([data]);
       });
 
@@ -178,7 +222,7 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
     sub.onDone(() {
       print("removing");
       swipeLeft();
-      game.sendResponse(1, -1);
+      game.sendResponse(_currentPk, -1);
     });
     sub.onData((d) {
       if (val == d.inSeconds) return;
@@ -192,6 +236,7 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   @override
   void dispose() {
     _buttonController.dispose();
+    game.quit();
     super.dispose();
   }
 
@@ -231,7 +276,10 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
     });
   }
 
-  swipeRight() {
+  swipeRight() async {
+    // Right is true 
+    game.sendResponse(_currentPk, 1);
+    print("swipe right");
     if (flag == 0)
       setState(() {
         flag = 1;
@@ -240,6 +288,8 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
   }
 
   swipeLeft() {
+    game.sendResponse(_currentPk, 0);
+    print("swipe left");
     if (flag == 1)
       setState(() {
         flag = 0;
@@ -368,7 +418,7 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
                         return cardDemoDummy(item, backCardPosition, 0.0, 0.0,
                             backCardWidth, 0.0, 0.0, context);
                       }
-                    }).toList())): completeAlert()
+                    }).toList())): waitCardWidget()
             
                  ],
           )
