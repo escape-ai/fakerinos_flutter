@@ -9,6 +9,7 @@ import "./decks.dart";
 import "../leaderboard/leaderboardPage.dart";
 import '../sharedPreferencesHelper.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import "../landpage/gamerule.dart";
 
 
 class DefaultHomeScreen extends StatefulWidget{
@@ -245,7 +246,11 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         new Padding( 
           padding: EdgeInsets.only(top: screenUnitHeight * 5, bottom: screenUnitHeight * 2),
           child:
-          new Container(
+          new GestureDetector(onTap: ()=> {
+            Navigator.push(context,
+            new MaterialPageRoute(builder: (context)=> GameRule()))//here YY!
+            },
+  child:  new Container(
           padding: EdgeInsets.only(top: 20, bottom: 20),
             width: screenUnitWidth * 35,
             height: screenUnitWidth * 35,
@@ -254,8 +259,16 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
                 image: new DecorationImage(
                     fit: BoxFit.fill,
                     image: ExactAssetImage("assets/tutorial.png")
-                )),
-      )),
+       
+)
+
+//////////////////////
+                  )),
+      )
+      
+      //////////////////////
+      
+      ),
          Text("Not sure? Try the tutorial!",
             style: TextStyle(
               fontSize: 20, 
@@ -325,4 +338,5 @@ Widget leaderboardButton(){
         );
 }
 }
+
 
