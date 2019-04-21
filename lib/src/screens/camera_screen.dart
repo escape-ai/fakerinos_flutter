@@ -22,29 +22,34 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   CameraController _controller;
   CameraDescription camera;
   Future<void> _initializeControllerFuture;
-
+  bool _isReady = false;
   @override
   void initState() {
     super.initState();
+    print("CAMERA");
     getCamera(); 
     // In order to display the current output from the Camera, you need to
     // create a CameraController.
+    
+
+    // Next, you need to initialize the controller. This returns a Future
+    
+  }
+
+  void getCamera() async{
+    final cameras = await availableCameras();
+    camera = cameras.first; 
     _controller = CameraController(
       // Get a specific camera from the list of available cameras
       camera,
       // Define the resolution to use
       ResolutionPreset.medium,
     );
-
-    // Next, you need to initialize the controller. This returns a Future
-    _initializeControllerFuture = _controller.initialize();
-  }
-
-  void getCamera() async{
-    final cameras = await availableCameras();
-    camera = cameras.first; 
-
+    setState(() {
+        _isReady = true; 
+        });
     print(camera);
+    await _controller.initialize();
   }
 
   @override
@@ -56,6 +61,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (! _isReady) return new Container();
+
     return Scaffold(
       appBar: AppBar(title: Text('Take a picture')),
       // You must wait until the controller is initialized before displaying the
@@ -104,7 +111,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             );
           } catch (e) {
             // If an error occurs, log the error to the console.
-            print(e);
+            print("error: $e");
           }
         },
       ),

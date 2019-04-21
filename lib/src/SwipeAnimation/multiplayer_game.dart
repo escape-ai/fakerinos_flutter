@@ -392,7 +392,7 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
                         int idx = articlesImage.indexOf(item);
                         String currentDescription = articlesDescription[articlesImage.indexOf(item)];
 
-                        return cardDemo(
+                        return multiplayerCard(
                             cd,
                             countdown,
                             item,
@@ -408,7 +408,7 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
                             addImg,
                             swipeRight,
                             swipeLeft,
-                            currentDescription * 2,
+                            currentDescription,
                             articlesHeadline[idx]
                             );
                       } else {

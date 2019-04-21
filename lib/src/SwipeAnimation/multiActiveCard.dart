@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:countdown/countdown.dart';
 
-Positioned cardDemo(
+Positioned multiplayerCard(
     CountDown cd,
     Function changeTime,
     DecorationImage img,

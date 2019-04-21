@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import 'package:http/http.dart'; 
 import 'dart:io';
 import 'dart:convert';
-import "../../SwipeAnimation/index.dart";
+import "../../SwipeAnimation/crowdSourceGame.dart";
 import "./cards.dart";
 import "../../Session.dart";
 import "./decks.dart"; 
@@ -147,7 +147,7 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
         tappedDeck = decksData.decks[itemIndex];
         // print("[Default Screen] " +  "articles:" + tappedDeck.articles.toString());
         Navigator.push(context,
-        new MaterialPageRoute(builder: (context)=> CardDemo(deckPk: tappedDeck.pk)));
+        new MaterialPageRoute(builder: (context)=> CrowdSourceGame(deckPk: tappedDeck.pk)));
         },
         onDoubleTap: (){ 
           
@@ -249,30 +249,6 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
     // print(parsedResponse);
 
 
-}
-
-Widget leaderboardButton(){
-  return new Container(
-          padding: EdgeInsets.only(top: 70.0),
-          child: ButtonTheme(
-            minWidth: 350,
-            height: 50,
-            child: new RaisedButton(
-            color: Colors.white,
-            textColor: Color(0xAA0518FF),
-            child: new Text("See the leaderboard",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-            ),),
-            onPressed: () => Navigator.push(context,
-              new MaterialPageRoute(builder: (context) => new LeaderPage())),
-            shape: new RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(30.0))
-            )
-          
-        )
-        );
 }
 }
 

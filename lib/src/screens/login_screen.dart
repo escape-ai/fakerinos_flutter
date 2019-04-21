@@ -25,6 +25,8 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
   String email = '';
   String username = '';
   String password = ''; 
+  String firstName;
+  String lastName; 
   String token; 
   var _isLoading = false; 
   bool _isOnboarded;
@@ -127,13 +129,19 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
     print(parsedResponse);
 
     setUsername(username);
-    print(await getUsername());
+    
     //Success
     if (response.statusCode == 200){
       token = parsedResponse["key"];
       final userData = await get("https://fakerinos.herokuapp.com/api/accounts/profile/$username/", headers: {
         HttpHeaders.authorizationHeader: "Token $token"}); 
-      _isOnboarded = json.decode(userData.body)["onboarded"];
+        var decodedUserData = json.decode(userData.body);
+      _isOnboarded = decodedUserData["onboarded"];
+      firstName = decodedUserData["first_name"];
+      lastName = decodedUserData["last_name"];
+      setFirstName(firstName);
+      setLastName(lastName);
+      
       print("Onboarded: $_isOnboarded");
       setMobileToken(token);
       setUsername(username);

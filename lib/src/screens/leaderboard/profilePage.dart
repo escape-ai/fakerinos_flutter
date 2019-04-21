@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import '../sharedPreferencesHelper.dart';
+import 'package:http/http.dart';
+import 'dart:io';
+import 'dart:convert';
+import '../user.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ProfilePageState extends StatefulWidget {
   createState(){
@@ -8,37 +13,72 @@ class ProfilePageState extends StatefulWidget {
 }
 
 class ProfilePage extends State<ProfilePageState> {
-  final String _name = "Lionell Loh";
-  final String _level = "Master Player";
-  final String _bio = "\"Combat Fakenews!!!\"";
-  final String _points = "1000";
-  final String _singlemode = "24";
-  final String _dualmode = "450";
-  final List<String> _tags=["Politics","Education","Economics"];
-  final String _rank="1";
-  String firstName; 
-  String lastName; 
+  String _name = " ";
+  String _level = " ";
+  // final String _bio = "\"Combat Fakenews!!!\"";
+  String _points = " ";
+  String _singlemode = " ";
+  String _dualmode = " ";
+  List<String> _tags=[" "," "," "];
+  String _rank="1";
+  String firstName = "Loading..."; 
+  String lastName = "Loading..."; 
+  String username; 
+  String token;
+  User user;
   
+  @override
+  void initState(){
+    fetchProfileData();
+    super.initState();
+  }
+
+  void fetchLeaderboardData(){
+    print("fetching leaderboard data");
+
+
+  }
+
+  void fetchProfileData() async{
+    print("fetching profile data");
+    username = await getUsername();
+    token = await getMobileToken();
+    final profileData = await get("https://fakerinos.herokuapp.com/api/accounts/profile/$username/",
+    headers: {HttpHeaders.authorizationHeader: "Token $token"});
+    final parsedResponse = json.decode(profileData.body); 
+
+    print(parsedResponse);
+    user = User.fromJson(parsedResponse);
+    setState(() {
+      user = User.fromJson(parsedResponse);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      body: Stack(
+      appBar: AppBar(
+          title: Text("Profile Page")
+        ),
+      // body: user == null? CircularProgressIndicator() : 
+      body: user == null ? SpinKitWave(color: Colors.blue[400], duration: new Duration(milliseconds: 1000),) 
+      : Stack(
         children: <Widget>[
           _buildCoverImage(screenSize),
           SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  SizedBox(height: screenSize.height / 6.4),
+                  SizedBox(height: screenSize.height / 15),
                   _buildProfileImage(),
-                  _buildFullName("Lionell"),
+                  _buildFullName(user.firstName + " " + user.lastName),
                   _buildStatus(context),
                   _buildRankTag(3),
                   _buildStatContainer(),
                   // _buildBio(context),
                   // _buildSeparator(screenSize),
-                  _buildInterestRow(_tags),
+                  _buildInterestRow(user.interests),
                   // _buildSeparator(screenSize),
                   SizedBox(height: 10.0),
                   _buildNewsInterest(context),
@@ -56,7 +96,7 @@ class ProfilePage extends State<ProfilePageState> {
 
   Widget _buildCoverImage(Size screenSize) {
     return Container(
-      height: screenSize.height / 3.5,
+      height: screenSize.height / 4.5,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter, 
@@ -77,7 +117,9 @@ class ProfilePage extends State<ProfilePageState> {
   }
 
   Widget _buildProfileImage() {
-    return Center(
+    return Tooltip(
+      message: "You are good look, believe it!",
+      child: Center(
       child: Container(
         width: 140.0,
         height: 140.0,
@@ -93,7 +135,7 @@ class ProfilePage extends State<ProfilePageState> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildInterestRow(List<String> tags){
@@ -170,10 +212,12 @@ class ProfilePage extends State<ProfilePageState> {
       fontWeight: FontWeight.w700,
     );
 
-    return Text(
+    return Padding(
+      padding: EdgeInsets.only(top: 6),
+      child: Text(
       firstName + " " + lastName,
       style: _nameTextStyle,
-    );
+    ));
   }
 
   Widget _buildStatus(BuildContext context) {
@@ -255,7 +299,7 @@ class ProfilePage extends State<ProfilePageState> {
       color: Theme.of(context).scaffoldBackgroundColor,
       padding: EdgeInsets.all(8.0),
       child: Text(
-        _bio,
+        "placeholder",
         textAlign: TextAlign.center,
         style: bioTextStyle,
       ),

@@ -76,6 +76,7 @@ class WebSocketsNotifications {
     if (_channel != null){
       if (_channel.sink != null){
         _channel.sink.close();
+        
         _isOn = false;
       }
     }

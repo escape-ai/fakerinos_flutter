@@ -16,7 +16,7 @@ class Users {
 class User{
 
   String username; 
-  List<dynamic> interests;
+  List<String> interests;
   String education; 
   bool isComplete;
   bool onboarded;

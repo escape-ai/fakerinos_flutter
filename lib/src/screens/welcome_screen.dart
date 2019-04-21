@@ -4,8 +4,6 @@ import '../screens/login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget { 
 
-  
-
   @override
   Widget build(context){
     Size screenSize = MediaQuery.of(context).size;
