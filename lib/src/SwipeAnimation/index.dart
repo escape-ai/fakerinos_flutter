@@ -17,7 +17,6 @@ class CardDemo extends StatefulWidget {
   int deckPk;
   CardDemo({Key key, @required this.deckPk}) : super(key: key);
   CardDemoState createState() => new CardDemoState(deckPk);
-  
 }
 
 class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
@@ -42,13 +41,24 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     print("fetching cards data"); 
 
     token = await getMobileToken(); 
-
-    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/$deckPk/articles/", 
+    var payload = {
+      "deck": deckPk.toString()
+    }; 
+    print("Creating room...");
+    await post("https://fakerinos.herokuapp.com/api/rooms/single-player/", 
       headers: {
       HttpHeaders.authorizationHeader: 
-    "Token $token"});
+      "Token $token"}, body: payload);
 
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/$deckPk/articles/", 
+    headers: {
+      HttpHeaders.authorizationHeader: 
+      "Token $token"});
+    print(token);
+    print(response.body);
     var decodedJson = jsonDecode(response.body);
+    
+    
     fetchedCards = Cards.fromJson(decodedJson);
 
     setState((){

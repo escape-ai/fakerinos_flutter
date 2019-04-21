@@ -31,6 +31,8 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
   String username;
   String token; 
   bool contains; 
+  double screenUnitHeight; 
+  double screenUnitWidth; 
 
   @override
   void initState(){
@@ -66,6 +68,9 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
   }
   @override
   Widget build(BuildContext context){
+    Size screenSize = MediaQuery.of(context).size;
+    screenUnitHeight = screenSize.height/100; 
+    screenUnitWidth = screenSize.width/100; 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: new Center (
@@ -241,7 +246,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
 
 Widget leaderboardButton(){
   return new Container(
-          padding: EdgeInsets.only(top: 70.0),
+          padding: EdgeInsets.only(top: screenUnitHeight * 5),
           child: ButtonTheme(
             minWidth: 350,
             height: 50,
