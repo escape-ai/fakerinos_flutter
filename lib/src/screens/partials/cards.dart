@@ -24,34 +24,48 @@ class Cards {
     }
 
 class IndivCard{
-  int id; 
-  String title;
-  String description; 
-  String source;
+  int pk; 
+  String headline;
+  int truth_value; 
+  int is_poll;
+  String url; 
+  String rating; 
+  String domain; 
+  String text; 
   String thumbnail_url;
-  String rating;
-  String author; 
+  String author;
+  String explanation; 
 
-  IndivCard(this.id, this.title, this.description, this.source, this.thumbnail_url, this.rating, this.author); 
+
+ 
+
+  IndivCard(this.pk, this.headline, this.text, this.thumbnail_url, this.rating, this.author, 
+            this.truth_value, this.url, this.is_poll, this.domain, this.explanation);
 
   IndivCard.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['headline'];
+    pk = json['pk'];
+    headline = json['headline'];
+    truth_value = json["truth_value"] ? 1: 0;
+    is_poll = json["is_poll"] ? 1 : 0; 
+    url = json["url"];
     rating = json['rating'];
+    domain = json["domain"];
+    text = json["text"]; 
     thumbnail_url = json['thumbnail_url'];
     author = json['author'];
-    description = json["text"]; 
+    explanation = json["explanation"];
+    
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id; 
-    data['headline'] = this.title; 
+    data['pk'] = this.pk; 
+    data['headline'] = this.headline; 
     data['rating'] = this.rating; 
     data['thumbnail_url'] = this.thumbnail_url; 
     data['author'] = this.author; 
-    data['text'] = this.description; 
-
+    data['text'] = this.text; 
+  return data;
   }
 }
 

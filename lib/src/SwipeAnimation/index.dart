@@ -63,8 +63,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
 
     setState((){
       articlesImage = fetchedCards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
-      articlesDescription = fetchedCards.cards.map((card) => card.description).toList();
-      articlesHeadline = fetchedCards.cards.map((card) => card.title).toList();
+      articlesDescription = fetchedCards.cards.map((card) => card.text).toList();
+      articlesHeadline = fetchedCards.cards.map((card) => card.headline).toList();
 
       print("headlines" + articlesHeadline.toString());
     });
@@ -164,7 +164,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     setState(() {
       choice=0;
       int answer=data3[articlesImage.indexOf(img)];
-      if (answer==choice){result++;}
+      if (answer==choice){result+=100;}
       articlesImage.remove(img);
       
 
@@ -317,7 +317,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
           actions: <Widget> [new FlatButton(
               child: new Text("Close"),
               onPressed: () {
-                
+                print("Posting Game Results");
+
                 Navigator.of(context).pop();})])
 
                   
@@ -325,10 +326,11 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     
 
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: result > 0 ? Colors.green : Colors.blue,
         onPressed: (){},
         //tooltip: 'Increment',
         icon: Icon(Icons.check),
-        label:Text(result.toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
+        label:Text((result*100).toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
       ),
     ));
   }
