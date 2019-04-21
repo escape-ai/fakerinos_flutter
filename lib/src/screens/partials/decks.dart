@@ -9,6 +9,12 @@ class Decks {
     decksJson.forEach((v) => {
       decks.add(new Deck.fromJson(v))
     });
+
+    
+  }
+
+  reverse(){
+    decks = decks.reversed.toList();
   }
 
   Map<String, dynamic> toJson(){

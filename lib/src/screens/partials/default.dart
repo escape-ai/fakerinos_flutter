@@ -56,6 +56,8 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
 
       setState(() {
         decksData = Decks.fromJson(decodedJson);
+        decksData.reverse();
+      
       });
     } else {
       // print(response.statusCode);
@@ -163,11 +165,12 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
                 fontWeight: FontWeight.bold,
                 color: Colors.blueAccent
               )),
-
-              new Image.network(
-                "https://3.bp.blogspot.com/-fiwFfX1nC54/XFLMbgvKcKI/AAAAAAAABfE/GcJEubU5M-YV5R9uXLpLPGltSGVigl-hwCLcBGAs/s1600/ca.png"
-                // decksData.decks[itemIndex].thumbnail_url
-              ),
+              
+              decksData.decks[itemIndex].thumbnail_url == null ? 
+              Icon(Icons.broken_image):
+              new Container(
+                child: Image.network(decksData.decks[itemIndex].thumbnail_url)
+                ),
             
               new Text(
               decksData.decks[itemIndex].description,
