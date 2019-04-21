@@ -6,7 +6,7 @@ import 'dart:async';
 import 'package:countdown/countdown.dart';
 
 Positioned singleActiveCard(
-
+    int pk,
     DecorationImage img,
     double bottom,
     double right,
@@ -15,15 +15,15 @@ Positioned singleActiveCard(
     double rotation,
     double skew,
     BuildContext context,
-    Function dismissImg,
     int flag,
-    Function addImg,
+    Function chooseTrue,
+    Function chooseFalse,
     Function swipeRight,
     Function swipeLeft,
     String description,
-    String headlines) {
+    String headline,
+    int truth_value) {
   
-  int val = 10; 
 
   String truncate(String stringArg, int length){
     if (stringArg.length > length){
@@ -34,6 +34,7 @@ Positioned singleActiveCard(
     }
   }
 
+  print("[singleActiveCard] truth_value is $truth_value");
 
   Size screenSize = MediaQuery.of(context).size;
   String loremText = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec qu...";
@@ -48,11 +49,13 @@ Positioned singleActiveCard(
       onResize: () {
       },
       onDismissed: (DismissDirection direction) {
-        if (direction == DismissDirection.endToStart)//swipe to right
-          dismissImg(img);
-        else
-          addImg(img);
-        
+        if (direction == DismissDirection.endToStart){
+          //swipe left
+          chooseFalse(pk, headline, truth_value); }
+        else{
+          //swipe right
+          chooseTrue(pk, headline, truth_value);
+        }
       },
       child: new Transform(
         alignment: flag == 0 ? Alignment.bottomRight : Alignment.bottomLeft,
@@ -72,7 +75,7 @@ Positioned singleActiveCard(
                 //TODO(Yunyi): specify detailpage based on the news content
                 Navigator.of(context).push(new PageRouteBuilder(
                       pageBuilder: (_, __, ___) => new DetailPage(
-                      headlines: headlines, 
+                      headlines: headline, 
                       description: description,
                       img: img ),
                     ));
@@ -92,11 +95,11 @@ Positioned singleActiveCard(
                     children: <Widget>[
                       new Padding(
                         padding: EdgeInsets.all(10),
-                        child: new Text(headlines, 
+                        child: new Text(headline, 
                         textAlign: TextAlign.center,
                       style: TextStyle(
                   color: Colors.white,
-                  fontSize: 1600/headlines.length + 10,
+                  fontSize: 1600/headline.length + 10,
                   fontFamily: 'Niagaraphobia'))
                       ),
                       new Container(
@@ -114,7 +117,7 @@ Positioned singleActiveCard(
                         padding: EdgeInsets.all(10),
                         child: new Text(description.length < 2 ? 
                         loremText :
-                        truncate(description, 200),
+                        truncate(description, 100),
                         
                         textAlign: TextAlign.justify,
                         style: TextStyle(fontSize: 15,
@@ -133,10 +136,12 @@ Positioned singleActiveCard(
                               new FlatButton(
                                   padding: new EdgeInsets.all(0.0),
                                   onPressed: () {
-                                    swipeLeft();
-                                    new Timer(Duration(milliseconds: 100), () => addImg(img));
+                                    swipeLeft(pk, headline, truth_value);
+                                    // chooseFalse(headline);
+                                    // new Timer(Duration(milliseconds: 5), () => chooseFalse(headline));
                                   },
                                   child: new Container(
+                                    padding: EdgeInsets.only(top: 5),
                                     height: screenSize.height/17,
                                     width: screenSize.width / 2.8,
                                     alignment: Alignment.center,
@@ -157,11 +162,14 @@ Positioned singleActiveCard(
                               new FlatButton(
                                   padding: new EdgeInsets.all(0.0),
                                   onPressed: () {
-                                    swipeRight();
-                                    new Timer(Duration(milliseconds: 100), () => dismissImg(img));
-                                    // dismissImg(img);
+                                    
+                                    swipeRight(pk, headline, truth_value);
+                                    
+                                    // new Timer(Duration(milliseconds: 5), () => chooseTrue(headline));
+                           
                                   },
                                   child: new Container(
+                                    padding: EdgeInsets.only(top: 5),
                                     height: screenSize.height/17,
                                     width: screenSize.width / 2.8,
                                     alignment: Alignment.center,

@@ -34,7 +34,10 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   List articlesDescription; 
   List articlesImage;
   List articlesHeadline;
+  List<int> truth_values;
+  List<int> pkList;
   Cards fetchedCards; 
+  int dataLength;
   
 
   void _fetchCardsData(int deckPk) async {
@@ -54,22 +57,26 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     headers: {
       HttpHeaders.authorizationHeader: 
       "Token $token"});
-    print(token);
-    print(response.body);
-    var decodedJson = jsonDecode(response.body);
+    // print(token);
+  
+    var decodedJson = jsonDecode(utf8.decode(response.bodyBytes));
     
     
     fetchedCards = Cards.fromJson(decodedJson);
 
     setState((){
-      articlesImage = fetchedCards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
+      // articlesImage = fetchedCards.cards.map((card) => card.thumbnail_url != "" ? new DecorationImage(image: new NetworkImage(card.thumbnail_url)):
+      // new DecorationImage(image: new ExactAssetImage('assets/logo.png'))).toList();
+      articlesImage = fetchedCards.cards.map((card) => DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
       articlesDescription = fetchedCards.cards.map((card) => card.text).toList();
       articlesHeadline = fetchedCards.cards.map((card) => card.headline).toList();
-
-      print("headlines" + articlesHeadline.toString());
+      truth_values = fetchedCards.cards.map((card)=> card.truth_value).toList();
+      pkList = fetchedCards.cards.map((card)=> card.pk).toList();
+      dataLength = articlesHeadline.length;
+      print("DATALENGTH $dataLength");
+     
     });
     
-    print("data2" + articlesDescription.toString());
    }
   
   AnimationController _buttonController;
@@ -108,8 +115,6 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
           var i = articlesImage.removeLast(); //************** */
           articlesImage.insert(0, i); //********************** */
 
-          // var j = data2.removeLast();//************** */
-          // data2.insert(0, j);
 
           _buttonController.reset(); //************ */
         }
@@ -160,43 +165,75 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
   }
 //choice:swipe right=1,left=0
 //answer:correct:1;wrong=0
-  dismissImg(DecorationImage img) {
-    setState(() {
-      choice=0;
-      int answer=data3[articlesImage.indexOf(img)];
-      if (answer==choice){result+=100;}
-      articlesImage.remove(img);
-      
 
-    });
+
+  postSwipe(int cardPk, int truth_value) async{
+    String swipe = truth_value == 1 ? "swipe_true" : "swipe_false";
+    String url = "https://fakerinos.herokuapp.com/api/articles/article/$cardPk/$swipe/";
+    print(url);
+
+    print("Posting now...");
+    final response = await post(url, 
+    headers: {
+      HttpHeaders.authorizationHeader: 
+      "Token $token"});
+    print(cardPk);
+
   }
 
-  addImg(DecorationImage img) {
-    setState(() {
-      choice=1;
-      int answer=data3[articlesImage.indexOf(img)];
-      if (answer==choice){result++;}
-      articlesImage.remove(img);
-      // selectedData.add(img);
-      
 
+  chooseFalse(int pk, String headline, int truth_value) {
+    print("CHOSE FALSE");
+    setState(() {
+
+      if (truth_value==0){
+        result+=100;
+        print("You chose correctly!"); } 
+      
+      else {
+      print("You chose wrongly!");
+    }
+      articlesHeadline.remove(headline);
     });
+    postSwipe(pk, truth_value);
   }
 
-  swipeRight() {
+  
+
+
+  chooseTrue(int pk, String headline, int truth_value) {
+    print("CHOSE TRUE");
+    articlesHeadline.remove(headline);
+    setState(() {
+      
+      if (truth_value == 1){
+        print("You chose correctly!");
+        result+=100;}else {
+      print("You chose wrongly!");
+    } 
+       } );
+
+    postSwipe(pk, truth_value);
+  }
+
+  swipeRight(int pk, String headline, int truth_value) {
+    print("swipe right");
     if (flag == 0)
       setState(() {
         flag = 1;
       });
     _swipeAnimation();
+    chooseTrue(pk, headline, truth_value);
   }
 
-  swipeLeft() {
+  swipeLeft(int pk, String headline, int truth_value) {
+    print("swipe left");
     if (flag == 1)
       setState(() {
         flag = 0;
       });
     _swipeAnimation();
+    chooseFalse(pk, headline, truth_value);
   }
 
   @override
@@ -204,7 +241,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     timeDilation = 0.4;
     
     double initialBottom = 15.0;
-    var dataLength = articlesImage == null? 1 : articlesImage.length;
+    dataLength = articlesHeadline == null ? 1: articlesHeadline.length;
     double backCardPosition = initialBottom + (dataLength - 1) * 10 + 10;
     double backCardWidth = -10.0;
     return (new Scaffold(
@@ -275,18 +312,21 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
             color: new Color.fromRGBO(30, 94, 175, 0.50),
             ///background color
             // alignment: Alignment.topCenter,
-            child: dataLength > 0 ?
-                articlesDescription == null ? 
+            child: dataLength > 0 ? //show alertDialogue if <= 0 
+                articlesHeadline == null ? 
                 RefreshProgressIndicator():
                  new Stack(
                     alignment: AlignmentDirectional.center,
-                    children: articlesImage.map((item) {
-                      if (articlesImage.indexOf(item) == dataLength - 1) {
-                        int idx = articlesImage.indexOf(item);
-                        String currentDescription = articlesDescription[articlesImage.indexOf(item)];
+                    children: articlesHeadline.map((headline) {
+                      int idx = articlesHeadline.indexOf(headline);
+                      print("idx: $idx");
+                      if (articlesHeadline.indexOf(headline) == dataLength - 1) {
+                      
+                        String currentDescription = articlesDescription[idx];
 
                         return singleActiveCard(
-                            item,
+                            pkList[idx],
+                            articlesImage[idx],
                             bottom.value,
                             right.value,
                             0.0,
@@ -294,21 +334,20 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                             rotate.value,
                             rotate.value < -10 ? 0.1 : 0.0,
                             context,
-                            dismissImg,
                             flag,
-                            addImg,
+                            chooseTrue,
+                            chooseFalse,
                             swipeRight,
                             swipeLeft,
-                            currentDescription * 2,
-                            articlesHeadline[idx]
-                            
-
+                            currentDescription,
+                            headline,
+                            truth_values[idx]
                             );
                       } else {
                         backCardPosition = backCardPosition - 10;
                         backCardWidth = backCardWidth + 10;
 
-                        return cardDemoDummy(item, backCardPosition, 0.0, 0.0,
+                        return cardDemoDummy(articlesImage[0], backCardPosition, 0.0, 0.0,
                             backCardWidth, 0.0, 0.0, context);
                       }
                     }).toList()):
@@ -332,7 +371,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
         onPressed: (){},
         //tooltip: 'Increment',
         icon: Icon(Icons.check),
-        label:Text((result*100).toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
+        label:Text((result).toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
       ),
     ));
   }
