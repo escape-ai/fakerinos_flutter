@@ -173,7 +173,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     print(url);
 
     print("Posting now...");
-    final response = await post(url, 
+    await post(url, 
     headers: {
       HttpHeaders.authorizationHeader: 
       "Token $token"});
@@ -181,6 +181,23 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
 
   }
 
+  finishGame(int score) async{
+    
+    var payload = {
+      "score" : score.toString()
+    };
+    String url = "https://fakerinos.herokuapp.com/api/rooms/single-player/finish/";
+    print(url);
+
+    print("Finished game, updating...");
+    final response = await post(url, 
+    body: payload,
+    headers: {
+      HttpHeaders.authorizationHeader: 
+      "Token $token"});
+
+    print(response.body);
+  }
 
   chooseFalse(int pk, String headline, int truth_value) {
     print("CHOSE FALSE");
@@ -351,16 +368,18 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
                             backCardWidth, 0.0, 0.0, context);
                       }
                     }).toList()):
-            AlertDialog(
-          title: new Text("Well done!"),
-          content: new Text("Not enough? Try out more decks on the home page! "),
-          actions: <Widget> [new FlatButton(
-              child: new Text("Close"),
-              key: Key("leaveSingleNormal"),
-              onPressed: () {
-                print("Posting Game Results");
-
-                Navigator.of(context).pop();})])
+                    new AlertDialog(
+                      title: new Text("Well done!"),
+                      content: new Text("Not enough? Try out more decks on the home page! "),
+                      actions: <Widget> [new FlatButton(
+                          child: new Text("Close"),
+                          key: Key("leaveSingleNormal"),
+                          onPressed: () {
+                            print("Posting Game Results");
+                            print(result);
+                            finishGame(result);
+                            Navigator.of(context).pop();})])
+            
 
                   
           ),
