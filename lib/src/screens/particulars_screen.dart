@@ -28,7 +28,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   String firstName;
   String lastName;
   String selectedEducationLevel; 
-  String dobString = ""; 
+  String dobString; //Yunyi:set default
   String dobErrorString = ""; 
   String educationErrorString = "";
   String token; 
@@ -126,9 +126,11 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   
   Widget expandableDatePicker() {
     return new FlatButton(
+      key: Key("changeBday"),//dont use this
     onPressed: () {
         DatePicker.showDatePicker(context,
                               showTitleActions: true,
+                           
                               minTime: DateTime(1950, 1, 1),
                               maxTime: DateTime(2009, 1, 1), 
                               onChanged: (date) {},

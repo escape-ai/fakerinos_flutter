@@ -78,6 +78,7 @@ class SearchOpponentState extends State<SearchOpponent> {
     return Scaffold(
    backgroundColor: Colors.blue[400],
       appBar: AppBar(
+         key: Key("backfromMultiLoad"),//YUNYI
         elevation: 0.0,
         backgroundColor: Colors.blue[400],
         title: Text("Dual Mode", style: TextStyle(fontSize: 24.0)),

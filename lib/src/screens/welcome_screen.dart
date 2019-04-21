@@ -97,6 +97,7 @@ class WelcomeScreen extends StatelessWidget {
             
               )
             ),
+            key: Key("chooseLogin"),
             child: Text("Log in",
             style: TextStyle(
               fontSize: 20, 

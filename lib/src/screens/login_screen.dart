@@ -50,6 +50,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
   Widget passwordField() {
     return TextFormField(
       obscureText: true,
+      key:Key("fullinPassword"),
       decoration: InputDecoration(
         labelText: 'Password',
         hintText: 'Enter your password',
@@ -64,6 +65,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
 
   Widget usernameField() {
     return TextFormField(
+      key:Key("fullinName"),
       decoration: InputDecoration(
         labelText: 'Username',
         hintText: 'Type your username',
@@ -82,6 +84,7 @@ class LoginScreenState extends State<LoginScreen> with ValidationMixin {
       CircularProgressIndicator():
       RaisedButton (
         child:  Text('Log in'),
+        key: Key("submitLogin"),
               
         onPressed: (() {
                 
