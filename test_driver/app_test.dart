@@ -1,15 +1,15 @@
 // Imports the Flutter Driver API
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-import '../lib/src/app.dart';
-import 'package:flutter_test/flutter_test.dart' as WTest;
-import 'package:flutter/widgets.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/gestures.dart';
+//import '../lib/src/app.dart';
+//import 'package:flutter_test/flutter_test.dart' as WTest;
+//import 'package:flutter/widgets.dart';
+//import 'package:flutter/rendering.dart';
+//import 'package:flutter/gestures.dart';
 
 void main() {
   //info to test
-  final String testName="Lionell123456";
+  final String testName="Lionell7722";
   final String testemail=testName+"@126.com";
   final descriptionTextFinder = find.byValueKey('description');
   //signup
@@ -52,13 +52,7 @@ final backfromMultiLoad=find.byValueKey("backfromMultiLoad");
    
     
   group('Starting the app:', () {
-    // First, define the app Finders. We can use these to locate Widgets from the
-    // test suite. Note: the Strings provided to the `byValueKey` method must
-    // be the same as the Strings we used for the Keys in step 1.
-    //key: Key('counter')
     FlutterDriver driver;
-
-    // Connect to the Flutter driver before running any tests
     setUpAll(() async {
       driver = await FlutterDriver.connect();
     });
@@ -70,8 +64,8 @@ final backfromMultiLoad=find.byValueKey("backfromMultiLoad");
     });
     //1 test
      test('check flutter driver health', () async {
-  Health health = await driver.checkHealth();
-  print(health.status);
+     Health health = await driver.checkHealth();
+     print(health.status);
 });
     //2 test
     test('description is available', () async {
@@ -103,43 +97,11 @@ final backfromMultiLoad=find.byValueKey("backfromMultiLoad");
       
       await driver.tap(confirmedPasswordFinder);
       await driver.enterText("lionell46");
-
       await driver.tap(submitButtonFinder);
-      // Then, verify the counter text has been incremented by 1
-
-
-
-      // await driver.pump(new Duration(milliseconds: 50));
-
-    //   expect(await driver.getText(snackbarFinder, timeout: new Duration(milliseconds: 4000) ), 
-    //   "Error: This password is too short. It must contain at least 8 characters");
-    // });
   });
-  //interest_screen.dart
-  //  WTest.testWidgets('Tap on interest taps', (WTest.WidgetTester tester) async {
-  //   await tester.tapAt(const Offset(10.0, 10.0));
-  // });
 //TODO:gesture scrolling!
   test('choose interests', () async {
-    //test scrolling
-
-    //tap on the button
-    //await driver.tap(skipInterestButton);
-
-    //or:
-    //choose cards then tap on next button
-    //final List<String> _InterestTaps=["ports","Education","Economics"];
-    
-  //    for(var i = 0;i<_InterestTaps.length;i++){
-  //      await driver.tap(find.byValueKey("TAP${_InterestTaps[i]}"));  
-  
-  //   print("Tapped $i : ${_InterestTaps[i]} ");
-
-  // }
-
   await driver.tap(skipInterestButton);  
-
-   
   });
   //leaderboard
   test('see leaderboard', () async {
@@ -154,34 +116,14 @@ final backfromMultiLoad=find.byValueKey("backfromMultiLoad");
   test('enter single player decks', () async {
     await driver.tap(enterSingleDeckButton);
   });
-  //single game:
-   //TODO:gesturedetector slide(to ondispose)!!!!!!!!!!!!!!!!!
-  test('Single game Tapped True', () async {
-    await driver.tap(SingleTapTrue);
-  });
-  test('Single game Tapped False', () async {
-    await driver.tap(SingleTapFalse);
-  });
-  //finish game premature
-  //TODO:gesture tap!!!!
   test('leave Single Prematurely', () async {
     await driver.tap(leaveSinglePremature);
   });
-  //finish game normal
 
-  test('leave Single Normally', () async {
-    await driver.tap(leaveSingleNormal);
-  });
-  //after leave game back to home page
-
-  //how to open drawer?--open side bar
-  //then check personal profile
   test('view Personal Profile', () async {
     await driver.tap(viewPersonalProfile);
   });
-
-  //TODO:go back from personalProfile to mainpage
-
+  
   test('enter Multi Game', () async {
     await driver.tap(enterMultiGame);
   });
@@ -190,15 +132,60 @@ final backfromMultiLoad=find.byValueKey("backfromMultiLoad");
   test("back from Multi Loading", () async {
     await driver.tap(backfromMultiLoad);
   });
-
-
-  
-
-
-
 }
 );
-group('Revisit the app:', () {
+group('Register with same account:', () {
+    FlutterDriver driver;
+    setUpAll(() async {
+      driver = await FlutterDriver.connect();
+    });
+    // Close the connection to the driver after the tests have completed
+    tearDownAll(() async {
+      if (driver != null) {
+        driver.close();
+      }
+    });
+    //1 test
+     test('check flutter driver health', () async {
+     Health health = await driver.checkHealth();
+     print(health.status);
+});
+    //2 test
+    test('description is available', () async {
+      // Use the `driver.getText` method to verify the counter starts at 0.
+      expect(await driver.getText(descriptionTextFinder), 
+      "Think you can tell Fake from Real? \n Come put your skills to a test!");
+    });
+    //3 test
+    test('taps sign up button', () async {
+      await driver.tap(signUpButtonFinder);
+    });
+    // 4 test
+  test('fill up common password', () async {
+      // First, tap on the button
+      await driver.tap(usernameFinder);
+      await driver.enterText(testName);
+
+      await driver.tap(emailFinder);
+      await driver.enterText(testemail);
+
+      await driver.tap(passwordFinder);
+      await driver.enterText("lionell46");
+      
+      await driver.tap(confirmedPasswordFinder);
+      await driver.enterText("lionell46");
+
+      await driver.tap(submitButtonFinder);
+     
+
+     
+  });
+ 
+}
+);
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+group('Revisit the app by login:', () {
     FlutterDriver driver;
     setUpAll(() async {
       driver = await FlutterDriver.connect();
@@ -222,44 +209,24 @@ group('Revisit the app:', () {
     });
     //3 test
     test('taps login button', () async {
-      await driver.tap(signUpButtonFinder);
+      await driver.tap(chooseLogin);
     });
     // 4 test
   test('fill up common password', () async {
       // First, tap on the button
-      await driver.tap(usernameFinder);
-      await driver.enterText("wakawaka2");
+    
 
-      await driver.tap(emailFinder);
-      await driver.enterText("waka2@waka.com");
-
-      await driver.tap(passwordFinder);
-      await driver.enterText("lionell46");
-      
-      await driver.tap(confirmedPasswordFinder);
+      await driver.tap(fullinName);
       await driver.enterText("lionell46");
 
-      await driver.tap(submitButtonFinder);
+      await driver.tap(fullinPassword);
+      await driver.enterText("lionell46");
+
+      await driver.tap(submitLogin);
   });
 
 //TODO:gesture scrolling!
   test('choose interests', () async {
-    //test scrolling
-
-    //tap on the button
-    //await driver.tap(skipInterestButton);
-
-    //or:
-    //choose cards then tap on next button
-    //final List<String> _InterestTaps=["ports","Education","Economics"];
-    
-  //    for(var i = 0;i<_InterestTaps.length;i++){
-  //      await driver.tap(find.byValueKey("TAP${_InterestTaps[i]}"));  
-  
-  //   print("Tapped $i : ${_InterestTaps[i]} ");
-
-  // }
-
   await driver.tap(skipInterestButton);  
 
    
@@ -313,12 +280,6 @@ group('Revisit the app:', () {
   test("back from Multi Loading", () async {
     await driver.tap(backfromMultiLoad);
   });
-
-
-  
-
-
-
 }
 );
 
