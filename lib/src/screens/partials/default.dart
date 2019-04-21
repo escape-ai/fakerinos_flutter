@@ -8,6 +8,7 @@ import "../../Session.dart";
 import "./decks.dart"; 
 import "../leaderboard/leaderboardPage.dart";
 import '../sharedPreferencesHelper.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 class DefaultHomeScreen extends StatefulWidget{
@@ -30,7 +31,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
   String particularsUrl = "https://fakerinos.herokuapp.com/api/accounts/profile/";
   String username;
   String token; 
-  bool contains; 
+  bool contains;
   double screenUnitHeight; 
   double screenUnitWidth; 
 
@@ -77,25 +78,11 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         child: new Container(
         width: 500,
         height: 1000,
-        child: Column(children: <Widget>[
-        leaderboardButton(),
-        Expanded(
         child: decksData == null ?
-        Center(child: CircularProgressIndicator(),
-        ) : 
-        ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        itemBuilder: (BuildContext context, int index) {
-          if(index <= 0 ) {
-            return _buildCarousel(context, index ~/ 2);
-          }
-          else {
-            return Divider(
-              height: 3
-            );
-          }
-        },
-      )),] ))));
+        Center(child: SpinKitChasingDots(size: 50, color: Colors.blue, duration: Duration(milliseconds: 2500),),
+        ) :Column(children: <Widget>[
+        leaderboardButton(),
+        _buildCarousel(context, 0),] ))));
   }
   
 
@@ -104,14 +91,22 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Text(headers[carouselIndex]),
+        Padding( padding: EdgeInsets.only(top: 5, bottom: 5),
+        child: Text(headers[carouselIndex], 
+                  style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 30,
+                  fontFamily: 'Niagaraphobia'),)
+        )
+        ,
 
         SizedBox(
           // you may want to use an aspect ratio here for tablet support
-          height: 300.0,
+          height: screenUnitHeight * 35,
+          
           child: PageView.builder(
             // store this controller in a State to save the carousel scroll position
-            controller: PageController(viewportFraction: 0.9),
+            controller: PageController(viewportFraction: 0.6),
             itemCount: decksData.decks.length,
             itemBuilder: (BuildContext context, int itemIndex) {
               return _buildCarouselItem(context, carouselIndex, itemIndex);
@@ -134,10 +129,12 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         },
         onDoubleTap: (){ 
           doubleTappedDeck = decksData.decks[itemIndex]; 
+          setState(() {
+              decksData.decks[itemIndex].stars+=1;
+                    });
           // Adding or removing deck logic 
           starredDecks.contains(doubleTappedDeck.pk) ? 
-          contains = true : contains = false; 
-          contains ? starredDecks.remove(doubleTappedDeck.pk) : 
+          starredDecks.remove(doubleTappedDeck.pk) : 
           starredDecks.add(doubleTappedDeck.pk);
 
           print(starredDecks);
@@ -146,7 +143,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
           context: context,
           builder: (BuildContext context){
           return AlertDialog(
-          title: contains ?  
+          title: starredDecks.contains(doubleTappedDeck.pk) ?  
           new Text("You unstarred the ${doubleTappedDeck.title} deck") :
           new Text("You starred the ${doubleTappedDeck.title} deck"));
           
@@ -154,15 +151,15 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
 
         child: SizedBox(
   
-          width: 200.0,
-          height: 250.0,
+          width: screenUnitWidth * 80,
+          height: screenUnitHeight * 70,
           child: Card(
           shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),),
           elevation: 10,
           
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(10.0),
             child: new Column(
             children: <Widget>[
               new Text(
@@ -174,15 +171,34 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
               )),
               
               decksData.decks[itemIndex].thumbnail_url == null ? 
-              Icon(Icons.broken_image):
               new Container(
-                child: Image.network(decksData.decks[itemIndex].thumbnail_url)
-                ),
+                height: screenUnitHeight * 20,
+                width: screenUnitWidth * 40,
+                child: Image.asset('assets/logo.png'),
+                ):
+                Container(
+          padding: EdgeInsets.only(top: 20, bottom: 20),
+            width: screenUnitWidth * 35,
+            height: screenUnitWidth * 35,
+            decoration: new BoxDecoration(
+              shape:BoxShape.circle,
+              
+                // shape: BoxShape.circle,
+                image: new DecorationImage(
+                    fit: BoxFit.fill,
+                    image: NetworkImage(decksData.decks[itemIndex].thumbnail_url)
+                )),
+      ),
+              // new Container(
+              //   height: screenUnitHeight * 20,
+              //   width: screenUnitWidth * 40,
+              //   child: Image.network(decksData.decks[itemIndex].thumbnail_url)
+              //   ),
             
               new Text(
               decksData.decks[itemIndex].description,
               style: new TextStyle(
-                fontSize: 12.0,
+                fontSize: 20.0,
                 
                 color: Colors.grey
               )),
@@ -192,15 +208,21 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
                   new IconTheme(
                   data: new IconThemeData(
                       
-                      color: Colors.yellow), 
+                      color: 
+                      starredDecks.contains(decksData.decks[itemIndex].pk) ? 
+                      Colors.yellow[800] : Colors.grey), 
                   child: new Icon(
                     
                     Icons.star,
                   
-                    size: 30,)),
+                    size: 40,)),
 
                   new Text(
                      decksData.decks[itemIndex].stars.toString() + " stars",
+                     style: TextStyle(
+                       fontSize: 15,
+                       fontWeight: FontWeight.bold
+                     )
                   )
                   
                 ],
@@ -250,14 +272,15 @@ Widget leaderboardButton(){
   return new Container(
           padding: EdgeInsets.only(top: screenUnitHeight * 5),
           child: ButtonTheme(
-            minWidth: 350,
+            minWidth: 300,
             height: 50,
             child: new RaisedButton(
-            color: Colors.white,
-            textColor: Color(0xAA0518FF),
+            color: Colors.cyan[400],
+            textColor: Colors.black,
             key: Key("ViewLeaderboard"),
             child: new Text("See the leaderboard",
               style: TextStyle(
+                color: Colors.black,
                 fontSize: 20,
                 fontWeight: FontWeight.bold
             ),),

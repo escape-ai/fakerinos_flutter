@@ -2,12 +2,13 @@ import "package:flutter/material.dart";
 import 'package:http/http.dart'; 
 import 'dart:io';
 import 'dart:convert';
-import "../../SwipeAnimation/crowdSourceGame.dart";
+import "../../SwipeAnimation/index.dart";
 import "./cards.dart";
 import "../../Session.dart";
 import "./decks.dart"; 
 import "../leaderboard/leaderboardPage.dart";
 import '../sharedPreferencesHelper.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 class CrowdSourceScreen extends StatefulWidget{
@@ -15,13 +16,13 @@ class CrowdSourceScreen extends StatefulWidget{
    
 
   createState(){
-    return CrowdSourceState(); 
+    return CrowdSourceScreenState(); 
   }
 
   
 }
 
-class CrowdSourceState extends State<CrowdSourceScreen>{
+class CrowdSourceScreenState extends State<CrowdSourceScreen>{
 
   Decks decksData;
   Deck doubleTappedDeck;
@@ -30,32 +31,9 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
   String particularsUrl = "https://fakerinos.herokuapp.com/api/accounts/profile/";
   String username;
   String token; 
-  bool contains = false; 
-  
-  
-  Widget starIcon(){
-    
-    return new IconButton(
-            // icon: contains ? Icon(Icons.star) : Icon(Icons.star_border),
-            icon: Icon(Icons.star_border),
-            color: Colors.yellow[800],
-            onPressed: _toggleFavorite(0),
-          );
-  }
-
-   _toggleFavorite(int itemIndex){
-    setState(() {
-        doubleTappedDeck = decksData.decks[itemIndex]; 
-        // Adding or removing deck logic 
-        starredDecks.contains(doubleTappedDeck.pk) ? 
-        contains = true : contains = false; 
-        contains ? starredDecks.remove(doubleTappedDeck.pk) : 
-        starredDecks.add(doubleTappedDeck.pk);
-
-        print(starredDecks);
-        starDecks();
-        });
-  }
+  bool contains;
+  double screenUnitHeight; 
+  double screenUnitWidth; 
 
   @override
   void initState(){
@@ -70,7 +48,7 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
       print("Fetching data"); 
       token = await getMobileToken(); 
       username = await getUsername();
-    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/poll", 
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck", 
     headers: {HttpHeaders.authorizationHeader: "Token $token"}); 
     
     if (response.statusCode == 200) {
@@ -81,6 +59,8 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
 
       setState(() {
         decksData = Decks.fromJson(decodedJson);
+        decksData.reverse();
+      
       });
     } else {
       // print(response.statusCode);
@@ -89,47 +69,44 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
   }
   @override
   Widget build(BuildContext context){
-    // Size screenSize = MediaQuery.of(context).size;
+    Size screenSize = MediaQuery.of(context).size;
+    screenUnitHeight = screenSize.height/100; 
+    screenUnitWidth = screenSize.width/100; 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: new Center (
         child: new Container(
         width: 500,
         height: 1000,
-        child: Column(children: <Widget>[
-        Expanded(
         child: decksData == null ?
-        Center(child: CircularProgressIndicator(),
-        ) : 
-        ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        itemBuilder: (BuildContext context, int index) {
-          if(index <= 0 ) {
-            return _buildCarousel(context, index ~/ 2);
-          }
-          else {
-            return Divider(
-              height: 3
-            );
-          }
-        },
-      )),] ))));
+        Center(child: SpinKitChasingDots(size: 50, color: Colors.blue, duration: Duration(milliseconds: 2500),),
+        ) :Column(children: <Widget>[
+        // leaderboardButton(),
+        _buildCarousel(context, 0),] ))));
   }
   
 
   Widget _buildCarousel(BuildContext context, int carouselIndex) {
-    Size screenSize = MediaQuery.of(context).size;
-    // final headers = ["Recommended For You", "Trending", "Newest"]; 
+    final headers = ["Latest Trending" ]; 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Text("Most Trending News!"),
+        Padding( padding: EdgeInsets.only(top: 5, bottom: 5),
+        child: Text(headers[carouselIndex], 
+                  style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 30,
+                  fontFamily: 'Niagaraphobia'),)
+        )
+        ,
+
         SizedBox(
           // you may want to use an aspect ratio here for tablet support
-          height: screenSize.height/2,
+          height: screenUnitHeight * 70,
+          width: screenUnitWidth * 95,
           child: PageView.builder(
             // store this controller in a State to save the carousel scroll position
-            controller: PageController(viewportFraction: 0.9),
+            controller: PageController(viewportFraction: 0.75),
             itemCount: decksData.decks.length,
             itemBuilder: (BuildContext context, int itemIndex) {
               return _buildCarouselItem(context, carouselIndex, itemIndex);
@@ -143,14 +120,26 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
   Widget _buildCarouselItem(BuildContext context, int carouselIndex, int itemIndex) {
     return Center(
       child: GestureDetector(
+        key:Key("enterSingleDeck"),
         onTap: (){ 
         tappedDeck = decksData.decks[itemIndex];
         // print("[Default Screen] " +  "articles:" + tappedDeck.articles.toString());
         Navigator.push(context,
-        new MaterialPageRoute(builder: (context)=> CrowdSourceGame(deckPk: tappedDeck.pk)));
+        new MaterialPageRoute(builder: (context)=> CardDemo(deckPk: tappedDeck.pk)));
         },
         onDoubleTap: (){ 
-          
+          doubleTappedDeck = decksData.decks[itemIndex]; 
+          setState(() {
+              decksData.decks[itemIndex].stars+=1;
+                    });
+          // Adding or removing deck logic 
+          starredDecks.contains(doubleTappedDeck.pk) ? 
+          contains = true : contains = false; 
+          contains ? starredDecks.remove(doubleTappedDeck.pk) : 
+          starredDecks.add(doubleTappedDeck.pk);
+
+          print(starredDecks);
+          starDecks();
           showDialog( 
           context: context,
           builder: (BuildContext context){
@@ -163,36 +152,45 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
 
         child: SizedBox(
   
-          width: 300.0,
-          height: 600.0,
+          width: screenUnitWidth * 90,
+          height: screenUnitHeight * 60,
           child: Card(
+            color: Colors.yellow[700],
           shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),),
           elevation: 10,
           
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(20),
             child: new Column(
             children: <Widget>[
               new Text(
               decksData.decks[itemIndex].title,
               style: new TextStyle(
-                fontSize: 20.0,
+                fontSize: 30.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.blueAccent
               )),
-
-              new Image.network(
-                "https://3.bp.blogspot.com/-fiwFfX1nC54/XFLMbgvKcKI/AAAAAAAABfE/GcJEubU5M-YV5R9uXLpLPGltSGVigl-hwCLcBGAs/s1600/ca.png"
-                // decksData.decks[itemIndex].thumbnail_url
-              ),
+              
+              decksData.decks[itemIndex].thumbnail_url == null ? 
+              new Container(
+                height: screenUnitHeight * 30,
+                width: screenUnitWidth * 50,
+                child: Image.asset('assets/logo.png'),
+                ):
+              new Container(
+                height: screenUnitHeight * 30,
+                width: screenUnitWidth * 50,
+                child: Image.network(decksData.decks[itemIndex].thumbnail_url)
+                ),
             
               new Text(
               decksData.decks[itemIndex].description,
               style: new TextStyle(
-                fontSize: 12.0,
+                fontSize: 20.0,
                 
-                color: Colors.grey
+                color: Colors.blue,
+                fontFamily: "Roboto"
               )),
               
               new Row(
@@ -200,12 +198,21 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
                   new IconTheme(
                   data: new IconThemeData(
                       
-                      color: Colors.yellow), 
-                  // child: starIcon()),
-                  child: Icon(Icons.star)),
+                      color: contains == null ?  Colors.grey :
+                      contains == true ? 
+                      Colors.yellow[800] : Colors.grey), 
+                  child: new Icon(
+                    
+                    Icons.star,
+                  
+                    size: 40,)),
 
                   new Text(
                      decksData.decks[itemIndex].stars.toString() + " stars",
+                     style: TextStyle(
+                       fontSize: 15,
+                       fontWeight: FontWeight.bold
+                     )
                   )
                   
                 ],
@@ -249,6 +256,32 @@ class CrowdSourceState extends State<CrowdSourceScreen>{
     // print(parsedResponse);
 
 
+}
+
+Widget leaderboardButton(){
+  return new Container(
+          padding: EdgeInsets.only(top: screenUnitHeight * 5),
+          child: ButtonTheme(
+            minWidth: 350,
+            height: 50,
+            child: new RaisedButton(
+            color: Colors.cyan[400],
+            textColor: Colors.black,
+            key: Key("ViewLeaderboard"),
+            child: new Text("See the leaderboard",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+            ),),
+            onPressed: () => Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => new LeaderPage())),
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0))
+            )
+          
+        )
+        );
 }
 }
 

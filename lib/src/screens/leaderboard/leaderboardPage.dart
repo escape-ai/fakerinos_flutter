@@ -100,7 +100,7 @@ class _LeaderPageState extends State<LeaderPage> {
                   size: 30.0,
                 )),
           ),),
-      body: players == null ? SpinKitWave(color: Colors.blue[400], duration: new Duration(milliseconds: 1500),) :
+      body: players == null ? SpinKitWave(color: Colors.blue[400], duration: new Duration(milliseconds: 1250),) :
       
       new Stack(
         children: <Widget>[
@@ -136,7 +136,6 @@ class _LeaderPageState extends State<LeaderPage> {
     }
   }
 
-  
 
   Widget _buildImage() {
     return new ClipPath(

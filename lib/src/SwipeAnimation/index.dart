@@ -303,21 +303,25 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
               child: new Text(
                 "SINGLE PLAYER",
                 style: new TextStyle(
+                    
                     fontSize: 14.0,
                     letterSpacing: 3,
                     fontWeight: FontWeight.bold)),
             ),
             new Container(
-              width: 15.0,
-              height: 15.0,
-              margin: new EdgeInsets.only(bottom: 20.0),
+              width: 30.0,
+              height: 30.0,
+              margin: new EdgeInsets.only(bottom: 5.0),
               alignment: Alignment.center,
               child: new Text(
                 dataLength.toString(),
-                style: new TextStyle(fontSize: 10.0),
+                style: new TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.black),
               ),
               decoration: new BoxDecoration(
-                  color: Colors.red,
+                  
+                  color: Colors.cyan[300],
                   shape: BoxShape.circle), //"question left mark"
             )
           ],
