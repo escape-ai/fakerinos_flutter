@@ -105,6 +105,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Text(headers[carouselIndex]),
+
         SizedBox(
           // you may want to use an aspect ratio here for tablet support
           height: 300.0,
@@ -124,6 +125,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
   Widget _buildCarouselItem(BuildContext context, int carouselIndex, int itemIndex) {
     return Center(
       child: GestureDetector(
+        key:Key("enterSingleDeck"),
         onTap: (){ 
         tappedDeck = decksData.decks[itemIndex];
         // print("[Default Screen] " +  "articles:" + tappedDeck.articles.toString());
@@ -253,6 +255,7 @@ Widget leaderboardButton(){
             child: new RaisedButton(
             color: Colors.white,
             textColor: Color(0xAA0518FF),
+            key: Key("ViewLeaderboard"),
             child: new Text("See the leaderboard",
               style: TextStyle(
                 fontSize: 20,

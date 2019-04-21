@@ -178,6 +178,7 @@ Positioned multiplayerCard(
                                   )),
                               new FlatButton(
                                   padding: new EdgeInsets.all(0.0),
+                                  key: Key("SingleTapTrue"),
                                   onPressed: () {
                                     swipeRight();
                                     new Timer(Duration(milliseconds: 100), () => dismissImg(img));
@@ -194,6 +195,7 @@ Positioned multiplayerCard(
                                     ),
                                     child: new Text(
                                       "True",
+                                      key: Key("SingleTapFalse"),
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 30,

@@ -145,6 +145,7 @@ class HomeStateScreen extends State<HomeScreen> {
             ),
           )),
           new ListTile(
+            key: Key("viewPersonalProfile"),
             title: new Text("Personal Profile"),
             trailing: new Icon(Icons.person),
             onTap: ()=> {

@@ -85,6 +85,7 @@ class _LeaderPageState extends State<LeaderPage> {
     return new Scaffold(
       appBar: AppBar(title: new Text("Leaderboard"),
       leading: new GestureDetector(
+        key: Key("backFromLeaderboard"),
             onTap: () {
               Navigator.of(context).pop();
             },

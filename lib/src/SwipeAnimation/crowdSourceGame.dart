@@ -53,8 +53,8 @@ class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderSta
 
     setState((){
       articlesImage = fetchedCards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
-      articlesDescription = fetchedCards.cards.map((card) => card.description).toList();
-      articlesHeadline = fetchedCards.cards.map((card) => card.title).toList();
+      articlesDescription = fetchedCards.cards.map((card) => card.text).toList();
+      articlesHeadline = fetchedCards.cards.map((card) => card.headline).toList();
 
       print("headlines" + articlesHeadline.toString());
     });

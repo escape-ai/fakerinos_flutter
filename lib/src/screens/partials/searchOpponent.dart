@@ -86,7 +86,7 @@ class SearchOpponentState extends State<SearchOpponent> {
           case("Connection success"): {
             setState(() {
               _isConnected = true;
-              status = "Connected, requesting to join game"; 
+              status = "Connected, searching for other players"; 
                         });
 
             // join();
@@ -98,15 +98,6 @@ class SearchOpponentState extends State<SearchOpponent> {
               print("GAME IS READY");
             });
           }
-          break; 
-
-          case("There is something wrong with your connection. Please try again"):{
-              setState((){
-                status = "Something wrong with connection";
-              });
-          }
-
-          
         }
       }
     }
@@ -218,6 +209,7 @@ class SearchOpponentState extends State<SearchOpponent> {
     return Scaffold(
    backgroundColor: Colors.blue[400],
       appBar: AppBar(
+         key: Key("backfromMultiLoad"),//YUNYI
         elevation: 0.0,
         backgroundColor: Colors.blue[400],
         title: Text("Multiplayer Game Set Up", style: TextStyle(fontSize: 24.0)),

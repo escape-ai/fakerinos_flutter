@@ -124,8 +124,8 @@ class MultiplayerGameState extends State<MultiplayerGame> with TickerProviderSta
     
     setState((){
       articlesImage = cards.cards.map((card) => new DecorationImage(image: new NetworkImage(card.thumbnail_url))).toList();
-      articlesDescription = cards.cards.map((card) => card.description).toList();
-      articlesHeadline = cards.cards.map((card) => card.title).toList();
+      articlesDescription = cards.cards.map((card) => card.text).toList();
+      articlesHeadline = cards.cards.map((card) => card.headline).toList();
 
       countdown(11);
     });

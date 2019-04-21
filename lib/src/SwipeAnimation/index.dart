@@ -226,6 +226,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
         /////////////////////////////////////
         actions: <Widget>[
           new GestureDetector(
+             key: Key("leaveSinglePremature"),
             onTap: () {
               Navigator.of(context).pop();
             },
@@ -316,6 +317,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
           content: new Text("Not enough? Try out more decks on the home page! "),
           actions: <Widget> [new FlatButton(
               child: new Text("Close"),
+              key: Key("leaveSingleNormal"),
               onPressed: () {
                 print("Posting Game Results");
 
