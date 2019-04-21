@@ -75,7 +75,7 @@ class PlayerRowState extends State<PlayerRow> {
               height: widget.player.username == widget.username ? widget.dotSize *2 : widget.dotSize,
               width: widget.player.username == widget.username ? widget.dotSize *2 : widget.dotSize,
               decoration: new BoxDecoration(
-                  shape: BoxShape.circle, color: widget.player.username == widget.username ? Colors.green : Colors.black),
+                  shape: BoxShape.circle, color: widget.player.username == widget.username ? Colors.blue : Colors.black),
             ),
           ),
           new Expanded(

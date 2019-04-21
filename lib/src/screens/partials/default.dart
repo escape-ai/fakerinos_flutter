@@ -82,7 +82,9 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         Center(child: SpinKitChasingDots(size: 50, color: Colors.blue, duration: Duration(milliseconds: 2500),),
         ) :Column(children: <Widget>[
         leaderboardButton(),
-        _buildCarousel(context, 0),] ))));
+        _buildCarousel(context, 0),
+        // SizedBox(height: screenUnitHeight * 5),
+        tutorial()] ))));
   }
   
 
@@ -102,7 +104,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
 
         SizedBox(
           // you may want to use an aspect ratio here for tablet support
-          height: screenUnitHeight * 35,
+          height: screenUnitHeight * 32,
           
           child: PageView.builder(
             // store this controller in a State to save the carousel scroll position
@@ -152,7 +154,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
         child: SizedBox(
   
           width: screenUnitWidth * 80,
-          height: screenUnitHeight * 70,
+          height: screenUnitHeight * 65,
           child: Card(
           shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),),
@@ -172,8 +174,8 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
               
               decksData.decks[itemIndex].thumbnail_url == null ? 
               new Container(
-                height: screenUnitHeight * 20,
-                width: screenUnitWidth * 40,
+                height: screenUnitHeight * 18,
+                width: screenUnitWidth * 36,
                 child: Image.asset('assets/logo.png'),
                 ):
                 Container(
@@ -198,7 +200,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
               new Text(
               decksData.decks[itemIndex].description,
               style: new TextStyle(
-                fontSize: 20.0,
+                fontSize: 12.0,
                 
                 color: Colors.grey
               )),
@@ -233,6 +235,35 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
           //decksData.decks[itemIndex].title
             )))));
              
+  }
+
+  Widget tutorial(){
+
+    return new Center(
+          child: Column(
+      children: <Widget>[
+        new Padding( 
+          padding: EdgeInsets.only(top: screenUnitHeight * 5, bottom: screenUnitHeight * 2),
+          child:
+          new Container(
+          padding: EdgeInsets.only(top: 20, bottom: 20),
+            width: screenUnitWidth * 35,
+            height: screenUnitWidth * 35,
+            decoration: new BoxDecoration(
+              
+                image: new DecorationImage(
+                    fit: BoxFit.fill,
+                    image: ExactAssetImage("assets/tutorial.png")
+                )),
+      )),
+         Text("Not sure? Try the tutorial!",
+            style: TextStyle(
+              fontSize: 20, 
+              fontWeight: FontWeight.bold,
+              color: Colors.blue          
+            ))
+      ],  
+    ));
   }
 
 

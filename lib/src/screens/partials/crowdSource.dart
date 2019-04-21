@@ -48,7 +48,7 @@ class CrowdSourceScreenState extends State<CrowdSourceScreen>{
       print("Fetching data"); 
       token = await getMobileToken(); 
       username = await getUsername();
-    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck", 
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/decks/poll/", 
     headers: {HttpHeaders.authorizationHeader: "Token $token"}); 
     
     if (response.statusCode == 200) {
@@ -187,7 +187,7 @@ class CrowdSourceScreenState extends State<CrowdSourceScreen>{
               new Text(
               decksData.decks[itemIndex].description,
               style: new TextStyle(
-                fontSize: 20.0,
+                fontSize: 14.0,
                 
                 color: Colors.blue,
                 fontFamily: "Roboto"
