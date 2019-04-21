@@ -7,6 +7,8 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'dart:io';
 import './player.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 
 void main() => runApp(new MyApp());
 
@@ -98,11 +100,13 @@ class _LeaderPageState extends State<LeaderPage> {
                   size: 30.0,
                 )),
           ),),
-      body: new Stack(
+      body: players == null ? SpinKitWave(color: Colors.blue[400], duration: new Duration(milliseconds: 1500),) :
+      
+      new Stack(
         children: <Widget>[
           _buildTimeline(),
-          _buildIamge(),
-          _buildTopHeader(),
+          _buildImage(),
+          // _buildTopHeader(),
           _buildProfileRow(),
           _buildBottomPart(),
         ],
@@ -112,16 +116,17 @@ class _LeaderPageState extends State<LeaderPage> {
 
 
   _fetchData() async {
-
+    
     token = await getMobileToken();
     username = await getUsername(); 
+    
     print("fetching players data");
-    final response = await get("https://fakerinos.herokuapp.com/api/leaderboard/top/all/",
+    final response = await get("https://fakerinos.herokuapp.com/api/leaderboard/relative/month/",
     headers: {HttpHeaders.authorizationHeader: "Token $token"});
 
     if (response.statusCode == 200){
       var decodedJson = jsonDecode(response.body);
-
+      print(response.body);
       Players.fromJson(decodedJson);
 
       setState(() {
@@ -131,7 +136,9 @@ class _LeaderPageState extends State<LeaderPage> {
     }
   }
 
-  Widget _buildIamge() {
+  
+
+  Widget _buildImage() {
     return new ClipPath(
       clipper: new DialogonalClipper(),
       child: new Image.asset(
@@ -149,12 +156,12 @@ class _LeaderPageState extends State<LeaderPage> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 32.0),
       child: new Row(
         children: <Widget>[
-          new Icon(Icons.menu, size: 28.0, color: Colors.white),
+          // new Icon(Icons.menu, size: 28.0, color: Colors.white),
           new Expanded(
             child: new Padding(
               padding: const EdgeInsets.only(left: 16.0),
               child: new Text(
-                "Leader Board",
+                "Leader oard",
                 style: new TextStyle(
                     fontSize: 20.0,
                     color: Colors.white,
@@ -185,14 +192,14 @@ class _LeaderPageState extends State<LeaderPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 new Text(
-                  'Lionell Loh',
+                  username,
                   style: new TextStyle(
                       fontSize: 26.0,
                       color: Colors.white,
                       fontWeight: FontWeight.w400),
                 ),
                 new Text(
-                  'Level : Master Player',
+                  'Level: Wielder of Truth',
                   style: new TextStyle(
                       fontSize: 20.0,
                       color: Colors.white,
@@ -223,7 +230,7 @@ class _LeaderPageState extends State<LeaderPage> {
   Widget _buildTasksList() {
     return new Expanded(
       child: new ListView(
-        children: players.map((player) => new PlayerRow(player: player)).toList(),
+        children: players.map((player) => new PlayerRow(player: player, username:username)).toList(),
       ),
     );
   }
@@ -238,14 +245,14 @@ class _LeaderPageState extends State<LeaderPage> {
             'World Ranking',
             style: new TextStyle(fontSize: 34.0),
           ),
-          new Text(
-            'Your point:1000',
-            style: new TextStyle(color: Colors.grey, fontSize: 12.0),
-          ),
-          new Text(
-            'Your rank:1',
-            style: new TextStyle(color: Colors.grey, fontSize: 12.0),
-          ),
+          // new Text(
+          //   'Your point:1000',
+          //   style: new TextStyle(color: Colors.grey, fontSize: 12.0),
+          // ),
+          // new Text(
+          //   'Your rank:1',
+          //   style: new TextStyle(color: Colors.grey, fontSize: 12.0),
+          // ),
         ],
       ),
     );

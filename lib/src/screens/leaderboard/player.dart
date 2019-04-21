@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 
 class Players {
   static List <Player> players; 
@@ -23,7 +25,7 @@ class Player {
   Player.fromJson(dynamic playerJson){
     rank = playerJson["rank"];
     score = playerJson["score"];
-    skillRating = playerJson["skillRating"];
+    skillRating = playerJson["skill_rating"];
     username = playerJson["username"];
   }
 
