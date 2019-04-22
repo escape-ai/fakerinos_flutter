@@ -149,6 +149,7 @@ class SearchOpponentState extends State<SearchOpponent> {
             onPressed: () {
             print("Quitting game");
             game.quit();
+            Navigator.of(context).pop();
             
           
               },

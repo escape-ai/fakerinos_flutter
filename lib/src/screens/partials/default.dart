@@ -153,7 +153,7 @@ class DefaultHomeStateScreen extends State<DefaultHomeScreen>{
 
         child: SizedBox(
   
-          width: screenUnitWidth * 80,
+          width: screenUnitWidth * 75,
           height: screenUnitHeight * 65,
           child: Card(
           shape: RoundedRectangleBorder(

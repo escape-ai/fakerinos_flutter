@@ -5,6 +5,9 @@ import 'dart:io';
 import 'dart:convert';
 import '../user.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import './player.dart';
+import './leaderboardPage.dart';
+import './player_row.dart';
 
 class ProfilePageState extends StatefulWidget {
   createState(){
@@ -26,15 +29,54 @@ class ProfilePage extends State<ProfilePageState> {
   String username; 
   String token;
   User user;
+  Player players;
+  List interests = ["Economics", "Social", "Finance"];
+  int rank;
+  String title; 
+  int score; 
+  int skillRating; 
   
   @override
   void initState(){
-    fetchProfileData();
+    // fetchProfileData();
+    getFullName();
+    fetchLeaderboardData();
+    // fetchSharedData(); 
     super.initState();
   }
 
-  void fetchLeaderboardData(){
+  
+
+  void fetchLeaderboardData() async{
+    token = await getMobileToken();
+    username = await getUsername();
     print("fetching leaderboard data");
+    final response = await get("https://fakerinos.herokuapp.com/api/leaderboard/relative/month/",
+    headers: {HttpHeaders.authorizationHeader: "Token $token"});
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 200){
+      var decodedJson = jsonDecode(response.body);
+      print(response.body);
+      Players.fromJson(decodedJson);
+
+      for (Player p in Players.players){
+        if (p.username == username){
+          setState(() {
+
+            print("Found $username");
+            rank = p.rank;
+            title = parseScoreToTitle(p.score);
+            score = p.score;
+            skillRating = p.skillRating;
+                      
+                    });
+        }
+      }
+
+      
+      
+    }
 
 
   }
@@ -50,7 +92,7 @@ class ProfilePage extends State<ProfilePageState> {
     print(parsedResponse);
     user = User.fromJson(parsedResponse);
     setState(() {
-      user = User.fromJson(parsedResponse);
+      
         });
   }
 
@@ -62,7 +104,7 @@ class ProfilePage extends State<ProfilePageState> {
           title: Text("Profile Page")
         ),
       // body: user == null? CircularProgressIndicator() : 
-      body: user == null ? SpinKitWave(color: Colors.blue[400], duration: new Duration(milliseconds: 1000),) 
+      body: rank == null ? SpinKitWave(color: Colors.blue[400], duration: new Duration(milliseconds: 1000),) 
       : Stack(
         children: <Widget>[
           _buildCoverImage(screenSize),
@@ -72,18 +114,22 @@ class ProfilePage extends State<ProfilePageState> {
                 children: <Widget>[
                   SizedBox(height: screenSize.height / 15),
                   _buildProfileImage(),
-                  _buildFullName(user.firstName + " " + user.lastName),
-                  _buildStatus(context),
-                  _buildRankTag(3),
+                  _buildFullName(firstName + lastName),
+                  Text(title, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  // _buildStatus(context),
+                   SizedBox(height: 3.0),
+                  _buildRankTag(rank),
+                   SizedBox(height: 5.0),
                   _buildStatContainer(),
                   // _buildBio(context),
                   // _buildSeparator(screenSize),
-                  _buildInterestRow(user.interests),
+                   SizedBox(height: 10.0),
+                  _buildInterestRow(),
                   // _buildSeparator(screenSize),
                   SizedBox(height: 10.0),
-                  _buildNewsInterest(context),
-                  SizedBox(height: 10.0),
-                  _buildRank(context),
+                 
+                 
+                  
               
                 ],
               ),
@@ -138,7 +184,8 @@ class ProfilePage extends State<ProfilePageState> {
     ));
   }
 
-  Widget _buildInterestRow(List<String> tags){
+  Widget _buildInterestRow(){
+    List tags = ["Technology", "Economics", "Politics"];
     return new Padding(
       padding: EdgeInsets.only(top: 7,  bottom: 3),
       child: new Row(
@@ -208,7 +255,7 @@ class ProfilePage extends State<ProfilePageState> {
     getFullName(); 
     TextStyle _nameTextStyle = TextStyle(
       color: Colors.black,
-      fontSize: 20.0,
+      fontSize: 30.0,
       fontWeight: FontWeight.w700,
     );
 
@@ -278,9 +325,9 @@ class ProfilePage extends State<ProfilePageState> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          _buildStatItem("Points", _points),
-          _buildStatItem("Single Mode", _singlemode),
-          _buildStatItem("Dual Mode", _dualmode),
+          _buildStatItem("Total Points", score.toString()),
+          _buildStatItem("Skill Rating", skillRating.toString()),
+          _buildStatItem("Gamse Played", "16"),
         ],
       ),
     );
@@ -312,29 +359,6 @@ class ProfilePage extends State<ProfilePageState> {
       height: 2.0,
       color: Colors.black54,
       margin: EdgeInsets.only(top: 4.0),
-    );
-  }
-
-  Widget _buildNewsInterest(BuildContext context) {
-    String _interest=_tags.join(",");
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      padding: EdgeInsets.only(top: 8.0),
-      child: Text(
-        "I am insterested in News under these categories: ${_interest}",
-        style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
-      ),
-    );
-  }
-  Widget _buildRank(BuildContext context) {
-    String _interest=_tags.join(",");
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      padding: EdgeInsets.only(top: 8.0),
-      child: Text(
-        "I am ranked: ${_rank} in the world",
-        style: TextStyle( fontSize: 16.0),
-      ),
     );
   }
   
