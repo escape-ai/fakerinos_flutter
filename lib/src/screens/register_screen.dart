@@ -44,10 +44,10 @@ class RegisterScreenState extends State<RegisterScreen> with ValidationMixin {
           confirmPasswordField(),
           Container(margin: EdgeInsets.only(top: MediaQuery.of(context).size.width/10 )),
           _isLoading ? CircularProgressIndicator() : submitButton(),
-          welcomePageButton(),
-          // socketButton(),
-          multiplayerGameButton(),
-          cameraButton()
+          // welcomePageButton(),
+          // // socketButton(),
+          // multiplayerGameButton(),
+          // cameraButton()
           
         ]),
       ),
