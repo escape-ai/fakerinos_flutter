@@ -194,7 +194,7 @@ class CrowdSourceCardDemoState extends State<CrowdSourceCardDemo> with TickerPro
     return new Center(child: 
     new Row(children: <Widget>[
       new Tooltip(
-        message: "${(no * 100).toStringAsPrecision(2)} % think this was true",
+        message: "${(yes * 100).toStringAsPrecision(2)} % think this was true",
         child:
       new Container(
         height: 40, 
@@ -348,7 +348,7 @@ class CrowdSourceCardDemoState extends State<CrowdSourceCardDemo> with TickerPro
             new Padding(
               padding: EdgeInsets.all(10),
               child: new Text(
-                "CROWD SOURCE MODE",
+                "CROWDSOURCE",
                 style: TextStyle(
             fontSize: 16, 
             fontWeight: FontWeight.bold,
