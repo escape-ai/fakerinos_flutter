@@ -4,8 +4,6 @@ import './partials/default.dart';
 import './partials/multiplayer_screen.dart';
 import './partials/crowdSource.dart';
 import "../screens/leaderboard/profilePage.dart";
-import "../screens/leaderboard/feedback.dart";
-import "../screens/leaderboard/aboutus.dart";
 import '../SwipeAnimation/index.dart';
 import '../screens/leaderboard/leaderboardPage.dart';
 import '../../src/screens/sharedPreferencesHelper.dart';
@@ -156,22 +154,17 @@ class HomeStateScreen extends State<HomeScreen> {
             new MaterialPageRoute(builder: (context)=> ProfilePageState()))
             }
           ),
-          
+          new ListTile(
+            title: new Text("Settings"),
+            trailing: new Icon(Icons.settings),
+          ), 
           new ListTile(
             title: new Text("About"),
             trailing: new Icon(Icons.question_answer),
-            onTap: ()=> {
-            Navigator.push(context,
-            new MaterialPageRoute(builder: (context)=> ABOUTus())),
-            }
           ),
           new ListTile(
             title: new Text("Feedback"),
             trailing: new Icon(Icons.feedback),
-            onTap: ()=> {
-            Navigator.push(context,
-            new MaterialPageRoute(builder: (context)=> FeedbackForm())),
-            }
           )
           ],
       ))

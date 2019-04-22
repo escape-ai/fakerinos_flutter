@@ -16,7 +16,7 @@ class Users {
 class User{
 
   String username; 
-  List<String> interests;
+  // List interests;
   String education; 
   bool isComplete;
   bool onboarded;
@@ -29,7 +29,7 @@ class User{
 
   User(
     this.username, 
-    this.interests, 
+    // this.interests, 
     this.education, 
     this.onboarded, 
     this.age, 
@@ -41,7 +41,7 @@ class User{
 
   User.fromJson(dynamic userJson){
     username = userJson["user"];
-    interests = userJson["interests"];
+    // interests = userJson["interests"];
     education = userJson["education"];
     isComplete = userJson["is_complete"];
     age = userJson["age"];

@@ -5,27 +5,27 @@ import 'dart:io';
 import 'dart:convert';
 import './data.dart';
 import './dummyCard.dart';
-import './singleActiveCard.dart';
+import './SingleActiveCrowdCard.dart';
 import '../../src/screens/partials/cards.dart';
 import '../../src/screens/sharedPreferencesHelper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
-class CrowdSourceGame extends StatefulWidget {
+class CrowdSourceCardDemo extends StatefulWidget {
   @override
   int deckPk;
-  CrowdSourceGame({Key key, @required this.deckPk}) : super(key: key);
-  CrowdSourceGameState createState() => new CrowdSourceGameState(deckPk);
+  CrowdSourceCardDemo({Key key, @required this.deckPk}) : super(key: key);
+  CrowdSourceCardDemoState createState() => new CrowdSourceCardDemoState(deckPk);
 }
 
-class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderStateMixin {
+class CrowdSourceCardDemoState extends State<CrowdSourceCardDemo> with TickerProviderStateMixin {
   // Articles is a variable passed from the previous screen
   int deckPk;
   List<dynamic> fetchedCardsJson = []; 
   String token;
 
-  CrowdSourceGameState(int deckPk){
+  CrowdSourceCardDemoState(int deckPk){
     this.deckPk = deckPk;
     print("[Deck pk to be queried]:" + deckPk.toString());
   }
@@ -38,32 +38,28 @@ class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderSta
   List<int> pkList;
   Cards fetchedCards; 
   int dataLength;
+  double yes = 0.5;
+  double no = 0.5;
+  
   
 
   void _fetchCardsData(int deckPk) async {
     print("fetching cards data"); 
 
-    token = await getMobileToken(); 
-    var payload = {
-      "deck": deckPk.toString()
-    }; 
-    print("Creating room...");
-    await post("https://fakerinos.herokuapp.com/api/rooms/single-player/", 
-      headers: {
-      HttpHeaders.authorizationHeader: 
-      "Token $token"}, body: payload);
+    token = await getMobileToken();  
 
-    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/$deckPk/articles/", 
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/poll", 
     headers: {
       HttpHeaders.authorizationHeader: 
       "Token $token"});
     // print(token);
   
-    var decodedJson = jsonDecode(utf8.decode(response.bodyBytes));
-    
-    
-    fetchedCards = Cards.fromJson(decodedJson);
-
+    List decodedJson = jsonDecode(utf8.decode(response.bodyBytes));
+    // print(response.body);
+    // print(decodedJson.length);
+    // print(decodedJson[0]["articles"]);
+    fetchedCards = Cards.fromJson(decodedJson[0]["articles"]);
+    print(fetchedCards.toJson());
     setState((){
       // articlesImage = fetchedCards.cards.map((card) => card.thumbnail_url != "" ? new DecorationImage(image: new NetworkImage(card.thumbnail_url)):
       // new DecorationImage(image: new ExactAssetImage('assets/logo.png'))).toList();
@@ -167,20 +163,87 @@ class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderSta
 //answer:correct:1;wrong=0
 
 
-  postSwipe(int cardPk, int truth_value) async{
-    String swipe = truth_value == 1 ? "swipe_true" : "swipe_false";
-    String url = "https://fakerinos.herokuapp.com/api/articles/article/cardPk/$swipe/";
+  postSwipe(int cardPk, int user_choice) async{
+    String swipe = user_choice == 1 ? "swipe_true" : "swipe_false";
+    String url = "https://fakerinos.herokuapp.com/api/articles/article/$cardPk/$swipe/";
+    print(url);
 
     print("Posting now...");
-    final response = await post("https://fakerinos.herokuapp.com/api/articles/deck/$deckPk/articles/", 
+    final response = await post(url, 
+    headers: {
+      HttpHeaders.authorizationHeader: 
+      "Token $token"});
+    print(cardPk);
+    print(json.decode(response.body)["weighted_average_score"]);
+
+    double voteResult = json.decode(response.body)["weighted_average_score"];
+
+    
+
+    setState(() {
+        yes = voteResult; 
+       no = 1 - voteResult; 
+        
+        });
+
+
+  }
+
+  Widget _buildPollResultWidget(double yes, double no, Size screenSize){
+
+    return new Center(child: 
+    new Row(children: <Widget>[
+      new Tooltip(
+        message: "${(yes * 100).toStringAsPrecision(2)} % think this was true",
+        child:
+      new Container(
+        height: 40, 
+        width:  screenSize.width * yes,
+        color: Colors.green[300],
+        child: Center(child: new Text(
+          yes <= 0.01 ? "" :"${(yes * 100).toStringAsPrecision(2)}%",
+          style: TextStyle(
+            fontSize: 25, 
+            fontWeight: FontWeight.bold,
+            fontFamily: "Roboto"
+          ),
+        )))),
+        new Tooltip(
+          message: "${(no * 100).toStringAsPrecision(2)}% think that was false",
+          child: new Container(
+        height: 40, 
+        width: screenSize.width * no,
+        color: Colors.red[300],
+        child: Center( child: new Text(
+          no <= 0.01 ? "" :"${(no * 100).toStringAsPrecision(2)}%",
+          style: TextStyle(
+            fontSize: 25, 
+            fontWeight: FontWeight.bold,
+            fontFamily: "Roboto"
+          )
+        ))))
+      
+      
+    ],));
+  }
+
+  finishGame(int score) async{
+    
+    var payload = {
+      "score" : score.toString()
+    };
+    String url = "https://fakerinos.herokuapp.com/api/rooms/single-player/finish/";
+    print(url);
+
+    print("Finished game, updating...");
+    final response = await post(url, 
+    body: payload,
     headers: {
       HttpHeaders.authorizationHeader: 
       "Token $token"});
 
     print(response.body);
-
   }
-  
 
   chooseFalse(int pk, String headline, int truth_value) {
     print("CHOSE FALSE");
@@ -195,7 +258,7 @@ class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderSta
     }
       articlesHeadline.remove(headline);
     });
-    postSwipe(pk, truth_value);
+    postSwipe(pk, 0);
   }
 
   
@@ -213,7 +276,7 @@ class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderSta
     } 
        } );
 
-    postSwipe(pk, truth_value);
+    postSwipe(pk, 1);
   }
 
   swipeRight(int pk, String headline, int truth_value) {
@@ -238,6 +301,7 @@ class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderSta
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
     timeDilation = 0.4;
     
     double initialBottom = 15.0;
@@ -284,23 +348,27 @@ class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderSta
             new Padding(
               padding: EdgeInsets.all(10),
               child: new Text(
-                "SINGLE PLAYER",
-                style: new TextStyle(
-                    fontSize: 14.0,
-                    letterSpacing: 3,
-                    fontWeight: FontWeight.bold)),
+                "CROWDSOURCE",
+                style: TextStyle(
+            fontSize: 16, 
+            fontWeight: FontWeight.bold,
+            fontFamily: "Roboto"
+          )),
             ),
             new Container(
-              width: 15.0,
-              height: 15.0,
-              margin: new EdgeInsets.only(bottom: 20.0),
+              width: 30.0,
+              height: 30.0,
+              margin: new EdgeInsets.only(bottom: 5.0),
               alignment: Alignment.center,
               child: new Text(
                 dataLength.toString(),
-                style: new TextStyle(fontSize: 10.0),
+                style: new TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.black),
               ),
               decoration: new BoxDecoration(
-                  color: Colors.red,
+                  
+                  color: Colors.cyan[300],
                   shape: BoxShape.circle), //"question left mark"
             )
           ],
@@ -308,23 +376,27 @@ class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderSta
       ),
 
 
-      body: new Container(
+      body: articlesHeadline == null ? 
+                RefreshProgressIndicator():
+                new Column(
+          children: <Widget>[Container(
+            
+                  height: screenSize.height * 0.78,
             color: new Color.fromRGBO(30, 94, 175, 0.50),
             ///background color
             // alignment: Alignment.topCenter,
             child: dataLength > 0 ? //show alertDialogue if <= 0 
-                articlesHeadline == null ? 
-                RefreshProgressIndicator():
+                
                  new Stack(
                     alignment: AlignmentDirectional.center,
                     children: articlesHeadline.map((headline) {
                       int idx = articlesHeadline.indexOf(headline);
-                      print("idx: $idx");
+                      // print("idx: $idx");
                       if (articlesHeadline.indexOf(headline) == dataLength - 1) {
                       
                         String currentDescription = articlesDescription[idx];
 
-                        return singleActiveCard(
+                        return  SingleActiveCrowdCard(
                             pkList[idx],
                             articlesImage[idx],
                             bottom.value,
@@ -351,28 +423,30 @@ class CrowdSourceGameState extends State<CrowdSourceGame> with TickerProviderSta
                             backCardWidth, 0.0, 0.0, context);
                       }
                     }).toList()):
-            AlertDialog(
-          title: new Text("Well done!"),
-          content: new Text("Not enough? Try out more decks on the home page! "),
-          actions: <Widget> [new FlatButton(
-              child: new Text("Close"),
-              key: Key("leaveSingleNormal"),
-              onPressed: () {
-                print("Posting Game Results");
-
-                Navigator.of(context).pop();})])
+                    new AlertDialog(
+                      title: new Text("Well done!"),
+                      content: new Text("Not enough? Try out more decks on the home page! "),
+                      actions: <Widget> [new FlatButton(
+                          child: new Text("Close"),
+                          key: Key("leaveSingleNormal"),
+                          onPressed: () {
+                            print("Posting Game Results");
+                            print(result);
+                            finishGame(result);
+                            Navigator.of(context).pop();})])
+            
 
                   
-          ),
+          ), _buildPollResultWidget(yes, no, screenSize)]),
     
 
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: result > 0 ? Colors.green : Colors.blue,
-        onPressed: (){},
-        //tooltip: 'Increment',
-        icon: Icon(Icons.check),
-        label:Text((result).toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   backgroundColor: result > 0 ? Colors.green : Colors.blue,
+      //   onPressed: (){},
+      //   //tooltip: 'Increment',
+      //   icon: Icon(Icons.check),
+      //   label:Text((result).toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
+      // ),
     ));
   }
 } 

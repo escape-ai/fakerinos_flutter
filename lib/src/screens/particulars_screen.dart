@@ -28,7 +28,7 @@ class ParticularsScreenState extends State<ParticularsScreen> with ValidationMix
   String firstName;
   String lastName;
   String selectedEducationLevel; 
-  String dobString; //Yunyi:set default
+  String dobString = " "; //Yunyi:set default
   String dobErrorString = ""; 
   String educationErrorString = "";
   String token; 

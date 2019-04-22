@@ -167,8 +167,8 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
 //answer:correct:1;wrong=0
 
 
-  postSwipe(int cardPk, int truth_value) async{
-    String swipe = truth_value == 1 ? "swipe_true" : "swipe_false";
+  postSwipe(int cardPk, int user_choice) async{
+    String swipe = user_choice == 1 ? "swipe_true" : "swipe_false";
     String url = "https://fakerinos.herokuapp.com/api/articles/article/$cardPk/$swipe/";
     print(url);
 
@@ -212,7 +212,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     }
       articlesHeadline.remove(headline);
     });
-    postSwipe(pk, truth_value);
+    postSwipe(pk, 0);
   }
 
   
@@ -230,7 +230,7 @@ class CardDemoState extends State<CardDemo> with TickerProviderStateMixin {
     } 
        } );
 
-    postSwipe(pk, truth_value);
+    postSwipe(pk, 1);
   }
 
   swipeRight(int pk, String headline, int truth_value) {

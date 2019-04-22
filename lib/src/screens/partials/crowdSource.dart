@@ -9,6 +9,7 @@ import "./decks.dart";
 import "../leaderboard/leaderboardPage.dart";
 import '../sharedPreferencesHelper.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../../SwipeAnimation/crowdSourceGame.dart';
 
 
 class CrowdSourceScreen extends StatefulWidget{
@@ -38,7 +39,7 @@ class CrowdSourceScreenState extends State<CrowdSourceScreen>{
   @override
   void initState(){
     super.initState();
-    print("Default Home Screen w Decks initializing");
+    print("CrowdSource Screen w Decks initializing");
     
     _fetchData(); 
   }
@@ -48,7 +49,7 @@ class CrowdSourceScreenState extends State<CrowdSourceScreen>{
       print("Fetching data"); 
       token = await getMobileToken(); 
       username = await getUsername();
-    final response = await get("https://fakerinos.herokuapp.com/api/articles/decks/poll/", 
+    final response = await get("https://fakerinos.herokuapp.com/api/articles/deck/poll", 
     headers: {HttpHeaders.authorizationHeader: "Token $token"}); 
     
     if (response.statusCode == 200) {
@@ -125,7 +126,7 @@ class CrowdSourceScreenState extends State<CrowdSourceScreen>{
         tappedDeck = decksData.decks[itemIndex];
         // print("[Default Screen] " +  "articles:" + tappedDeck.articles.toString());
         Navigator.push(context,
-        new MaterialPageRoute(builder: (context)=> CardDemo(deckPk: tappedDeck.pk)));
+        new MaterialPageRoute(builder: (context)=> CrowdSourceCardDemo(deckPk: tappedDeck.pk)));
         },
         onDoubleTap: (){ 
           doubleTappedDeck = decksData.decks[itemIndex]; 
@@ -200,7 +201,7 @@ class CrowdSourceScreenState extends State<CrowdSourceScreen>{
                       
                       color: contains == null ?  Colors.grey :
                       contains == true ? 
-                      Colors.yellow[800] : Colors.grey), 
+                      Colors.blue[300] : Colors.grey), 
                   child: new Icon(
                     
                     Icons.star,
