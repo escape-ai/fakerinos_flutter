@@ -381,7 +381,7 @@ class CrowdSourceCardDemoState extends State<CrowdSourceCardDemo> with TickerPro
                 new Column(
           children: <Widget>[Container(
             
-                  height: screenSize.height * 0.75,
+                  height: screenSize.height * 0.78,
             color: new Color.fromRGBO(30, 94, 175, 0.50),
             ///background color
             // alignment: Alignment.topCenter,
@@ -440,13 +440,13 @@ class CrowdSourceCardDemoState extends State<CrowdSourceCardDemo> with TickerPro
           ), _buildPollResultWidget(yes, no, screenSize)]),
     
 
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: result > 0 ? Colors.green : Colors.blue,
-        onPressed: (){},
-        //tooltip: 'Increment',
-        icon: Icon(Icons.check),
-        label:Text((result).toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   backgroundColor: result > 0 ? Colors.green : Colors.blue,
+      //   onPressed: (){},
+      //   //tooltip: 'Increment',
+      //   icon: Icon(Icons.check),
+      //   label:Text((result).toString(),style: new TextStyle(color: Colors.white, fontSize: 30.0))
+      // ),
     ));
   }
 } 
